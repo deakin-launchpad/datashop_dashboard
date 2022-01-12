@@ -58,6 +58,14 @@ class Layout {
           isFavourite: true,
         }),
         new MenuItem({
+          name: "Job Manager",
+          type: "button",
+          icon: "bytesize:user",
+          helpingAttribute: "/Job",
+          customTitle: "Job Manager",
+          isFavourite: true,
+        }),
+        new MenuItem({
           name: "Logout",
           type: "logout",
           icon: "fe:logout",

@@ -7,6 +7,8 @@ import {
   Button,
   CardActions,
   TextField,
+  // Autocomplete,
+  // Chip,
 } from "@mui/material";
 import { LayoutConfig } from "constants/index";
 import { useState, useCallback, useEffect } from "react";
@@ -45,16 +47,19 @@ export const ServiceManager = () => {
   // }, [createService]);
 
   const createService = async (data) => {
+    let requirements = data.requirements.split(",");
+    data.requirements = requirements;
+    console.log(data, "dt");
+
     try {
       const response = await API.createService(data);
       if (response.success) {
-        formik.values._id = "";
         formik.values.url = "";
         formik.values.description = "";
         formik.values.name = "";
         formik.values.cost = "";
         formik.values.serviceId = "";
-        formik.values.requirements = [];
+        formik.values.requirements = "";
         setserviceModal(false);
         getService();
       } else {
@@ -67,17 +72,15 @@ export const ServiceManager = () => {
 
   let formik = useFormik({
     initialValues: {
-      _id: "",
       url: "",
       description: "",
       name: "",
       cost: "",
       serviceId: "",
-      requirements: [],
+      requirements: "",
     },
     validationSchema: () => {
       return Yup.object().shape({
-        _id: Yup.string().max(255).required("_id Is Required"),
         url: Yup.string().max(255).required("url Is Required"),
         description: Yup.string().max(255).required("description Is Required"),
         name: Yup.string().min(5).max(255).required("Password Is Required"),
@@ -88,7 +91,6 @@ export const ServiceManager = () => {
     },
     onSubmit: async (values) => {
       const data = {
-        _id: values._id,
         url: values.url,
         description: values.description,
         name: values.name,
@@ -107,14 +109,14 @@ export const ServiceManager = () => {
         <form noValidate onSubmit={formik.handleSubmit}>
           <TextField
             fullWidth
-            label=" ID "
+            label="Service Name"
             margin="normal"
-            name="_id"
+            name="name"
             type="text"
-            value={formik.values._id}
+            value={formik.values.name}
             variant="outlined"
-            error={formik.touched._id && Boolean(formik.errors._id)}
-            helperText={formik.touched._id && formik.errors._id}
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
@@ -146,19 +148,7 @@ export const ServiceManager = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-          <TextField
-            fullWidth
-            label="Service Name"
-            margin="normal"
-            name="name"
-            type="text"
-            value={formik.values.name}
-            variant="outlined"
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
+
           <TextField
             fullWidth
             type="text"
@@ -192,6 +182,7 @@ export const ServiceManager = () => {
             name="requirements"
             type="text"
             value={formik.values.requirements}
+            placeholder="eg:requirment1,requirement2,"
             variant="outlined"
             error={
               formik.touched.requirements && Boolean(formik.errors.requirements)
@@ -206,7 +197,6 @@ export const ServiceManager = () => {
           <Box sx={{ mt: 2 }}>
             <Button
               color="primary"
-              fullWidth
               disabled={formik.isSubmitting}
               size="large"
               variant="contained"
@@ -220,7 +210,7 @@ export const ServiceManager = () => {
     </Box>
   );
 
-  let detailModal = (
+  let ServiceDetailModal = (
     <Box>
       <FormControl fullWidth>
         <Card>
@@ -240,15 +230,16 @@ export const ServiceManager = () => {
               <br />
             </Typography>
             <Typography variant="body2">
+              Service Link: {selectedService.url}
+              <br />
+            </Typography>
+            <Typography variant="body2">
               Endpoint name: {selectedService.description}
               <br />
             </Typography>
             <Typography variant="body2">
-              {/* requirements:{selectedService.requirements} */}
-              {/* requirements: */}
-              {/* {typeof selectedService.requirements} */}
               {selectedService.requirements?.map((req, i) => (
-                <li key={i}>{req}</li>
+                <li key={"requirement-" + i}>{req}</li>
               ))}
               <br />
             </Typography>
@@ -267,25 +258,36 @@ export const ServiceManager = () => {
       <EnhancedModal
         isOpen={modalIsOpen}
         dialogTitle={`Detail of service`}
-        dialogContent={detailModal}
+        dialogContent={ServiceDetailModal}
         options={{
           onClose: () => setModalIsOpen(false),
+          disableSubmit: true,
         }}
       />
       <EnhancedModal
         isOpen={serviceModal}
+        // disableSubmit="true"
+        // DialogActions={}
         dialogTitle={`create new service`}
         dialogContent={createServiceModal}
         options={{
           onClose: () => setserviceModal(false),
+          disableSubmit: true,
+          disableClose: true,
         }}
       />
       <Container>
-        <Button size="large" onClick={() => setserviceModal(true)}>
+        <br />
+        <br />
+        <Button
+          size="middle"
+          variant="contained"
+          onClick={() => setserviceModal(true)}
+        >
           Create Service
-          <br />
-          <br />
         </Button>
+        <br />
+        <br />
       </Container>
       <Container>
         <Grid
@@ -298,7 +300,7 @@ export const ServiceManager = () => {
           {service.length > 0 ? (
             service.map((ser) => {
               return (
-                <Box key={ser._id} item sm={6} mb={4} lg={4} xl={4}>
+                <Box key={ser._id} mb={4} lg={4} xl={4}>
                   <Grid item xs={12} sm={6} md={3}>
                     <Card width={8}>
                       <CardContent>

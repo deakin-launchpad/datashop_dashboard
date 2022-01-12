@@ -10,6 +10,7 @@ import { MobileMenu } from "./dependants/mobileMenu/mobileMenu";
 import { Example } from "./dependants/Example/Example";
 import { UsersManager } from "./dependants/UsersManager/UsersManager";
 import { ServiceManager } from "./dependants/ServiceManager/ServiceManager";
+import { JobManager } from "./dependants/JobManager/JobManager";
 export {
   Example,
   Login,
@@ -20,4 +21,5 @@ export {
   AuthCallback,
   UsersManager,
   ServiceManager,
+  JobManager,
 };

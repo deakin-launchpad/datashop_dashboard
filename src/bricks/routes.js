@@ -17,6 +17,7 @@ import {
   Register,
   UsersManager,
   ServiceManager,
+  JobManager,
 } from "views";
 import { Layout } from "./layout";
 
@@ -182,6 +183,22 @@ export const AppRoutes = (props) => {
             <Layout>
               {" "}
               <ServiceManager {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/job"
+        element={
+          <AuthRoute
+            redirectTo="/job"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              {" "}
+              <JobManager {...props} />
             </Layout>
           </AuthRoute>
         }
