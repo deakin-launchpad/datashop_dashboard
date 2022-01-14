@@ -144,6 +144,16 @@ class API {
       .then(() => generateSuccess(AccessToken))
       .catch((error) => errorHelper(error));
   }
+  createJob(data) {
+    return axiosInstance
+      .post("job/createJob", data, {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then(() => generateSuccess(AccessToken))
+      .catch((error) => errorHelper(error));
+  }
 }
 const instance = new API();
 export default instance;

@@ -7,9 +7,9 @@ import {
   Button,
   CardActions,
   TextField,
-  // Autocomplete,
-  // Chip,
 } from "@mui/material";
+import { experimentalStyled as styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
 import { LayoutConfig } from "constants/index";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
@@ -28,23 +28,22 @@ export const ServiceManager = () => {
   const [serviceModal, setserviceModal] = useState(false);
 
   const getService = useCallback(async () => {
-    const response = await API.getService();
-    setService(response.data.data);
-    console.log(response.data.data);
+    try {
+      const response = await API.getService();
+      if (response.success) {
+        setService(response.data.data);
+      } else {
+        setService([]);
+        notify("Failed to Fetch Service List");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   useEffect(() => {
     getService();
-  }, [getService]);
-
-  // const createService = useCallback(async () => {
-  //   const response = await API.createService();
-  //   console.log(response.data.data);
-  // }, []);
-
-  // useEffect(() => {
-  //   createService();
-  // }, [createService]);
+  }, []);
 
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
@@ -290,19 +289,13 @@ export const ServiceManager = () => {
         <br />
       </Container>
       <Container>
-        <Grid
-          Container
-          spacing={2}
-          direction="row"
-          justify="flex-start"
-          alignItems="flex-start"
-        >
+        <Grid Container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           {service.length > 0 ? (
             service.map((ser) => {
               return (
-                <Box key={ser._id} mb={4} lg={4} xl={4}>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Card width={8}>
+                <Box key={ser._id} mb={4}>
+                  <Grid item xs={2} sm={4} md={4}>
+                    <Card width={50}>
                       <CardContent>
                         <div style={{ width: 300, whiteSpace: "nowrap" }}>
                           <Typography
@@ -340,5 +333,44 @@ export const ServiceManager = () => {
       </Container>
     </Box>
   );
-  return <Box sx={LayoutConfig.defaultContainerSX}>{content}</Box>;
+
+  let Item = styled(Paper)(({ theme }) => ({
+    ...theme.typography.body2,
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));
+  let newcontent = (
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid
+        container
+        spacing={{ xs: 2, md: 3 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+      >
+        {service.map((ser, index) => (
+          <Grid item xs={2} sm={4} md={4} key={index}>
+            <Item>
+              <Typography
+                component="div"
+                sx={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                }}
+                gutterBottom
+              >
+                {ser.name}
+              </Typography>
+            </Item>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+
+  return (
+    <Box sx={LayoutConfig.defaultContainerSX}>
+      {content}
+      {newcontent}
+    </Box>
+  );
 };
