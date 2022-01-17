@@ -12,16 +12,15 @@ export const JobManager = () => {
   const [job, setJob] = useState([]);
 
   const createJob = async (data) => {
-    let requirements = data.requirements.split(",");
-    data.requirements = requirements;
     console.log(data, "dt");
 
     try {
       const response = await API.createJob(data);
       if (response.success) {
-        formik.values.url = "";
-        formik.values.name = "";
+        formik.values.downloadableURL = "";
+        formik.values.serviceName = "";
         setModalIsOpen(false);
+        getJob();
         notify("Job Creation successed!!");
       } else {
         notify("Job Creation Failed!!");
@@ -51,19 +50,19 @@ export const JobManager = () => {
 
   let formik = useFormik({
     initialValues: {
-      url: "",
-      name: "",
+      downloadableURL: "",
+      serviceName: "",
     },
     validationSchema: () => {
       return Yup.object().shape({
-        url: Yup.string().max(255).required("url Is Required"),
-        name: Yup.string().min(5).max(255).required("Password Is Required"),
+        downloadableURL: Yup.string().max(255).required("url Is Required"),
+        serviceName: Yup.string().max(255).required("serviceName Is Required"),
       });
     },
     onSubmit: async (values) => {
       const data = {
-        url: values.url,
-        name: values.name,
+        downloadableURL: values.downloadableURL,
+        serviceName: values.serviceName,
       };
       console.log(data);
       createJob(data);
@@ -78,12 +77,14 @@ export const JobManager = () => {
             fullWidth
             label="Service Name"
             margin="normal"
-            name="name"
+            name="serviceName"
             type="text"
-            value={formik.values.name}
+            value={formik.values.serviceName}
             variant="outlined"
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
+            error={
+              formik.touched.serviceName && Boolean(formik.errors.serviceName)
+            }
+            helperText={formik.touched.serviceName && formik.errors.serviceName}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
@@ -91,12 +92,17 @@ export const JobManager = () => {
             fullWidth
             label="URL Link"
             margin="normal"
-            name="url"
+            name="downloadableURL"
             type="text"
-            value={formik.values.lastName}
+            value={formik.values.downloadableURL}
             variant="outlined"
-            error={formik.touched.url && Boolean(formik.errors.url)}
-            helperText={formik.touched.url && formik.errors.url}
+            error={
+              formik.touched.downloadableURL &&
+              Boolean(formik.errors.downloadableURL)
+            }
+            helperText={
+              formik.touched.downloadableURL && formik.errors.downloadableURL
+            }
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
@@ -156,7 +162,7 @@ export const JobManager = () => {
           title="Job Manager"
           options={{
             ignoreKeys: [
-              "_id",
+              // "_id",
               "deakinSSO",
               "firstLogin",
               "emailVerified",
