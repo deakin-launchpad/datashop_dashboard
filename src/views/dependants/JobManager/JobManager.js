@@ -17,7 +17,7 @@ export const JobManager = () => {
     console.log(data, "dt");
 
     try {
-      const response = await API.createService(data);
+      const response = await API.createJob(data);
       if (response.success) {
         formik.values.url = "";
         formik.values.name = "";
@@ -110,7 +110,7 @@ export const JobManager = () => {
               type="submit"
               onClick={() => setModalIsOpen(false)}
             >
-              Create Service
+              Create Job
             </Button>
           </Box>
         </form>
