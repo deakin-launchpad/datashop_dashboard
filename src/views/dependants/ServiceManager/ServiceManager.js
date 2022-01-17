@@ -57,7 +57,7 @@ export const ServiceManager = () => {
         formik.values.description = "";
         formik.values.name = "";
         formik.values.cost = "";
-        formik.values.serviceId = "";
+        // formik.values.serviceId = "";
         formik.values.requirements = "";
         setserviceModal(false);
         getService();
@@ -75,7 +75,7 @@ export const ServiceManager = () => {
       description: "",
       name: "",
       cost: "",
-      serviceId: "",
+      // serviceId: "",
       requirements: "",
     },
     validationSchema: () => {
@@ -83,7 +83,7 @@ export const ServiceManager = () => {
         url: Yup.string().max(255).required("url Is Required"),
         description: Yup.string().max(255).required("description Is Required"),
         name: Yup.string().min(5).max(255).required("Password Is Required"),
-        serviceId: Yup.string().max(255).required("description Is Required"),
+        // serviceId: Yup.string().max(255).required("description Is Required"),
         cost: Yup.string().max(255).required("description Is Required"),
         requirements: Yup.string().max(255).required("description Is Required"),
       });
@@ -147,7 +147,7 @@ export const ServiceManager = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-
+          {/* 
           <TextField
             fullWidth
             type="text"
@@ -160,7 +160,7 @@ export const ServiceManager = () => {
             helperText={formik.touched.serviceId && formik.errors.serviceId}
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
-          />
+          /> */}
           <TextField
             fullWidth
             label=" cost "
