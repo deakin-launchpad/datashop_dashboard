@@ -1,54 +1,55 @@
-import { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Box, Button, FormHelperText, TextField } from '@mui/material';
-import { LoginContext } from 'contexts';
-import { ConnectionConfig, DeveloperConfig } from 'constants/index';
+import { useContext } from "react";
+import PropTypes from "prop-types";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Box, Button, FormHelperText, TextField } from "@mui/material";
+import { LoginContext } from "contexts";
+import { ConnectionConfig, DeveloperConfig } from "constants/index";
 
 export const LoginForm = (props) => {
   const { devMode, setAccessToken } = useContext(LoginContext);
 
   const formik = useFormik({
-    initialValues:
-    {
-      emailId: '',
-      password: '',
+    initialValues: {
+      emailId: "",
+      password: "",
     },
     validationSchema: () => {
-      if (devMode) return Yup.object().shape({
-        emailId: Yup.string().email('Must be a valid Email').max(255),
-        password: Yup
-          .string()
-          .max(255)
-      });
+      if (devMode)
+        return Yup.object().shape({
+          emailId: Yup.string().email("Must be a valid Email").max(255),
+          password: Yup.string().max(255),
+        });
       return Yup.object().shape({
-        emailId: Yup.string().email('Must be a valid Email').max(255)
-          .required('Email is required'),
-        password: Yup
-          .string().min(6)
+        emailId: Yup.string()
+          .email("Must be a valid Email")
           .max(255)
-          .required('Password is required')
+          .required("Email is required"),
+        password: Yup.string().min(6).max(255).required("Password is required"),
       });
     },
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       if (devMode)
         values = {
           emailId: DeveloperConfig.devDetails.user,
-          password: DeveloperConfig.devDetails.password
+          password: DeveloperConfig.devDetails.password,
         };
       const response = await props.login(values);
+      console.log(response);
+
       if (response.success) {
-        if (!(props.onSuccess instanceof Function) || !ConnectionConfig.useACL) {
-          setAccessToken(response.accessToken);
+        if (
+          !(props.onSuccess instanceof Function) ||
+          !ConnectionConfig.useACL
+        ) {
+          setAccessToken(response.data);
           setStatus({ success: true });
         } else {
           const response = await props.onSuccess();
           if (response) {
-            setAccessToken(response.accessToken);
+            setAccessToken(response.data);
             setStatus({ success: true });
-          }
-          else setStatus({ success: false });
+          } else setStatus({ success: false });
         }
         setSubmitting(false);
       } else {
@@ -61,7 +62,6 @@ export const LoginForm = (props) => {
   let form = (
     <form noValidate onSubmit={formik.handleSubmit}>
       <TextField
-
         error={formik.touched.emailId && Boolean(formik.errors.emailId)}
         fullWidth
         helperText={formik.touched.emailId && formik.errors.emailId}
@@ -71,7 +71,9 @@ export const LoginForm = (props) => {
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         type="email"
-        value={devMode ? DeveloperConfig.devDetails.user : formik.values.emailId}
+        value={
+          devMode ? DeveloperConfig.devDetails.user : formik.values.emailId
+        }
         variant="outlined"
       />
       <TextField
@@ -84,14 +86,14 @@ export const LoginForm = (props) => {
         onBlur={formik.handleBlur}
         onChange={formik.handleChange}
         type="password"
-        value={devMode ? DeveloperConfig.devDetails.password : formik.values.password}
+        value={
+          devMode ? DeveloperConfig.devDetails.password : formik.values.password
+        }
         variant="outlined"
       />
       {formik.errors.submit && (
         <Box sx={{ mt: 3 }}>
-          <FormHelperText error>
-            {formik.errors.submit}
-          </FormHelperText>
+          <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
       <Box sx={{ mt: 2 }}>
@@ -107,7 +109,6 @@ export const LoginForm = (props) => {
         </Button>
       </Box>
     </form>
-
   );
   return form;
 };

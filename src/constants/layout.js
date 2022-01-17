@@ -1,8 +1,7 @@
-
 class MenuItem {
   /**
-   * 
-   * @param {Object} data 
+   *
+   * @param {Object} data
    * @param {String} data.name
    * @param {String} data.type
    * @param {String} data.icon
@@ -27,69 +26,87 @@ class Layout {
     this.menuItems = {
       DEFAULT: [
         new MenuItem({
-          "name": "Home",
-          "type": "button",
-          "icon": "ant-design:home-filled",
-          "helpingAttribute": "/home",
-          "customTitle": "Welcome to Boiler Plate",
-          "isFavourite": true
+          name: "Home",
+          type: "button",
+          icon: "ant-design:home-filled",
+          helpingAttribute: "/home",
+          customTitle: "Welcome to Boiler Plate",
+          isFavourite: true,
         }),
         new MenuItem({
-          "name": "Example",
-          "type": "button",
-          "icon": "bytesize:code",
-          "helpingAttribute": "/examples",
-          "customTitle": "Example Code File",
-          "isFavourite": true
+          name: "Example",
+          type: "button",
+          icon: "bytesize:code",
+          helpingAttribute: "/examples",
+          customTitle: "Example Code File",
+          isFavourite: true,
         }),
         new MenuItem({
-          "name": "Users Manager",
-          "type": "button",
-          "icon": "bytesize:user",
-          "helpingAttribute": "/users",
-          "customTitle": "Users Manager",
-          "isFavourite": true
+          name: "Users Manager",
+          type: "button",
+          icon: "bytesize:user",
+          helpingAttribute: "/users",
+          customTitle: "Users Manager",
+          isFavourite: true,
         }),
         new MenuItem({
-          "name": "Logout",
-          "type": "logout",
-          "icon": "fe:logout",
-          "helpingAttribute": "",
-          "customTitle": "Welcome to Boiler Plate",
-          "isFavourite": false
-        })
+          name: "Service Manager",
+          type: "button",
+          icon: "bytesize:user",
+          helpingAttribute: "/service",
+          customTitle: "Service Manager",
+          isFavourite: true,
+        }),
+        new MenuItem({
+          name: "Job Manager",
+          type: "button",
+          icon: "bytesize:user",
+          helpingAttribute: "/Job",
+          customTitle: "Job Manager",
+          isFavourite: true,
+        }),
+        new MenuItem({
+          name: "Logout",
+          type: "logout",
+          icon: "fe:logout",
+          helpingAttribute: "",
+          customTitle: "Welcome to Boiler Plate",
+          isFavourite: false,
+        }),
       ],
     };
     this.header = {
-      "visibleOnDesktop": true,
-      "visibleOnMobile": true,
-      "useCustomColor": false,
-      "color": "primary",
-      "customColorCode": ""
+      visibleOnDesktop: true,
+      visibleOnMobile: true,
+      useCustomColor: false,
+      color: "primary",
+      customColorCode: "",
     };
     this.bottomMobileNavigation = true;
     this.displayMobileMenuHam = true;
     this.menuButtonLabel = "Menu";
     this.sideMenu = {
-      "permanent": true,
-      "default": "open"
+      permanent: true,
+      default: "open",
     };
 
     this.defaultContainerSX = {
-      backgroundColor: 'background.default',
-      display: 'flex', flexDirection: 'column',
-      minHeight: 'calc(100% - 64px)'
+      backgroundColor: "background.default",
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "calc(100% - 64px)",
     };
   }
 
   /**
-   * 
-   * @param {String} userType 
+   *
+   * @param {String} userType
    * @returns {Array<MenuItem>}
    */
   getMenuItems(userType) {
     switch (userType.toLowerCase()) {
-      default: return this.menuItems.DEFAULT;
+      default:
+        return this.menuItems.DEFAULT;
     }
   }
 }
