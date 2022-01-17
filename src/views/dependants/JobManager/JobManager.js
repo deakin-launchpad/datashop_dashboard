@@ -12,8 +12,6 @@ export const JobManager = () => {
   const [job, setJob] = useState([]);
 
   const createJob = async (data) => {
-    let requirements = data.requirements.split(",");
-    data.requirements = requirements;
     console.log(data, "dt");
 
     try {
