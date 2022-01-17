@@ -1,14 +1,15 @@
 import { Box, Container, Button, TextField } from "@mui/material";
 import { LayoutConfig } from "constants/index";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
-import { EnhancedModal, notify } from "components/index";
+import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
 
 export const JobManager = () => {
   // const [job, setJob] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [job, setJob] = useState([]);
 
   const createJob = async (data) => {
     let requirements = data.requirements.split(",");
@@ -29,6 +30,24 @@ export const JobManager = () => {
       setModalIsOpen(false);
     }
   };
+
+  const getJob = useCallback(async () => {
+    try {
+      const response = await API.getJob();
+      if (response.success) {
+        setJob(response.data.data);
+      } else {
+        setJob([]);
+        notify("Failed to Fetch Job List");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    getJob();
+  }, []);
 
   let formik = useFormik({
     initialValues: {
@@ -123,7 +142,32 @@ export const JobManager = () => {
         <br />
         <br />
       </Container>
+      <Container
+        maxWidth="lg"
+        sx={{
+          py: {
+            xs: "100px",
+            sm: window.screen.availHeight / 50,
+          },
+        }}
+      >
+        <EnhancedTable
+          data={job}
+          title="Job Manager"
+          options={{
+            ignoreKeys: [
+              "_id",
+              "deakinSSO",
+              "firstLogin",
+              "emailVerified",
+              "isBlocked",
+              "__v",
+            ],
+          }}
+        />
+      </Container>
     </Box>
   );
+
   return <Box sx={LayoutConfig.defaultContainerSX}>{content}</Box>;
 };

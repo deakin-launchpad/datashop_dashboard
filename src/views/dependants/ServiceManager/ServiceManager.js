@@ -13,7 +13,7 @@ import Paper from "@mui/material/Paper";
 import { LayoutConfig } from "constants/index";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
-import { EnhancedModal, notify } from "components/index";
+import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import {
   FormControl,
   Grid,
@@ -367,10 +367,36 @@ export const ServiceManager = () => {
     </Box>
   );
 
+  let tablecontent = (
+    <Container
+      maxWidth="lg"
+      sx={{
+        py: {
+          xs: "100px",
+          sm: window.screen.availHeight / 50,
+        },
+      }}
+    >
+      <EnhancedTable
+        data={service}
+        title="Job Manager"
+        options={{
+          ignoreKeys: [
+            "deakinSSO",
+            "firstLogin",
+            "emailVerified",
+            "isBlocked",
+            "__v",
+          ],
+        }}
+      />
+    </Container>
+  );
   return (
     <Box sx={LayoutConfig.defaultContainerSX}>
       {content}
       {newcontent}
+      {tablecontent}
     </Box>
   );
 };
