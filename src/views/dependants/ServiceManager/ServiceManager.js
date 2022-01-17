@@ -8,8 +8,8 @@ import {
   CardActions,
   TextField,
 } from "@mui/material";
-import { experimentalStyled as styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
+// import { experimentalStyled as styled } from "@mui/material/styles";
+// import Paper from "@mui/material/Paper";
 import { LayoutConfig } from "constants/index";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
@@ -334,38 +334,38 @@ export const ServiceManager = () => {
     </Box>
   );
 
-  let Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
-  let newcontent = (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {service.map((ser, index) => (
-          <Grid item xs={2} sm={4} md={4} key={index}>
-            <Item>
-              <Typography
-                component="div"
-                sx={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                }}
-                gutterBottom
-              >
-                {ser.name}
-              </Typography>
-            </Item>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
-  );
+  // let Item = styled(Paper)(({ theme }) => ({
+  //   ...theme.typography.body2,
+  //   padding: theme.spacing(2),
+  //   textAlign: "center",
+  //   color: theme.palette.text.secondary,
+  // }));
+  // let newcontent = (
+  //   <Box sx={{ flexGrow: 1 }}>
+  //     <Grid
+  //       container
+  //       spacing={{ xs: 2, md: 3 }}
+  //       columns={{ xs: 4, sm: 8, md: 12 }}
+  //     >
+  //       {service.map((ser, index) => (
+  //         <Grid item xs={2} sm={4} md={4} key={index}>
+  //           <Item>
+  //             <Typography
+  //               component="div"
+  //               sx={{
+  //                 textOverflow: "ellipsis",
+  //                 overflow: "hidden",
+  //               }}
+  //               gutterBottom
+  //             >
+  //               {ser.name}
+  //             </Typography>
+  //           </Item>
+  //         </Grid>
+  //       ))}
+  //     </Grid>
+  //   </Box>
+  // );
 
   let tablecontent = (
     <Container
@@ -379,7 +379,7 @@ export const ServiceManager = () => {
     >
       <EnhancedTable
         data={service}
-        title="Job Manager"
+        title="Service Manager"
         options={{
           ignoreKeys: [
             "deakinSSO",
@@ -395,7 +395,7 @@ export const ServiceManager = () => {
   return (
     <Box sx={LayoutConfig.defaultContainerSX}>
       {content}
-      {newcontent}
+      {/* {newcontent} */}
       {tablecontent}
     </Box>
   );
