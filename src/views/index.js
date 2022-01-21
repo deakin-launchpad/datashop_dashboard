@@ -8,7 +8,7 @@ import { Register } from "./common/Register/Register";
 import { Home } from "./dependants/Home/Home";
 import { MobileMenu } from "./dependants/mobileMenu/mobileMenu";
 import { Example } from "./dependants/Example/Example";
-import { UsersManager } from "./dependants/UsersManager/UsersManager";
+import { DatasetsManager } from "./dependants/DataManager/DataManager";
 import { ServiceManager } from "./dependants/ServiceManager/ServiceManager";
 import { JobManager } from "./dependants/JobManager/JobManager";
 export {
@@ -19,7 +19,7 @@ export {
   MobileMenu,
   FourOFour,
   AuthCallback,
-  UsersManager,
+  DatasetsManager,
   ServiceManager,
   JobManager,
 };

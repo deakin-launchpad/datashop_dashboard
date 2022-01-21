@@ -42,11 +42,11 @@ class Layout {
           isFavourite: true,
         }),
         new MenuItem({
-          name: "Users Manager",
+          name: "Data Manager",
           type: "button",
           icon: "bytesize:user",
-          helpingAttribute: "/users",
-          customTitle: "Users Manager",
+          helpingAttribute: "/Datasets",
+          customTitle: "Data Manager",
           isFavourite: true,
         }),
         new MenuItem({

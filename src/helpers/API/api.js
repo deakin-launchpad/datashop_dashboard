@@ -166,6 +166,30 @@ class API {
       })
       .catch((error) => errorHelper(error));
   }
+  getDatasets() {
+    return axiosInstance
+      .get("service/getService", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+  uploadDataset() {
+    return axiosInstance
+      .post("upload/uploadDocument", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
 }
 const instance = new API();
 export default instance;

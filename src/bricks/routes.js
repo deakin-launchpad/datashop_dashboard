@@ -15,7 +15,7 @@ import {
   Login,
   MobileMenu,
   Register,
-  UsersManager,
+  DatasetsManager,
   ServiceManager,
   JobManager,
 } from "views";
@@ -157,7 +157,7 @@ export const AppRoutes = (props) => {
       />
       <Route
         exact
-        path="/users"
+        path="/Datasets"
         element={
           <AuthRoute
             redirectTo="/login"
@@ -166,7 +166,7 @@ export const AppRoutes = (props) => {
           >
             <Layout>
               {" "}
-              <UsersManager {...props} />
+              <DatasetsManager {...props} />
             </Layout>
           </AuthRoute>
         }

@@ -31,7 +31,20 @@ export const ServiceManager = () => {
     try {
       const response = await API.getService();
       if (response.success) {
-        setService(response.data.data);
+        const res = response.data.data;
+        let result = [];
+        res.map((item) => {
+          let data = {
+            name: item.name,
+            id: item._id,
+            requirments: item.requirements,
+            url: item.url,
+            description: item.description,
+            cost: item.cost,
+          };
+          result.push(data);
+        });
+        setService(result);
       } else {
         setService([]);
         notify("Failed to Fetch Service List");
@@ -43,7 +56,7 @@ export const ServiceManager = () => {
 
   useEffect(() => {
     getService();
-  }, []);
+  }, [getService]);
 
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
@@ -57,7 +70,6 @@ export const ServiceManager = () => {
         formik.values.description = "";
         formik.values.name = "";
         formik.values.cost = "";
-        // formik.values.serviceId = "";
         formik.values.requirements = "";
         setserviceModal(false);
         getService();
@@ -75,7 +87,6 @@ export const ServiceManager = () => {
       description: "",
       name: "",
       cost: "",
-      // serviceId: "",
       requirements: "",
     },
     validationSchema: () => {
@@ -83,8 +94,7 @@ export const ServiceManager = () => {
         url: Yup.string().max(255).required("url Is Required"),
         description: Yup.string().max(255).required("description Is Required"),
         name: Yup.string().min(5).max(255).required("Password Is Required"),
-        // serviceId: Yup.string().max(255).required("description Is Required"),
-        cost: Yup.string().max(255).required("description Is Required"),
+        cost: Yup.number().required("description Is Required"),
         requirements: Yup.string().max(255).required("description Is Required"),
       });
     },
@@ -147,20 +157,6 @@ export const ServiceManager = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-          {/* 
-          <TextField
-            fullWidth
-            type="text"
-            label="service Id"
-            margin="normal"
-            name="serviceId"
-            value={formik.values.serviceId}
-            variant="outlined"
-            error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
-            helperText={formik.touched.serviceId && formik.errors.serviceId}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          /> */}
           <TextField
             fullWidth
             label=" cost "
@@ -242,8 +238,9 @@ export const ServiceManager = () => {
               ))}
               <br />
             </Typography>
+            ``
             <Typography variant="body2">
-              Price: {selectedService.cost}
+              Price: ${selectedService.cost}
               <br />
             </Typography>
           </CardContent>
@@ -265,8 +262,6 @@ export const ServiceManager = () => {
       />
       <EnhancedModal
         isOpen={serviceModal}
-        // disableSubmit="true"
-        // DialogActions={}
         dialogTitle={`create new service`}
         dialogContent={createServiceModal}
         options={{
@@ -334,39 +329,6 @@ export const ServiceManager = () => {
     </Box>
   );
 
-  // let Item = styled(Paper)(({ theme }) => ({
-  //   ...theme.typography.body2,
-  //   padding: theme.spacing(2),
-  //   textAlign: "center",
-  //   color: theme.palette.text.secondary,
-  // }));
-  // let newcontent = (
-  //   <Box sx={{ flexGrow: 1 }}>
-  //     <Grid
-  //       container
-  //       spacing={{ xs: 2, md: 3 }}
-  //       columns={{ xs: 4, sm: 8, md: 12 }}
-  //     >
-  //       {service.map((ser, index) => (
-  //         <Grid item xs={2} sm={4} md={4} key={index}>
-  //           <Item>
-  //             <Typography
-  //               component="div"
-  //               sx={{
-  //                 textOverflow: "ellipsis",
-  //                 overflow: "hidden",
-  //               }}
-  //               gutterBottom
-  //             >
-  //               {ser.name}
-  //             </Typography>
-  //           </Item>
-  //         </Grid>
-  //       ))}
-  //     </Grid>
-  //   </Box>
-  // );
-
   let tablecontent = (
     <Container
       maxWidth="lg"
@@ -395,7 +357,6 @@ export const ServiceManager = () => {
   return (
     <Box sx={LayoutConfig.defaultContainerSX}>
       {content}
-      {/* {newcontent} */}
       {tablecontent}
     </Box>
   );
