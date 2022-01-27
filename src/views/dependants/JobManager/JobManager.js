@@ -168,6 +168,7 @@ export const JobManager = () => {
               "emailVerified",
               "isBlocked",
               "__v",
+              "createdAt",
             ],
           }}
         />

@@ -168,7 +168,7 @@ class API {
   }
   getDatasets() {
     return axiosInstance
-      .get("service/getService", {
+      .get("data/getDataEntries", {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
@@ -178,16 +178,25 @@ class API {
       })
       .catch((error) => errorHelper(error));
   }
-  uploadDataset() {
+  uploadDocument(data) {
     return axiosInstance
-      .post("upload/uploadDocument", {
+      .post("upload/uploadDocument", data, {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
       })
-      .then((response) => {
-        return generateSuccess(response.data.data);
+      .then(() => generateSuccess(AccessToken))
+      .catch((error) => errorHelper(error));
+  }
+
+  createDataEntry(data) {
+    return axiosInstance
+      .post("data/createDataEntry", data, {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
       })
+      .then(() => generateSuccess(AccessToken))
       .catch((error) => errorHelper(error));
   }
 }

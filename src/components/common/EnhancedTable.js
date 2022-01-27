@@ -447,6 +447,8 @@ const RenderRow = (props) => {
             ? breakObject(props.data[key])
             : key === "cost" && !String(props.data[key]).includes("$")
             ? `$${String(props.data[key])}`
+            : key === "_id"
+            ? String(props.data[key]).substring(16)
             : String(props.data[key])}
         </Typography>
       </TableCell>
