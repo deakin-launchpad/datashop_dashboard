@@ -25,6 +25,8 @@ export const Register = () => {
   const { deviceData } = useContext(DeviceInfoContext);
   const [pageHeading] = useState('Register');
   const [emailId, setEmailId] = useState('');
+  const [countryCode,setCountryCode] = useState('+61');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -34,6 +36,8 @@ export const Register = () => {
     API.register({
       deviceData,
       emailId,
+      countryCode,
+      phoneNumber,
       password,
       firstName,
       lastName
@@ -57,9 +61,11 @@ export const Register = () => {
     }
   };
   let form = (<form noValidate>
-    <TextField variant="outlined" margin="normal" required fullWidth id="firstName" label="First Name" name="firstName" autoComplete="email" onChange={e => setFirstName(e.target.value)} autoFocus />
-    <TextField variant="outlined" margin="normal" required fullWidth id="lastName" label="Last Name" name="lastName" autoComplete="email" onChange={e => setLastName(e.target.value)} />
+    <TextField variant="outlined" margin="normal" required fullWidth id="firstName" label="First Name" name="firstName" autoComplete="firstName" onChange={e => setFirstName(e.target.value)} autoFocus />
+    <TextField variant="outlined" margin="normal" required fullWidth id="lastName" label="Last Name" name="lastName" autoComplete="lastName" onChange={e => setLastName(e.target.value)} />
     <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" onChange={e => setEmailId(e.target.value)} />
+    <TextField variant="outlined" margin="normal" required fullWidth id="countryCode" label="Country Code" name="countryCode" autoComplete="countryCode" onChange={e => setCountryCode(e.target.value)} />
+    <TextField variant="outlined" margin="normal" required fullWidth id="phone" label="Phone Number" name="phoneNumber" autoComplete="phoneNumber" onChange={e => setPhoneNumber(e.target.value)} />
     <TextField variant="outlined" margin="normal" required fullWidth name="password" label="Password" type="password" id="password" onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
     <TextField variant="outlined" margin="normal" required fullWidth name="confirmPassword" label="Confirm Password" type="password" id="confirmPassword" onChange={e => setConfirmPassword(e.target.value)} autoComplete="current-password" />
     <Box sx={{ mt: 2 }}>

@@ -103,7 +103,7 @@ class API {
    */
   async register(data) {
     return axiosInstance
-      .post(`register`, data)
+      .post(`user/register`, data)
       .then((response) => generateSuccess(response.data.data))
       .catch((error) => errorHelper(error));
   }
