@@ -53,10 +53,10 @@ export const SideMenuItems = () => {
           <ParentIcon style={{
             margin: '0 0 6px 5px'
           }}>
-            <InlineIcon icon={icon} />
+            <InlineIcon color="inherit" icon={icon} />
           </ParentIcon>
         </ListItemIcon>
-        <ListItemText primary={name} />
+        <ListItemText sx={{color:'white'}} primary={name} />
       </ListItem >
     );
   };
@@ -70,16 +70,16 @@ export const SideMenuItems = () => {
           <ParentIcon style={{
             margin: '0 0 6px 5px'
           }}>
-            <InlineIcon icon={icon} />
+            <InlineIcon color="inherit" icon={icon} />
           </ParentIcon>
         </ListItemIcon>
-        <ListItemText primary={name} />
+        <ListItemText sx={{color:'white'}} primary={name} />
       </ListItem>
     );
   };
 
   return (
-    <List>
+    <List >
       {LayoutConfig.getMenuItems(currentUserRole).map((value, i) => {
         return menuitemsController(value, i);
       })}

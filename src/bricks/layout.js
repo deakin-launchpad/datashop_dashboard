@@ -8,6 +8,9 @@ const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 const useStyles = makeStyles(theme => createStyles({
   root: {
     display: 'flex',
+    padding:'30px 30px 0px 30px',
+    height: '100vh',
+    background:'#F2F6FE',
   },
   header: {
     display: 'flex',
@@ -16,7 +19,7 @@ const useStyles = makeStyles(theme => createStyles({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100vh',
+    height: '100%',
     overflow: 'auto',
   },
   mobileContent: {

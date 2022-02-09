@@ -46,7 +46,7 @@ export const JobManager = () => {
 
   useEffect(() => {
     getJob();
-  }, [getJob]);
+  }, []);
 
   let formik = useFormik({
     initialValues: {
