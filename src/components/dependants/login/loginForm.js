@@ -61,7 +61,7 @@ export const LoginForm = (props) => {
 
   let form = (
     <form noValidate onSubmit={formik.handleSubmit}>
-      <TextField
+      <TextField sx={{mb:4}}
         error={formik.touched.emailId && Boolean(formik.errors.emailId)}
         fullWidth
         helperText={formik.touched.emailId && formik.errors.emailId}
@@ -96,16 +96,16 @@ export const LoginForm = (props) => {
           <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 4 ,textAlign:'right'}}>
         <Button
+          sx={{px:5}}
           color="primary"
           disabled={formik.isSubmitting}
-          fullWidth
           size="large"
           type="submit"
           variant="contained"
         >
-          Log In
+          Sign In
         </Button>
       </Box>
     </form>
