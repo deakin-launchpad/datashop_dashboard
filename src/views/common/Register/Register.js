@@ -13,7 +13,7 @@ import { API } from 'helpers/index';
 
 const useStyles = makeStyles(() => createStyles({
   leftSpan:{
-    height: '100vh',
+    minHeight: '100vh',
     position:'relative',
     background: `#292E37 url(${require('../../../assets/images/bg/authentication_left_bg.png').default})`,
     backgroundSize:'100% 100%'
@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => createStyles({
     zIndex:2
   },
   rightSpan:{
-    height: '100vh',
+    minHeight: '100vh',
     background: `url(${require('../../../assets/images/bg/authentication_bg.png').default})`,
     backgroundSize:'100% 100%',
     padding:40

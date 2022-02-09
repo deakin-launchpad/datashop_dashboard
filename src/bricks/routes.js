@@ -176,7 +176,7 @@ export const AppRoutes = (props) => {
         path="/service"
         element={
           <AuthRoute
-            redirectTo="/service"
+            redirectTo="/login"
             loginStatus={loginStatus}
             parentProps={props}
           >
@@ -192,7 +192,7 @@ export const AppRoutes = (props) => {
         path="/job"
         element={
           <AuthRoute
-            redirectTo="/job"
+            redirectTo="/login"
             loginStatus={loginStatus}
             parentProps={props}
           >

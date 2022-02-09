@@ -18,7 +18,6 @@ const App = (props) => {
         <LoginCheck>
           <AppRoutes {...props} />
           <GlobalStyles />
-          {/* {DeveloperConfig.visible ? <DevModeSwitch /> : ''} */}
           <Notification />
         </LoginCheck>
       </ThemeProvider>

@@ -15,12 +15,10 @@ import {
   Select,
   MenuItem,
   Link,
-} from "@mui/material";
-import { useFormik, Formik } from "formik";
-import {
   TextField,
   Typography,
-} from "../../../../node_modules/@mui/material/index";
+} from "@mui/material";
+import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
 
 export const DatasetsManager = () => {
@@ -43,7 +41,6 @@ export const DatasetsManager = () => {
 
   //create data entry function
   const createDataEntry = async (data) => {
-    // console.log("data entry", data);
     try {
       const response = await API.createDataEntry(data);
       if (response.success) {
@@ -80,7 +77,6 @@ export const DatasetsManager = () => {
         description: values.description,
         name: values.name,
       };
-      console.log(data);
       createDataEntry(data);
     },
   });
@@ -170,23 +166,18 @@ export const DatasetsManager = () => {
   //upload dataset function
   //
   const uploadDataset = async (data) => {
-    // console.log(data, "dt");
     try {
       const response = await API.uploadDocument(data);
       if (response.success) {
         (response) => response.json();
-        // console.log("res:", response);
-        // getDatasets();
       } else {
         notify("Data Uploading Failed!!");
       }
     } catch (err) {
-      // setDataModalOpen(false);
       console.log(err);
     }
   };
   const changeHandler = (event) => {
-    console.log("event.target.files[0]:", event.target.files[0]);
     if (event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
       setIsFilePicked(true);
@@ -201,7 +192,6 @@ export const DatasetsManager = () => {
     console.log(selectedFile, "file");
     formData.append("documentFile", selectedFile);
     console.log("11from11", formData);
-    // await fetch("http://52.64.118.100:8000/api/upload/uploadDocument", {
     await fetch("http://localhost:8000/api/upload/uploadDocument", {
       method: "POST",
       body: formData,
@@ -219,7 +209,7 @@ export const DatasetsManager = () => {
   }, [selectedFile]);
   //upload dataset form
   let secondContent = (
-    <div className="App">
+    <div>
       <input type="file" name="documentFile" onChange={changeHandler} />
       <div>{/* <button onClick={handleSubmission}>Submit</button> */}</div>
       {isFilePicked ? (
@@ -259,9 +249,6 @@ export const DatasetsManager = () => {
 
   //create job function
   const createJob = async (data) => {
-    // console.log(data, "dt");
-    // console.log(selectedService, "dt");
-
     try {
       const response = await API.createJob(data);
       if (response.success) {
@@ -279,7 +266,6 @@ export const DatasetsManager = () => {
 
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
-    console.log("event", selectedService);
   };
   let serviceModal = (
     <Container>
@@ -345,12 +331,6 @@ export const DatasetsManager = () => {
       />
       <Container
         maxWidth="lg"
-        sx={{
-          py: {
-            xs: "100px",
-            sm: window.screen.availHeight / 50,
-          },
-        }}
       >
         {" "}
         {secondContent}
