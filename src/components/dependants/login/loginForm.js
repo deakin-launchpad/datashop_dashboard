@@ -35,8 +35,6 @@ export const LoginForm = (props) => {
           password: DeveloperConfig.devDetails.password,
         };
       const response = await props.login(values);
-      console.log(response);
-
       if (response.success) {
         if (
           !(props.onSuccess instanceof Function) ||
