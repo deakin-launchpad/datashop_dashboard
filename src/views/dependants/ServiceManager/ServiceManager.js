@@ -5,7 +5,8 @@ import {
   Card,
   Button,
   TextField,
-  FormControl
+  FormControl,
+  Paper
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
@@ -267,7 +268,7 @@ export const ServiceManager = () => {
       maxWidth="xl"
       sx={{mt:2,ml:4}}
     >
-      <EnhancedTable
+      {service.length > 0 ? <EnhancedTable
         data={service}
         title="Service Manager"
         options={{
@@ -292,7 +293,8 @@ export const ServiceManager = () => {
             },
           ],
         }}
-      />
+      />:<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper>}
+      
     </Box>
   );
   return (

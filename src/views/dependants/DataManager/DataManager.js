@@ -12,6 +12,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  Paper
 } from "@mui/material";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
@@ -269,7 +270,7 @@ export const DatasetsManager = () => {
           Upload Data
           </Button>
         </Box>
-        <EnhancedTable
+        {datasets.length > 0 ? <EnhancedTable
           data={datasets}
           title="Datasets Manager"
           options={{
@@ -301,7 +302,8 @@ export const DatasetsManager = () => {
               },
             ],
           }}
-        />
+        /> :<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper> }
+        
       </Box>
     </Box>
   );

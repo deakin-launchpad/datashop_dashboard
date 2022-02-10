@@ -1,4 +1,4 @@
-import { Box, Button, TextField ,Select,InputLabel, MenuItem} from "@mui/material";
+import { Box, Button, TextField ,Select,InputLabel, MenuItem,Paper,Typography} from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
@@ -206,7 +206,7 @@ export const JobManager = () => {
         maxWidth="xl"
         sx={{mt:2,ml:4}}
       >
-        <EnhancedTable
+        {job.length > 0 ? <EnhancedTable
           data={job}
           title="Job Manager"
           options={{
@@ -220,7 +220,7 @@ export const JobManager = () => {
               "createdAt",
             ],
           }}
-        />
+        />:<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper> }
       </Box>
     </Box>
   );

@@ -64,7 +64,7 @@ class API {
   async logoutUser() {
     return axiosInstance
       .put(
-        "logout",
+        "user/logout",
         {},
         {
           headers: {
