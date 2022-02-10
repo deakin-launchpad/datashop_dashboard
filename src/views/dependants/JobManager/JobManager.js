@@ -16,35 +16,28 @@ export const JobManager = () => {
   ];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
   const createJob = async (data) => {
-    try {
-      const response = await API.createJob(data);
-      if (response.success) {
-        formik.values.downloadableURL = "";
-        formik.values.jsonData = "";
-        setSelectedService("");
-        setSelectedDataType(dataTypes[0]);
-        setModalIsOpen(false);
-        getJob();
-        notify("Job Creation successed!!");
-      } else {
-        notify("Job Creation Failed!!");
-      }
-    } catch (err) {
+    const response = await API.createJob(data);
+    if (response.success) {
+      formik.values.downloadableURL = "";
+      formik.values.jsonData = "";
+      setSelectedService("");
+      setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
+      getJob();
+      notify("Job Creation successed!!");
+    } else {
+      setModalIsOpen(false);
+      notify("Job Creation Failed!!");
     }
   };
 
   const getJob = useCallback(async () => {
-    try {
-      const response = await API.getJob();
-      if (response.success) {
-        setJob(response.data.data);
-      } else {
-        setJob([]);
-        notify("Failed to Fetch Job List");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.getJob();
+    if (response.success) {
+      setJob(response.data.data);
+    } else {
+      setJob([]);
+      notify("Failed to Fetch Job List");
     }
   }, []);
 
@@ -53,16 +46,12 @@ export const JobManager = () => {
   }, [getJob]);
 
   const getService = useCallback(async () => {
-    try {
-      const response = await API.getService();
-      if (response.success) {
-        setServices(response.data.data);
-      } else {
-        setServices([]);
-        notify("Failed to Fetch Service List");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.getService();
+    if (response.success) {
+      setServices(response.data.data);
+    } else {
+      setServices([]);
+      notify("Failed to Fetch Service List");
     }
   }, []);
 

@@ -32,15 +32,11 @@ export const DatasetsManager = () => {
   const [jobDataUrl,setJobDataUrl] = useState();
 
   const uploadDataset = async (data) => {
-    try {
-      const response = await API.uploadDocument(data);
-      if (response.success) {
-        (response) => response.json();
-      } else {
-        notify("Data Uploading Failed!!");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.uploadDocument(data);
+    if (response.success) {
+      (response) => response.json();
+    } else {
+      notify("Data Uploading Failed!!");
     }
   };
   const changeHandler = (event) => {
@@ -66,19 +62,15 @@ export const DatasetsManager = () => {
   }, [handleFileUploadSubmission]);
 
   const createDataEntry = async (data) => {
-    try {
-      const response = await API.createDataEntry(data);
-      if (response.success) {
-        formik.values.description = "";
-        formik.values.name = "";
-        setS3url("");
-        setDataModalOpen(false);
-        getDatasets();
-      } else {
-        notify("data entry Creation Failed!!");
-      }
-    } catch (err) {
+    const response = await API.createDataEntry(data);
+    if (response.success) {
+      formik.values.description = "";
+      formik.values.name = "";
+      setS3url("");
       setDataModalOpen(false);
+      getDatasets();
+    } else {
+      notify("data entry Creation Failed!!");
     }
   };
 
@@ -168,16 +160,12 @@ export const DatasetsManager = () => {
   );
 
   const getDatasets = useCallback(async () => {
-    try {
-      const response = await API.getDatasets();
-      if (response.success) {
-        if (isMounted) setDatasets(response.data.data);
-      } else {
-        setDatasets([]);
-        notify("Failed to Fetch Data List");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.getDatasets();
+    if (response.success) {
+      if (isMounted) setDatasets(response.data.data);
+    } else {
+      setDatasets([]);
+      notify("Failed to Fetch Data List");
     }
   }, [isMounted]);
 
@@ -186,16 +174,12 @@ export const DatasetsManager = () => {
   }, [getDatasets]);
 
   const getService = useCallback(async () => {
-    try {
-      const response = await API.getService();
-      if (response.success) {
-        setTotalService(response.data.data);
-      } else {
-        setTotalService([]);
-        notify("Failed to Fetch Service List");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.getService();
+    if (response.success) {
+      setTotalService(response.data.data);
+    } else {
+      setTotalService([]);
+      notify("Failed to Fetch Service List");
     }
   }, []);
 
@@ -220,18 +204,13 @@ export const DatasetsManager = () => {
       endpoint: selectedService.url,
       serviceID:selectedService._id,
     };
-    try {
-      const response = await API.createJob(_jobDataTosend);
-      if (response.success) {
-        notify("Job Creation successed!!");
-        setServiceModalOpen(false);
-      } else {
-        notify("Job Creation Failed!!");
-        setServiceModalOpen(false);
-      }
-    } catch (err) {
+    const response = await API.createJob(_jobDataTosend);
+    if (response.success) {
+      notify("Job Creation successed!!");
       setServiceModalOpen(false);
-      console.log(err);
+    } else {
+      notify("Job Creation Failed!!");
+      setServiceModalOpen(false);
     }
   };
 

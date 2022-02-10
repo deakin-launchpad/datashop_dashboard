@@ -20,29 +20,25 @@ export const ServiceManager = () => {
   const [serviceModal, setserviceModal] = useState(false);
 
   const getService = useCallback(async () => {
-    try {
-      const response = await API.getService();
-      if (response.success) {
-        const res = response.data.data;
-        let result = [];
-        res.map((item) => {
-          let data = {
-            name: item.name,
-            id: item._id,
-            requirments: item.requirements,
-            url: item.url,
-            description: item.description,
-            cost: item.cost,
-          };
-          result.push(data);
-        });
-        setService(result);
-      } else {
-        setService([]);
-        notify("Failed to Fetch Service List");
-      }
-    } catch (err) {
-      console.log(err);
+    const response = await API.getService();
+    if (response.success) {
+      const res = response.data.data;
+      let result = [];
+      res.map((item) => {
+        let data = {
+          name: item.name,
+          id: item._id,
+          requirments: item.requirements,
+          url: item.url,
+          description: item.description,
+          cost: item.cost,
+        };
+        result.push(data);
+      });
+      setService(result);
+    } else {
+      setService([]);
+      notify("Failed to Fetch Service List");
     }
   }, []);
 
@@ -53,21 +49,18 @@ export const ServiceManager = () => {
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
-    try {
-      const response = await API.createService(data);
-      if (response.success) {
-        formik.values.url = "";
-        formik.values.description = "";
-        formik.values.name = "";
-        formik.values.cost = "";
-        formik.values.requirements = "";
-        setserviceModal(false);
-        getService();
-      } else {
-        notify("Service Creation Failed!!");
-      }
-    } catch (err) {
+    const response = await API.createService(data);
+    if (response.success) {
+      formik.values.url = "";
+      formik.values.description = "";
+      formik.values.name = "";
+      formik.values.cost = "";
+      formik.values.requirements = "";
       setserviceModal(false);
+      getService();
+    } else {
+      setserviceModal(false);
+      notify("Service Creation Failed!!");
     }
   };
 
