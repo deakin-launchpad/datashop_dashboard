@@ -35,6 +35,13 @@ const useStyles = makeStyles(() => createStyles({
     },
     '.Mui-selected  .MuiListItemIcon-root':{
       color:'#326EBD'
+    },
+    '.MuiAppBar-root':{
+      backgroundColor:'#F2F6FE',
+      color:'unset',
+      top:'auto',
+      right:'auto',
+      paddingLeft:'20px'
     }
   }
 }));

@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react';
 import clsx from 'clsx';
-import { Drawer, Divider, IconButton,Box,useMediaQuery } from '@mui/material';
+import { Drawer, Divider, IconButton,Box,AppBar,Toolbar,Typography,useMediaQuery } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { LayoutContext } from 'contexts';
 import { SideMenuItems } from './SideMenuItems';
-// import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 export const Header = () => {
@@ -23,7 +23,7 @@ export const Header = () => {
     },
     appBarShift: {
       marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
+      width: `calc(100% - ${drawerWidth+60}px)`,
       transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -86,11 +86,11 @@ export const Header = () => {
       margin: theme.spacing(1),
     }
   }));
-  const {layoutConfiguration } = useContext(LayoutContext);
+  const {pageTitle,headerElements,layoutConfiguration } = useContext(LayoutContext);
   const [open, setOpen] = useState(isItDesktop ? (layoutConfiguration.sideMenu.default === 'open' ? true : false) : false);
-  // const handleDrawerOpen = () => {
-  //   setOpen(true);
-  // };
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -98,8 +98,8 @@ export const Header = () => {
 
   let content = (
     <>
-      {/* <AppBar elevation={layoutConfiguration.theme !== undefined ? layoutConfiguration.theme.appBarElevation !== undefined ? layoutConfiguration.theme.appBarElevation : 1 : 1} position={layoutConfiguration.sideMenu.permanent ? 'fixed' : 'absolute'} className={layoutConfiguration.sideMenu.permanent ? (isItDesktop ? classes.appBarShift : classes.appBar) : clsx(classes.appBar, open && classes.appBarShift)}
-        color={layoutConfiguration.header.useCustomColor ? null : undefined !== layoutConfiguration.header.color ? layoutConfiguration.header.color : "primary"} >
+      <AppBar elevation={layoutConfiguration.theme !== undefined ? layoutConfiguration.theme.appBarElevation !== undefined ? layoutConfiguration.theme.appBarElevation : 0 : 0} position={layoutConfiguration.sideMenu.permanent ? 'fixed' : 'absolute'} className={layoutConfiguration.sideMenu.permanent ? (isItDesktop ? classes.appBarShift : classes.appBar) : clsx(classes.appBar, open && classes.appBarShift)}
+      >
         <Toolbar  className={classes.toolbar}>
           {isItDesktop ? layoutConfiguration.sideMenu.permanent ? null : < IconButton
             edge="start"
@@ -112,12 +112,12 @@ export const Header = () => {
           </IconButton> : null}
           {
             headerElements !== null ? headerElements :
-              <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              <Typography component="h1" variant="h5" color="inherit" noWrap className={classes.title}>
                 {pageTitle}
               </Typography>
           }
         </Toolbar>
-      </AppBar> */}
+      </AppBar>
       {
         isItDesktop ? <Drawer 
           variant="permanent"

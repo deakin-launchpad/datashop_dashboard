@@ -26,25 +26,65 @@ export const DatasetsManager = () => {
   const isMounted = useIsMountedRef();
   const [dataModalOpen, setDataModalOpen] = useState(false);
 
-  //selectedFile,isFilePicked and s3url are used when uploading file
   const [selectedFile, setSelectedFile] = useState();
   const [isFilePicked, setIsFilePicked] = useState(false);
   const [s3url, setS3url] = useState("");
 
-  //dataset and service used when creating job
   const [totalService, setTotalService] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
-  // display url by button and modal
+
   const [thisDataLnkModalOpen, setThisDataLnkModalOpen] = useState(false);
   const [thisDataLink, setThisDataLink] = useState("");
 
-  //create data entry function
+  const [jobDataUrl,setJobDataUrl] = useState();
+
+  const uploadDataset = async (data) => {
+    try {
+      const response = await API.uploadDocument(data);
+      if (response.success) {
+        (response) => response.json();
+      } else {
+        notify("Data Uploading Failed!!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const changeHandler = (event) => {
+    if (event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+      setIsFilePicked(true);
+      handleSubmission();
+    }
+  };
+  // handleSubmission upload dataset function
+  const handleSubmission = useCallback(async () => {
+    if (!isFilePicked) return;
+    const formData = new FormData();
+    console.log(selectedFile, "file");
+    formData.append("documentFile", selectedFile);
+    console.log("11from11", formData);
+    await fetch("http://localhost:8000/api/upload/uploadDocument", {
+      method: "POST",
+      body: formData,
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        setS3url(data.data.documentFileUrl.original);
+      });
+
+    uploadDataset(formData);
+  }, [isFilePicked, selectedFile]);
+
+  useEffect(() => {
+    handleSubmission();
+  }, [selectedFile]);
+
   const createDataEntry = async (data) => {
     try {
       const response = await API.createDataEntry(data);
       if (response.success) {
-        // formik.values.dataURL = s3url;
         formik.values.description = "";
         formik.values.name = "";
         setDataModalOpen(false);
@@ -57,16 +97,13 @@ export const DatasetsManager = () => {
     }
   };
 
-  // formik used in update datasets entry function
   let formik = useFormik({
     initialValues: {
-      // dataURL: s3url,
       description: "",
       name: "",
     },
     validationSchema: () => {
       return Yup.object().shape({
-        // dataURL: Yup.string().max(255).required("url Is Required"),
         description: Yup.string().max(255).required("description Is Required"),
         name: Yup.string().min(5).max(255).required("Name Is Required"),
       });
@@ -81,9 +118,25 @@ export const DatasetsManager = () => {
     },
   });
 
-  // model used in update datasets entry function
+  let uploadFilesContent = (
+    <div>
+      <input type="file" name="documentFile" onChange={changeHandler} />
+      {isFilePicked ? (
+        <div>
+          <p>Filename: {selectedFile.name}</p>
+          <p>Filetype: {selectedFile.type}</p>
+          <p>Size in bytes: {selectedFile.size}</p>
+        </div>
+      ) : (
+        <div>
+          <p>Select a file</p>
+        </div>
+      )}
+    </div>
+  );
   let createDataEntryModal = (
     <Box>
+      {uploadFilesContent}
       <Typography>File to upload: {s3url}</Typography>
       <Formik initialValues={formik.initialValues}>
         <form noValidate onSubmit={formik.handleSubmit}>
@@ -100,19 +153,6 @@ export const DatasetsManager = () => {
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
           />
-          {/* <TextField
-            fullWidth
-            label="URL Link"
-            margin="normal"
-            name="dataURL"
-            type="text"
-            value={formik.values.dataURL}
-            variant="outlined"
-            error={formik.touched.dataURL && Boolean(formik.errors.dataURL)}
-            helperText={formik.touched.dataURL && formik.errors.dataURL}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          /> */}
           <TextField
             fullWidth
             label=" description"
@@ -144,7 +184,7 @@ export const DatasetsManager = () => {
       </Formik>
     </Box>
   );
-  // get datasets function
+
   const getDatasets = useCallback(async () => {
     try {
       const response = await API.getDatasets();
@@ -158,75 +198,10 @@ export const DatasetsManager = () => {
       console.log(err);
     }
   }, [isMounted]);
+
   useEffect(() => {
     getDatasets();
   }, [getDatasets]);
-
-  //
-  //upload dataset function
-  //
-  const uploadDataset = async (data) => {
-    try {
-      const response = await API.uploadDocument(data);
-      if (response.success) {
-        (response) => response.json();
-      } else {
-        notify("Data Uploading Failed!!");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const changeHandler = (event) => {
-    if (event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-      setIsFilePicked(true);
-      handleSubmission();
-    }
-  };
-  // handleSubmission upload dataset function
-  const handleSubmission = useCallback(async () => {
-    // HANDLING FILE AS SENDING FILE INTO BACKEND
-    if (!isFilePicked) return;
-    const formData = new FormData();
-    console.log(selectedFile, "file");
-    formData.append("documentFile", selectedFile);
-    console.log("11from11", formData);
-    await fetch("http://localhost:8000/api/upload/uploadDocument", {
-      method: "POST",
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        setS3url(data.data.documentFileUrl.original);
-      });
-
-    uploadDataset(formData);
-  }, [isFilePicked, selectedFile]);
-
-  useEffect(() => {
-    handleSubmission();
-  }, [selectedFile]);
-  //upload dataset form
-  let secondContent = (
-    <div>
-      <input type="file" name="documentFile" onChange={changeHandler} />
-      <div>{/* <button onClick={handleSubmission}>Submit</button> */}</div>
-      {isFilePicked ? (
-        <div>
-          <p>Filename: {selectedFile.name}</p>
-          <p>Filetype: {selectedFile.type}</p>
-          <p>Size in bytes: {selectedFile.size}</p>
-        </div>
-      ) : (
-        <div>
-          <p>Select a file</p>
-        </div>
-      )}
-    </div>
-  );
-
-  //get service function
 
   const getService = useCallback(async () => {
     try {
@@ -247,31 +222,42 @@ export const DatasetsManager = () => {
     getService();
   }, [getService]);
 
-  //create job function
-  const createJob = async (data) => {
-    try {
-      const response = await API.createJob(data);
-      if (response.success) {
-        // formik.values.downloadableURL = "";
-        // formik.values.serviceName = "";
-        notify("Job Creation successed!!");
-      } else {
-        notify("Job Creation Failed!!");
-      }
-    } catch (err) {
-      console.log(err);
-      // setModalIsOpen(false);
-    }
-  };
-
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
   };
+  const createJob = (data)=>{
+    setServiceModalOpen(true);
+    setJobDataUrl(data.dataURL);
+  };
+
+  const postCreateJobData = async () => {
+    const _jobDataTosend = {
+      datafileURL: {
+        url: jobDataUrl,
+        json: ""
+      },
+      endpoint: selectedService.url,
+      serviceID:selectedService._id,
+    };
+    try {
+      const response = await API.createJob(_jobDataTosend);
+      if (response.success) {
+        notify("Job Creation successed!!");
+        setServiceModalOpen(false);
+      } else {
+        notify("Job Creation Failed!!");
+        setServiceModalOpen(false);
+      }
+    } catch (err) {
+      setServiceModalOpen(false);
+      console.log(err);
+    }
+  };
+
   let serviceModal = (
-    <Container>
-      {" "}
-      <FormControl fullWidth>
-        <InputLabel>service</InputLabel>
+    <Container sx={{p:1}}>
+      <FormControl fullWidth >
+        <InputLabel sx={{py:1}}>Select service</InputLabel>
         <Select
           value={selectedService}
           label="Service"
@@ -285,20 +271,14 @@ export const DatasetsManager = () => {
             );
           })}
         </Select>
+        <Button sx={{mt:2}} variant="contained" onClick={postCreateJobData}>Submit</Button>
       </FormControl>
     </Container>
   );
   let dataLinkModal = <Typography>{thisDataLink}</Typography>;
 
   let content = (
-    <Box
-      sx={{
-        backgroundColor: "background.default",
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-      }}
-    >
+    <Box>
       <EnhancedModal
         isOpen={dataModalOpen}
         dialogTitle={`upload new data entry`}
@@ -321,7 +301,7 @@ export const DatasetsManager = () => {
       />
       <EnhancedModal
         isOpen={serviceModalOpen}
-        dialogTitle={`choose service`}
+        dialogTitle={`Create Job`}
         dialogContent={serviceModal}
         options={{
           onClose: () => setServiceModalOpen(false),
@@ -330,12 +310,8 @@ export const DatasetsManager = () => {
         }}
       />
       <Container
-        maxWidth="lg"
-      >
-        {" "}
-        {secondContent}
-        <Button
-          // size="middle"
+        maxWidth="xl"
+      ><Button
           variant="contained"
           onClick={() => setDataModalOpen(true)}
         >
@@ -397,30 +373,16 @@ export const DatasetsManager = () => {
                         </div>
                       </CardContent>
                       <CardActions>
-                        {/* choose service */}
                         <Button
                           size="small"
                           onClick={() => {
-                            setServiceModalOpen(true);
-                          }}
-                        >
-                          Choose Service
-                        </Button>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            const jobData = {
-                              downloadableURL: data.dataURL,
-                              endpoint: selectedService.url,
-                            };
-                            console.log("jobdata", jobData);
-                            createJob(jobData);
+                            createJob(data);
                           }}
                         >
                           Create Job
                         </Button>
                       </CardActions>
-                    </Card>{" "}
+                    </Card>
                   </Box>
                 );
               })
@@ -429,7 +391,6 @@ export const DatasetsManager = () => {
             )}
           </Grid>
         </Container>
-        {/* Datasets Manager EnhancedTable */}
         <EnhancedTable
           data={datasets}
           title="Datasets Manager"
