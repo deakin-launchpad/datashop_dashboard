@@ -1,23 +1,15 @@
 import {
   Box,
-  Container,
   Typography,
   CardContent,
   Card,
   Button,
-  CardActions,
   TextField,
+  FormControl
 } from "@mui/material";
-// import { experimentalStyled as styled } from "@mui/material/styles";
-// import Paper from "@mui/material/Paper";
-import { LayoutConfig } from "constants/index";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
-import {
-  FormControl,
-  Grid,
-} from "../../../../node_modules/@mui/material/index";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
 
@@ -61,8 +53,6 @@ export const ServiceManager = () => {
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
-    console.log(data, "dt");
-
     try {
       const response = await API.createService(data);
       if (response.success) {
@@ -107,7 +97,6 @@ export const ServiceManager = () => {
         cost: values.cost,
         requirements: values.requirements,
       };
-      console.log(data);
       createService(data);
     },
   });
@@ -238,19 +227,18 @@ export const ServiceManager = () => {
               ))}
               <br />
             </Typography>
-            ``
             <Typography variant="body2">
               Price: ${selectedService.cost}
               <br />
             </Typography>
           </CardContent>
-        </Card>{" "}
+        </Card>
       </FormControl>
     </Box>
   );
 
   let content = (
-    <Box sx={LayoutConfig.defaultContainerSX}>
+    <Box>
       <EnhancedModal
         isOpen={modalIsOpen}
         dialogTitle={`Detail of service`}
@@ -262,17 +250,14 @@ export const ServiceManager = () => {
       />
       <EnhancedModal
         isOpen={serviceModal}
-        dialogTitle={`create new service`}
+        dialogTitle={`Create new service`}
         dialogContent={createServiceModal}
         options={{
           onClose: () => setserviceModal(false),
           disableSubmit: true,
-          disableClose: true,
         }}
       />
-      <Container>
-        <br />
-        <br />
+      <Box  maxWidth="xl" sx={{textAlign:'right',ml:4}}>
         <Button
           size="middle"
           variant="contained"
@@ -280,69 +265,20 @@ export const ServiceManager = () => {
         >
           Create Service
         </Button>
-        <br />
-        <br />
-      </Container>
-      <Container>
-        <Grid Container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          {service.length > 0 ? (
-            service.map((ser) => {
-              return (
-                <Box key={ser._id} mb={4}>
-                  <Grid item xs={2} sm={4} md={4}>
-                    <Card width={50}>
-                      <CardContent>
-                        <div style={{ width: 300, whiteSpace: "nowrap" }}>
-                          <Typography
-                            component="div"
-                            sx={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                            }}
-                            gutterBottom
-                          >
-                            {ser.name}
-                          </Typography>
-                        </div>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            setModalIsOpen(true);
-                            setSelectedService(ser);
-                          }}
-                        >
-                          Learn More
-                        </Button>
-                      </CardActions>
-                    </Card>{" "}
-                  </Grid>
-                </Box>
-              );
-            })
-          ) : (
-            <Typography>No Data Available</Typography>
-          )}
-        </Grid>
-      </Container>
+      </Box>
     </Box>
   );
 
   let tablecontent = (
-    <Container
-      maxWidth="lg"
-      sx={{
-        py: {
-          xs: "100px",
-          sm: window.screen.availHeight / 50,
-        },
-      }}
+    <Box
+      maxWidth="xl"
+      sx={{mt:2,ml:4}}
     >
       <EnhancedTable
         data={service}
         title="Service Manager"
         options={{
+          selector:true,
           ignoreKeys: [
             "deakinSSO",
             "firstLogin",
@@ -350,12 +286,24 @@ export const ServiceManager = () => {
             "isBlocked",
             "__v",
           ],
+          actions: [
+            {
+              name: "",
+              label: "View",
+              type: "button",
+              function: async (e, data) => {
+                setModalIsOpen(true);
+                console.log(e,data);
+                setSelectedService(data);
+              },
+            },
+          ],
         }}
       />
-    </Container>
+    </Box>
   );
   return (
-    <Box sx={LayoutConfig.defaultContainerSX}>
+    <Box>
       {content}
       {tablecontent}
     </Box>

@@ -30,7 +30,7 @@ class Layout {
           type: "button",
           icon: "ant-design:home-filled",
           helpingAttribute: "/home",
-          customTitle: "Welcome to Boiler Plate",
+          customTitle: "Welcome to Datashop",
           isFavourite: true,
         }),
         new MenuItem({

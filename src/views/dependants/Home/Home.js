@@ -1,10 +1,9 @@
 
 import { Box, Container, Typography } from '@mui/material';
-import { LayoutConfig } from 'constants/index';
 
 
 export const Home = () => {
-  return (<Box sx={LayoutConfig.defaultContainerSX}>
+  return (<Box>
     <Container
       style={{
         margin: 'auto auto'

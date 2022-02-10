@@ -6,15 +6,10 @@ import {
   Box,
   Container,
   Button,
-  Grid,
-  Card,
-  CardActions,
-  CardContent,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Link,
   TextField,
   Typography,
 } from "@mui/material";
@@ -34,9 +29,6 @@ export const DatasetsManager = () => {
   const [selectedService, setSelectedService] = useState("");
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
 
-  const [thisDataLnkModalOpen, setThisDataLnkModalOpen] = useState(false);
-  const [thisDataLink, setThisDataLink] = useState("");
-
   const [jobDataUrl,setJobDataUrl] = useState();
 
   const uploadDataset = async (data) => {
@@ -55,31 +47,23 @@ export const DatasetsManager = () => {
     if (event.target.files[0]) {
       setSelectedFile(event.target.files[0]);
       setIsFilePicked(true);
-      handleSubmission();
+      handleFileUploadSubmission();
     }
   };
-  // handleSubmission upload dataset function
-  const handleSubmission = useCallback(async () => {
+  const handleFileUploadSubmission = useCallback(async () => {
     if (!isFilePicked) return;
     const formData = new FormData();
-    console.log(selectedFile, "file");
     formData.append("documentFile", selectedFile);
-    console.log("11from11", formData);
-    await fetch("http://localhost:8000/api/upload/uploadDocument", {
-      method: "POST",
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        setS3url(data.data.documentFileUrl.original);
-      });
-
+    const response = await API.uploadDocument(formData);
+    if(response.success){
+      setS3url(response.data.documentFileUrl.original);
+    }
     uploadDataset(formData);
   }, [isFilePicked, selectedFile]);
 
   useEffect(() => {
-    handleSubmission();
-  }, [selectedFile]);
+    handleFileUploadSubmission();
+  }, [handleFileUploadSubmission]);
 
   const createDataEntry = async (data) => {
     try {
@@ -87,6 +71,7 @@ export const DatasetsManager = () => {
       if (response.success) {
         formik.values.description = "";
         formik.values.name = "";
+        setS3url("");
         setDataModalOpen(false);
         getDatasets();
       } else {
@@ -119,20 +104,16 @@ export const DatasetsManager = () => {
   });
 
   let uploadFilesContent = (
-    <div>
+    <Box sx={{mb:2}}>
       <input type="file" name="documentFile" onChange={changeHandler} />
       {isFilePicked ? (
-        <div>
+        <Typography variant="root">
           <p>Filename: {selectedFile.name}</p>
           <p>Filetype: {selectedFile.type}</p>
           <p>Size in bytes: {selectedFile.size}</p>
-        </div>
-      ) : (
-        <div>
-          <p>Select a file</p>
-        </div>
-      )}
-    </div>
+        </Typography>
+      ) : null}
+    </Box>
   );
   let createDataEntryModal = (
     <Box>
@@ -171,6 +152,7 @@ export const DatasetsManager = () => {
 
           <Box sx={{ mt: 2 }}>
             <Button
+              fullWidth
               color="primary"
               disabled={formik.isSubmitting}
               size="large"
@@ -208,7 +190,6 @@ export const DatasetsManager = () => {
       const response = await API.getService();
       if (response.success) {
         setTotalService(response.data.data);
-        console.log("service list:", response.data.data);
       } else {
         setTotalService([]);
         notify("Failed to Fetch Service List");
@@ -257,7 +238,7 @@ export const DatasetsManager = () => {
   let serviceModal = (
     <Container sx={{p:1}}>
       <FormControl fullWidth >
-        <InputLabel sx={{py:1}}>Select service</InputLabel>
+        <InputLabel sx={{pb:1}}>Select service</InputLabel>
         <Select
           value={selectedService}
           label="Service"
@@ -275,28 +256,16 @@ export const DatasetsManager = () => {
       </FormControl>
     </Container>
   );
-  let dataLinkModal = <Typography>{thisDataLink}</Typography>;
 
   let content = (
     <Box>
       <EnhancedModal
         isOpen={dataModalOpen}
-        dialogTitle={`upload new data entry`}
+        dialogTitle={`Upload new data entry`}
         dialogContent={createDataEntryModal}
         options={{
           onClose: () => setDataModalOpen(false),
           disableSubmit: true,
-          disableClose: true,
-        }}
-      />
-      <EnhancedModal
-        isOpen={thisDataLnkModalOpen}
-        dialogTitle={`S3 Link:`}
-        dialogContent={dataLinkModal}
-        options={{
-          onClose: () => setThisDataLnkModalOpen(false),
-          disableSubmit: true,
-          disableClose: true,
         }}
       />
       <EnhancedModal
@@ -306,95 +275,26 @@ export const DatasetsManager = () => {
         options={{
           onClose: () => setServiceModalOpen(false),
           disableSubmit: true,
-          disableClose: true,
         }}
       />
-      <Container
+      <Box
         maxWidth="xl"
-      ><Button
-          variant="contained"
-          onClick={() => setDataModalOpen(true)}
-        >
-          Upload Data
-        </Button>
-        <Container>
-          <Grid
-            Container
-            rowSpacing={2}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        sx={{ml:4}}
+      >
+        <Box sx={{textAlign:'right'}}>
+          <Button
+            sx={{mb:2}}
+            variant="contained"
+            onClick={() => setDataModalOpen(true)}
           >
-            {datasets.length > 0 ? (
-              datasets.map((data) => {
-                return (
-                  <Box key={data._id} mb={4}>
-                    <Card width={50}>
-                      <CardContent>
-                        <div style={{ width: 300, whiteSpace: "nowrap" }}>
-                          <Typography
-                            component="div"
-                            sx={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                            }}
-                            gutterBottom
-                          >
-                            {data.name}
-                            {/* {data._id} */}
-                          </Typography>
-                          <Typography
-                            component="div"
-                            sx={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                            }}
-                            gutterBottom
-                          >
-                            {data.dataURL}
-                          </Typography>
-                          <Link href={data.dataURL}>Data Link</Link>
-                          <Button
-                            onClick={() => {
-                              setThisDataLink(data.dataURL);
-                              setThisDataLnkModalOpen(true);
-                            }}
-                          >
-                            Link
-                          </Button>
-                          <Typography
-                            component="div"
-                            sx={{
-                              textOverflow: "ellipsis",
-                              overflow: "hidden",
-                            }}
-                            gutterBottom
-                          >
-                            {data.description}
-                          </Typography>
-                        </div>
-                      </CardContent>
-                      <CardActions>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            createJob(data);
-                          }}
-                        >
-                          Create Job
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Box>
-                );
-              })
-            ) : (
-              <Typography>No Data Available</Typography>
-            )}
-          </Grid>
-        </Container>
+          Upload Data
+          </Button>
+        </Box>
         <EnhancedTable
           data={datasets}
           title="Datasets Manager"
           options={{
+            selector:true,
             ignoreKeys: [
               "_id",
               "deakinSSO",
@@ -403,9 +303,27 @@ export const DatasetsManager = () => {
               "isBlocked",
               "__v",
             ],
+            actions: [
+              {
+                name: "",
+                label: "Create Job",
+                type: "button",
+                function: async (e, data) => {
+                  createJob(data);
+                },
+              },
+              {
+                name: "",
+                label: "Download",
+                type: "button",
+                function: async (e, data) => {
+                  window.location.href = data.dataURL;
+                },
+              },
+            ],
           }}
         />
-      </Container>
+      </Box>
     </Box>
   );
   return content;

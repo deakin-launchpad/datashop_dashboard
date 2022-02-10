@@ -178,14 +178,21 @@ class API {
       })
       .catch((error) => errorHelper(error));
   }
-  uploadDocument(data) {
-    return axiosInstance
+  /**
+   * 
+   * @param {FormData} data document file as form-data
+   * @returns {Object} responseObj
+   */
+  async uploadDocument(data) {
+    return await axiosInstance
       .post("upload/uploadDocument", data, {
         headers: {
-          authorization: "Bearer " + AccessToken,
+          "Content-Type": "multipart/form-data; boundary='boundary'",
         },
       })
-      .then(() => generateSuccess(AccessToken))
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
       .catch((error) => errorHelper(error));
   }
 

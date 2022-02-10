@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button,Grid } from '@mui/material';
 /**
 * 17/09/2019 : Options for actionsButtons are moved inside options
 * Note v 0.2.0-alpha : Update Your code accordingly previous params maybe depreceted in future versions.
@@ -80,11 +80,17 @@ export const EnhancedModal = (props) => {
   };
   let content = (
     <Dialog fullWidth={true} open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title"  >
-      <DialogTitle id="form-dialog-title">{_DialogTitle}</DialogTitle>
+      <Grid container alignItems="center">
+        <Grid item xs={10}>
+          <DialogTitle id="form-dialog-title">{_DialogTitle}</DialogTitle>
+        </Grid>
+        <Grid item xs={2} align="center">
+          {disableClose !== true && <Button onClick={onClose} color={swapButtonColors ? 'primary' : 'secondary'}>{cancelButtonName}</Button>}
+        </Grid>
+      </Grid>
       <DialogContent>{_DialogContent}</DialogContent>
       <DialogActions>
         {disableSubmit !== true && <Button variant="contained" onClick={onSubmit} color={swapButtonColors ? 'secondary' : 'primary'}>{submitButtonName}</Button>}
-        {disableClose !== true && <Button variant="contained" onClick={onClose} color={swapButtonColors ? 'primary' : 'secondary'}>{cancelButtonName}</Button>}
       </DialogActions>
     </Dialog>
   );

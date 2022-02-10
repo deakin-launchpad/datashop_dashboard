@@ -41,7 +41,7 @@ const useStyles = makeStyles(() => createStyles({
       color:'unset',
       top:'auto',
       right:'auto',
-      paddingLeft:'20px'
+      paddingLeft:'10px'
     }
   }
 }));
