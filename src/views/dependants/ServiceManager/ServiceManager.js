@@ -33,6 +33,7 @@ export const ServiceManager = () => {
           url: item.url,
           description: item.description,
           cost: item.cost,
+          creator_id:item.creator_id ?? 'null'
         };
         result.push(data);
       });
@@ -204,7 +205,11 @@ export const ServiceManager = () => {
               {selectedService.name}
             </Typography>
             <Typography variant="body2">
-              Service ID: {selectedService._id}
+              Creator ID: {selectedService.creator_id ?? 'null'}
+              <br />
+            </Typography>
+            <Typography variant="body2">
+              Service ID: {selectedService.id}
               <br />
             </Typography>
             <Typography variant="body2">
@@ -274,10 +279,6 @@ export const ServiceManager = () => {
         options={{
           selector:true,
           ignoreKeys: [
-            "deakinSSO",
-            "firstLogin",
-            "emailVerified",
-            "isBlocked",
             "__v",
           ],
           actions: [
@@ -287,7 +288,6 @@ export const ServiceManager = () => {
               type: "button",
               function: async (e, data) => {
                 setModalIsOpen(true);
-                console.log(e,data);
                 setSelectedService(data);
               },
             },
