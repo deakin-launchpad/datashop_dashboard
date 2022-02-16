@@ -6,7 +6,7 @@ import {
   Paper
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
-// import { API } from "helpers";
+import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import Avatar from '@mui/material/Avatar';
   
@@ -15,46 +15,26 @@ export const DevelopersProfile = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
 
-  const developers =[{
-    picture:null,
-    fistName:'Qiaoli',
-    lastName:'Wang',
-    description:'test des',
-    rank:10,
-    lastServices:'test service',
-    servicesCreated:['service1','service2'],
-    researchInterests:'AI',
-    organization:'deakin',
-    datasets:['data1','data2']
-  },{
-    picture:null,
-    fistName:'Qiaoli1',
-    lastName:'Wang1',
-    description:'test des1',
-    rank:10,
-    lastServices:'test service1',
-    servicesCreated:['service1','service2'],
-    researchInterests:'AI1',
-    organization:'deakin1',
-    datasets:['data1','data2']
-  },];
-  
   const getDevelopers = useCallback(async () => {
-    // const response = await API.getDevelopers();
-    // if (response.success) {
-    //   const res = response.data.data;     
-    //   setService(res);
-    // } else {
-    //   setService([]);
-    //   notify("Failed to Fetch Developers List");
-    // }
-    if(developers.length> 0){
-      setService(developers);
-    }else{
+    const response = await API.getDevelopers();
+    if (response.success) {
+      const res = response.data.data; 
+      let result = [];
+      res.map((item)=>{
+        let newItem ={
+          firstName:item.firstName,
+          lastName:item.lastName,
+          organization:item.organization,
+          researchInterests:item.researchInterests,
+          services:item.services,
+        };
+        result.push(newItem);
+      });
+      setService(result);
+    } else {
       setService([]);
       notify("Failed to Fetch Developers List");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   useEffect(() => {
@@ -67,38 +47,27 @@ export const DevelopersProfile = () => {
       <Card>
         <CardContent>
           {selectedDeveloper.picture !== null ? 
-            <Avatar alt={selectedDeveloper.fistName} src={selectedDeveloper.picture} /> : <Avatar>{`${selectedDeveloper.fistName}`.substring(0,1)}</Avatar>}  
+            <Avatar alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} /> : <Avatar>{`${selectedDeveloper.firstName}`.substring(0,1)}</Avatar>}  
           <Typography>
             {selectedDeveloper.description}
           </Typography>
           <Typography variant="body2">
-            First Name: {selectedDeveloper.fistName}
+            First Name: {selectedDeveloper.firstName}
           </Typography>
           <Typography variant="body2">
             Last Name: {selectedDeveloper.lastName}
           </Typography>
-          <Typography>
+          <Typography  variant="body2">
             Organization: {selectedDeveloper.organization}
           </Typography>
           <Typography variant="body2">
             Research Interests: {selectedDeveloper.researchInterests}
           </Typography>
-          <Typography variant="body2">
-            Rank: {selectedDeveloper.rank}
-          </Typography>
-          <Typography variant="body2">
-            Last Service: {selectedDeveloper.lastServices}
-          </Typography>
+
           <Typography variant="body2">
              Service created:  
-            {selectedDeveloper.servicesCreated?.map((service, i) => (
-              <li key={"service-" + i}>{service}</li>
-            ))}
-          </Typography>
-          <Typography variant="body2">
-             Datasets:  
-            {selectedDeveloper.datasets?.map((dataset, i) => (
-              <li key={"datasets-" + i}>{dataset}</li>
+            {selectedDeveloper.services?.map((service, i) => (
+              <li key={"service-" + i}>{service.name}</li>
             ))}
           </Typography>
         </CardContent>
@@ -132,7 +101,10 @@ export const DevelopersProfile = () => {
           selector:true,
           ignoreKeys: [
             "__v",
-            "picture"
+            "picture",
+            "userId",
+            "updatedAt",
+            "createdAt"
           ],
           actions: [
             {

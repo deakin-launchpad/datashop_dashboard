@@ -136,7 +136,7 @@ class API {
 
   getDevelopers() {
     return axiosInstance
-      .get("developer/getDevelopers", {
+      .get("user/developerProfiles", {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
