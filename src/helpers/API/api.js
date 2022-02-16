@@ -134,6 +134,19 @@ class API {
       .catch((error) => errorHelper(error));
   }
 
+  getDevelopers() {
+    return axiosInstance
+      .get("developer/getDevelopers", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
   createService(data) {
     return axiosInstance
       .post("service/createService", data, {

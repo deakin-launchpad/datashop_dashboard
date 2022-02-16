@@ -11,6 +11,7 @@ import { Example } from "./dependants/Example/Example";
 import { DatasetsManager } from "./dependants/DataManager/DataManager";
 import { ServiceManager } from "./dependants/ServiceManager/ServiceManager";
 import { JobManager } from "./dependants/JobManager/JobManager";
+import {DevelopersProfile} from "./dependants/DevelopersProfile/DevelopersProfile";
 export {
   Example,
   Login,
@@ -22,4 +23,5 @@ export {
   DatasetsManager,
   ServiceManager,
   JobManager,
+  DevelopersProfile
 };
