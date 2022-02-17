@@ -12,6 +12,7 @@ import { DatasetsManager } from "./dependants/DataManager/DataManager";
 import { ServiceManager } from "./dependants/ServiceManager/ServiceManager";
 import { JobManager } from "./dependants/JobManager/JobManager";
 import {DevelopersProfile} from "./dependants/DevelopersProfile/DevelopersProfile";
+import {Profile} from "./dependants/Profile/Profile";
 export {
   Example,
   Login,
@@ -23,5 +24,6 @@ export {
   DatasetsManager,
   ServiceManager,
   JobManager,
-  DevelopersProfile
+  DevelopersProfile,
+  Profile
 };

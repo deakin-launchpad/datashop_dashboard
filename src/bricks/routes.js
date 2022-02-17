@@ -19,6 +19,7 @@ import {
   ServiceManager,
   JobManager,
   DevelopersProfile,
+  Profile
 } from "views";
 
 import { Layout } from "./layout";
@@ -168,6 +169,21 @@ export const AppRoutes = (props) => {
           >
             <Layout>
               <DevelopersProfile {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/profile"
+        element={
+          <AuthRoute
+            redirectTo="/login"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              <Profile {...props} />
             </Layout>
           </AuthRoute>
         }

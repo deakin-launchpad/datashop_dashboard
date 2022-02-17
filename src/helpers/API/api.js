@@ -134,6 +134,33 @@ class API {
       .catch((error) => errorHelper(error));
   }
 
+  getUserProfile() {
+    return axiosInstance
+      .get("user/getUserProfile", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  editUserProfile(data){
+    return axiosInstance
+      .put("user/profile", data,{
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+    
+  }
+  
   getDevelopers() {
     return axiosInstance
       .get("user/developerProfiles", {
@@ -199,6 +226,24 @@ class API {
   async uploadDocument(data) {
     return await axiosInstance
       .post("upload/uploadDocument", data, {
+        headers: {
+          "Content-Type": "multipart/form-data; boundary='boundary'",
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  /**
+   * 
+   * @param {FormData} data image file as form-data
+   * @returns {Object} responseObj
+   */
+  async uploadImage(data) {
+    return await axiosInstance
+      .post("upload/uploadImage", data, {
         headers: {
           "Content-Type": "multipart/form-data; boundary='boundary'",
         },

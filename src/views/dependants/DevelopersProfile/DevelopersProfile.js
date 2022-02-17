@@ -3,18 +3,20 @@ import {
   Typography,
   CardContent,
   Card,
-  Paper
+  Paper,TextField
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import Avatar from '@mui/material/Avatar';
+import { useFormik, Formik } from "formik";
   
 export const DevelopersProfile = () => {
   const [service, setService] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDeveloper, setSelectedDeveloper] = useState("");
 
+ 
   const getDevelopers = useCallback(async () => {
     const response = await API.getDevelopers();
     if (response.success) {
@@ -22,9 +24,11 @@ export const DevelopersProfile = () => {
       let result = [];
       res.map((item)=>{
         let newItem ={
+          picture:item.picture,
           firstName:item.firstName,
           lastName:item.lastName,
           organization:item.organization,
+          description:item.description,
           researchInterests:item.researchInterests,
           services:item.services,
         };
@@ -41,37 +45,90 @@ export const DevelopersProfile = () => {
     getDevelopers();
   }, [getDevelopers]);
   
-  
+  let formik = useFormik({
+    initialValues: {
+      firstName:'',
+      lastName:'',
+      description:'',
+      organization:'',
+      researchInterests:'',
+    },
+  });
   let DeveloperProfileModal = (
     <Box fullWidth>
-      <Card>
-        <CardContent>
-          {selectedDeveloper.picture !== null ? 
-            <Avatar alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} /> : <Avatar>{`${selectedDeveloper.firstName}`.substring(0,1)}</Avatar>}  
-          <Typography>
-            {selectedDeveloper.description}
-          </Typography>
-          <Typography variant="body2">
-            First Name: {selectedDeveloper.firstName}
-          </Typography>
-          <Typography variant="body2">
-            Last Name: {selectedDeveloper.lastName}
-          </Typography>
-          <Typography  variant="body2">
-            Organization: {selectedDeveloper.organization}
-          </Typography>
-          <Typography variant="body2">
-            Research Interests: {selectedDeveloper.researchInterests}
-          </Typography>
+      <Formik initialValues={formik.initialValues}>
+        <Card>
+          <CardContent>
+            <Box sx={{justifyContent: 'center',
+              alignItems: 'center',mb:2, position:'relative',
+              display: 'flex'}}>
+              <Avatar sx={{ width: 90, height: 90 }} alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} />
+            </Box>
+            <Box  sx={{display: 'flex',justifyContent: 'space-between',}}>
+              <TextField
+                style ={{width: '49%'}}
+                label="First Name"
+                margin="normal"
+                name="firstname"
+                type="text"
+                disabled
+                value={formik.values.firstName}
+                variant="outlined"
+              />
+              <TextField
+                disabled
+                style ={{width: '49%'}}
+                label="Last Name"
+                margin="normal"
+                name="lastname"
+                type="text"
+                value={formik.values.lastName}
+                variant="outlined"
+              /> 
+            </Box>
+                  
+            <TextField
+              fullWidth
+              disabled
+              label="Description"
+              margin="normal"
+              name="description"
+              type="text"
+              value={formik.values.description}
+              variant="outlined"
+              multiline
+              rows={4}
+            />            
+            <TextField
+              fullWidth
+              disabled
+              label="Organization"
+              margin="normal"
+              name="organization"
+              type="text"
+              value={formik.values.organization}
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              disabled
+              label="Research Interests"
+              margin="normal"
+              name="researchInterests"
+              type="text"
+              value={formik.values.researchInterests}
+              variant="outlined"
+            />   
 
-          <Typography variant="body2">
-             Service created:  
-            {selectedDeveloper.services?.map((service, i) => (
-              <li key={"service-" + i}>{service.name}</li>
-            ))}
-          </Typography>
-        </CardContent>
-      </Card>
+            <Typography variant="body1" sx={{mt:1,ml:1}}>
+              Service created:  
+              {selectedDeveloper.services?.map((service, i) => (
+                <li key={"service-" + i}>{service.name}</li>
+              ))}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Formik>
     </Box>
   );
   
@@ -112,8 +169,13 @@ export const DevelopersProfile = () => {
               label: "View",
               type: "button",
               function: async (e, data) => {
-                setModalIsOpen(true);
                 setSelectedDeveloper(data);
+                formik.values.firstName = data.firstName;
+                formik.values.lastName = data.lastName;
+                formik.values.organization = data.organization ?? '';
+                formik.values.description = data.description ?? '';
+                formik.values.researchInterests = data.researchInterests  ?? '';
+                setModalIsOpen(true);
               },
             },
           ],
