@@ -18,7 +18,10 @@ import {
   DatasetsManager,
   ServiceManager,
   JobManager,
+  DevelopersProfile,
+  Profile
 } from "views";
+
 import { Layout } from "./layout";
 
 const AuthRoute = ({ children, redirectTo, parentProps, loginStatus }) => {
@@ -151,6 +154,36 @@ export const AppRoutes = (props) => {
             <Layout>
               {" "}
               <Example {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/developers"
+        element={
+          <AuthRoute
+            redirectTo="/login"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              <DevelopersProfile {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/profile"
+        element={
+          <AuthRoute
+            redirectTo="/login"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              <Profile {...props} />
             </Layout>
           </AuthRoute>
         }

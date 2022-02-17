@@ -34,6 +34,22 @@ class Layout {
           isFavourite: true,
         }),
         new MenuItem({
+          name: "Profile",
+          type: "button",
+          icon: "carbon:user-profile",
+          helpingAttribute: "/profile",
+          customTitle: "Profile",
+          isFavourite: true,
+        }),
+        new MenuItem({
+          name: "Developers",
+          type: "button",
+          icon: "gis:globe-users",
+          helpingAttribute: "/developers",
+          customTitle: "Developers",
+          isFavourite: true,
+        }),
+        new MenuItem({
           name: "Data Manager",
           type: "button",
           icon: "entypo:code",
