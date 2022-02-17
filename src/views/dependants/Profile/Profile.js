@@ -48,10 +48,10 @@ export const Profile = () => {
       const dataToSend = {
         firstName:values.firstName,
         lastName: values.lastName,
-        description:values.description,
-        organization:values.organization,
-        picture:profilePicture,
-        researchInterests:values.researchInterests
+        description:values.description ?? '',
+        organization:values.organization ?? '',
+        picture:profilePicture ?? '',
+        researchInterests:values.researchInterests ?? ''
       };
       const response = await API.editUserProfile(dataToSend);
       if(response.success){
