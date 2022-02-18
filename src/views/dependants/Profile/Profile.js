@@ -1,6 +1,6 @@
 import {
   Box,
-  // CardContent,
+  InputLabel,
   TextField,Button
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
@@ -111,18 +111,23 @@ export const Profile = () => {
             formik.values.firstName
           }
           variant="outlined"
-        />:<TextField
-          disabled
-          fullWidth
-          label="First Name"
-          margin="normal"
-          name="firstName"
-          type="text"
-          value={
-            currentUser.firstName
-          }
-          variant="outlined"
-        />}
+        />:<Box>
+          <InputLabel htmlFor="firstName">
+            First Name
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            margin="normal"
+            name="firstName"
+            placeholder="first name"
+            type="text"
+            value={
+              currentUser.firstName
+            }
+            variant="outlined"
+          />
+        </Box>}
         {editing? <TextField
           error={formik.touched.lastName && Boolean(formik.errors.lastName)}
           fullWidth
@@ -137,18 +142,21 @@ export const Profile = () => {
             formik.values.lastName
           }
           variant="outlined"
-        /> :  <TextField
-          fullWidth
-          disabled
-          label="Last Name"
-          margin="normal"
-          name="lastName"
-          type="text"
-          value={
-            currentUser.lastName
-          }
-          variant="outlined"
-        />}
+        /> : <Box>
+          <InputLabel htmlFor="lastName">
+          Last Name
+          </InputLabel>
+          <TextField
+            fullWidth
+            margin="normal"
+            name="lastName"
+            placeholder="last name"
+            type="text"
+            value={currentUser.lastName}
+            disabled
+            variant="outlined"
+          />
+        </Box> }
         {editing? <TextField
           error={formik.touched.organization && Boolean(formik.errors.organization)}
           fullWidth
@@ -163,18 +171,24 @@ export const Profile = () => {
             formik.values.organization
           }
           variant="outlined"
-        /> : <TextField
-          disabled
-          fullWidth
-          label="Organization"
-          margin="normal"
-          name="organization"
-          type="text"
-          value={
-            currentUser.organization
-          }
-          variant="outlined"
-        />}
+        /> :
+          <Box>
+            <InputLabel htmlFor="organization">
+           Organization
+            </InputLabel>
+            <TextField
+              disabled
+              fullWidth
+              margin="normal"
+              name="organization"
+              placeholder="organization"
+              type="text"
+              value={
+                currentUser.organization
+              }
+              variant="outlined"
+            />
+          </Box> }
         {editing ? <TextField
           error={formik.touched.researchInterests && Boolean(formik.errors.researchInterests)}
           fullWidth
@@ -189,18 +203,22 @@ export const Profile = () => {
             formik.values.researchInterests
           }
           variant="outlined"
-        /> :<TextField
-          disabled
-          fullWidth
-          label="Research Interests"
-          margin="normal"
-          name="researchInterests"
-          type="text"
-          value={
-            currentUser.researchInterests
-          }
-          variant="outlined"
-        />}
+        /> : <Box>
+          <InputLabel htmlFor="researchInterests">
+        Research Interests
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            placeholder="Research Interests"
+            margin="normal"
+            name="researchInterests"
+            type="text"
+            value={
+              currentUser.researchInterests
+            }
+            variant="outlined"
+          /></Box>}
         { editing ?<TextField
           error={formik.touched.description && Boolean(formik.errors.description)}
           fullWidth
@@ -217,20 +235,26 @@ export const Profile = () => {
             formik.values.description
           }
           variant="outlined"
-        /> :<TextField
-          disabled
-          fullWidth
-          label="Description"
-          margin="normal"
-          name="description"
-          type="text"
-          multiline
-          rows={4}
-          value={
-            currentUser.description
-          }
-          variant="outlined"
-        />}
+        /> :<Box>
+          <InputLabel htmlFor="description">
+              Description
+          </InputLabel>
+          <TextField
+            disabled
+            fullWidth
+            placeholder="Description"
+            margin="normal"
+            name="description"
+            type="text"
+            multiline
+            rows={4}
+            value={
+              currentUser.description
+            }
+            variant="outlined"
+          />
+        </Box>
+        }
         <Box sx={{ mt: 4 ,textAlign:'right'}}>
           <Button
             sx={{px:5,mr:4}}
