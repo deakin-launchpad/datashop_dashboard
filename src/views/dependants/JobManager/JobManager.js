@@ -19,6 +19,7 @@ export const JobManager = () => {
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
   const [job, setJob] = useState([]);
+  const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState("");
 
@@ -84,6 +85,28 @@ export const JobManager = () => {
   useEffect(() => {
     getService();
   }, [getService]);
+
+  useEffect(() => {
+    setDataForTable(
+      job.map((item) => ({
+        Status: item.jobStatus,
+        JobName: "Job Name (Hard Coded)",
+        Workers: "5 workers (Hard coded)",
+        OperationTime: new Date(parseInt(item.createdAt)).toLocaleDateString(
+          "en-AU",
+          {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          }
+        ),
+        insightsURL: item.insightsURL,
+      }))
+    );
+  }, [job]);
 
   let formik = useFormik({
     initialValues: {
@@ -238,10 +261,10 @@ export const JobManager = () => {
         </Button>
       </Box>
       <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
-        {job.length > 0 ? (
+        {dataForTable.length > 0 ? (
           <EnhancedTable
-            data={job}
-            title="Job Manager"
+            data={dataForTable}
+            title=" "
             options={{
               selector: true,
               ignoreKeys: [
@@ -251,6 +274,8 @@ export const JobManager = () => {
                 "isBlocked",
                 "__v",
                 "createdAt",
+                "insightsURL",
+                "serviceID",
               ],
               actions: [
                 {
@@ -259,7 +284,19 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
+                    console.log(JSON.stringify(data, null, 2));
+                    viewData(job[dataForTable.indexOf(data)]);
                     viewData(data);
+                  },
+                },
+                {
+                  name: "",
+                  label: "remove",
+                  type: "button",
+                  function: async (e, data) => {
+                    if (!data) return;
+                    dataForTable.splice(dataForTable.indexOf(data), 1);
+                    setDataForTable((prevState) => [...prevState]);
                   },
                 },
               ],
