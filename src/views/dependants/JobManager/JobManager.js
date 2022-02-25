@@ -64,7 +64,14 @@ export const JobManager = () => {
     if (isImage) {
       setImageModal(data.insightsURL);
       setImageModalIsOpen(true);
-    } else if (data.dataURL) window.location.href = data.insightsURL;
+    } else if (data.dataURL && data.dataURL !== "") {
+      window.location.href = data.dataURL;
+    } else if (
+      data.insightsURL &&
+      /\.(doc|doc?x|json|pdf|zip)$/i.test(data.insightsURL)
+    ) {
+      window.location.href = data.insightsURL;
+    }
   };
 
   useEffect(() => {
@@ -91,7 +98,6 @@ export const JobManager = () => {
   useEffect(() => {
     getService();
   }, [getService]);
-  console.log(JSON.stringify(job, null, 2));
 
   const resetTableData = (data) => {
     setDataForTable(
@@ -316,10 +322,6 @@ export const JobManager = () => {
           }}
           onClick={() => {
             filterStatus("Completed", isFiltering.Completed);
-            // setIsFiltering((prevState) => ({
-            //   ...prevState,
-            //   success: !isFiltering.success,
-            // }));
           }}
         >
           Success
@@ -356,9 +358,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    console.log(JSON.stringify(data, null, 2));
                     viewData(job[dataForTable.indexOf(data)]);
-                    viewData(data);
                   },
                 },
                 {
