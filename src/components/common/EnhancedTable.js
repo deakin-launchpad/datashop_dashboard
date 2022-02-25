@@ -520,7 +520,7 @@ const TableRows = (props) => {
               ? __obj[value.defaultValueFrom]
               : false;
           return (
-            <TableCell key={Math.random()}>
+            <TableCell key={Math.random()} sx={{minWidth:150}}>
               {value.type === "switch" ? (
                 <ActionButtonSwitch
                   key={Math.random()}

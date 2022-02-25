@@ -159,11 +159,20 @@ export const DatasetsManager = () => {
       </Formik>
     </Box>
   );
-
+  const filterDataSets = (data)=>{
+    setDatasets(
+      data.map((item) => ({
+        'Name': item.name,
+        'URL': item.dataURL,
+        'Description':item.description,
+        'Creator ID':item.creatorID
+      }))
+    );
+  };
   const getDatasets = useCallback(async () => {
     const response = await API.getDatasets();
     if (response.success) {
-      if (isMounted) setDatasets(response.data.data);
+      if (isMounted) filterDataSets(response.data.data);
     } else {
       setDatasets([]);
       notify("Failed to Fetch Data List");
@@ -277,10 +286,6 @@ export const DatasetsManager = () => {
             selector:true,
             ignoreKeys: [
               "_id",
-              "deakinSSO",
-              "firstLogin",
-              "emailVerified",
-              "isBlocked",
               "__v",
             ],
             actions: [
@@ -297,7 +302,7 @@ export const DatasetsManager = () => {
                 label: "Download",
                 type: "button",
                 function: async (e, data) => {
-                  window.location.href = data.dataURL;
+                  window.location.href = data['URL'];
                 },
               },
             ],

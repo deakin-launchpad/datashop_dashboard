@@ -7,7 +7,7 @@ import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import Avatar from '@mui/material/Avatar';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
+import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
 import { useFormik, Formik } from "formik";
   
 export const DevelopersProfile = () => {
@@ -23,13 +23,12 @@ export const DevelopersProfile = () => {
       let result = [];
       res.map((item)=>{
         let newItem ={
-          picture:item.picture,
-          firstName:item.firstName,
-          lastName:item.lastName,
-          organization:item.organization,
-          description:item.description,
-          researchInterests:item.researchInterests,
-          services:item.services,
+          'Picture':item.picture,
+          'Name':item.firstName +' ' + item.lastName,
+          'Organization':item.organization,
+          'Description':item.description,
+          'Research Interests':item.researchInterests,
+          'Services':item.services,
         };
         result.push(newItem);
       });
@@ -46,8 +45,7 @@ export const DevelopersProfile = () => {
   
   let formik = useFormik({
     initialValues: {
-      firstName:'',
-      lastName:'',
+      name:'',
       description:'',
       organization:'',
       researchInterests:'',
@@ -66,17 +64,17 @@ export const DevelopersProfile = () => {
             <Avatar sx={{ width: 90, height: 90 }} alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} />
           </Box>
           <Typography sx={{textAlign:'center',mb:4}} variant="h6" color="#545454">
-            {formik.values.firstName.toUpperCase()} {formik.values.lastName.toUpperCase()}
+            {formik.values.name.toUpperCase()}
           </Typography>
           {profileTitle('Description')}
           <Typography color="#ABABAB" sx={{mx:2,my:1}}>{formik.values.description === '' ? 'No description': formik.values.description}</Typography>
           {profileTitle('Organization')}
           <Typography color="#ABABAB" sx={{mx:2,my:1}}>{formik.values.organization === '' ? 'Unknown': formik.values.organization}</Typography>
           {profileTitle('Research Interests')}
-          <Typography color="#ABABAB" sx={{mx:2,my:1}}>{formik.values.researchInterests === '' ? 'Unknown': formik.values.researchInterests}</Typography>
+          <Box sx={{mx:2,my:1}}>{formik.values.researchInterests === '' ? <Typography  color="#ABABAB" sx={{my:1}}>Unknown</Typography>: <Typography component="span" sx={{background:'#F2F6FE',color:'#ABABAB',borderRadius:2,py:1,px:2,mt:1}}>{formik.values.researchInterests}</Typography> }</Box>
           {profileTitle('Service Created')}
           <Box sx={{mx:2,my:1}}>
-            {selectedDeveloper.services?.map((service, i) => (
+            {selectedDeveloper.Services?.map((service, i) => (
               <Typography  key={"service-" + i} sx={{background:'#F2F6FE',color:'#ABABAB',borderRadius:1,py:1,px:2,mt:1}} >{service.name}</Typography>
             ))}
           </Box>
@@ -89,7 +87,7 @@ export const DevelopersProfile = () => {
     <Box>
       <EnhancedModal
         isOpen={modalIsOpen}
-        dialogTitle={<ContactPageIcon color="primary"/>}
+        dialogTitle={<ContactPageOutlinedIcon color="primary"/>}
         dialogContent={DeveloperProfileModal}
         options={{
           onClose: () => setModalIsOpen(false),
@@ -111,10 +109,7 @@ export const DevelopersProfile = () => {
           selector:true,
           ignoreKeys: [
             "__v",
-            "picture",
-            "userId",
-            "updatedAt",
-            "createdAt"
+            "Picture",
           ],
           actions: [
             {
@@ -123,11 +118,10 @@ export const DevelopersProfile = () => {
               type: "button",
               function: async (e, data) => {
                 setSelectedDeveloper(data);
-                formik.values.firstName = data.firstName;
-                formik.values.lastName = data.lastName;
-                formik.values.organization = data.organization ?? '';
-                formik.values.description = data.description ?? '';
-                formik.values.researchInterests = data.researchInterests  ?? '';
+                formik.values.name = data['Name'];
+                formik.values.organization = data['Organization'] ?? '';
+                formik.values.description = data['Description'] ?? '';
+                formik.values.researchInterests = data['Research Interests']  ?? '';
                 setModalIsOpen(true);
               },
             },
