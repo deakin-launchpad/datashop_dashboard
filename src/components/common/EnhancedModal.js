@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button,Grid } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 /**
 * 17/09/2019 : Options for actionsButtons are moved inside options
 * Note v 0.2.0-alpha : Update Your code accordingly previous params maybe depreceted in future versions.
@@ -23,7 +24,7 @@ export const EnhancedModal = (props) => {
   const [_DialogTitle, _setDialogTitle] = useState('');
   const [_DialogContent, _setDialogContent] = useState('');
   const [submitButtonName, setSubmitButtonName] = useState('Submit');
-  const [cancelButtonName, setCancelButtonName] = useState('Close');
+  // const [cancelButtonName, setCancelButtonName] = useState('');
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [disableClose, setDisableClose] = useState(false);
   const [swapButtonColors, setSwapButtonColors] = useState(false);
@@ -41,13 +42,13 @@ export const EnhancedModal = (props) => {
       _setDialogContent(props.dialogContent);
     if (props.submitButtonName)
       setSubmitButtonName(props.submitButtonName);
-    if (props.cancelButtonName)
-      setCancelButtonName(props.cancelButtonName);
+    // if (props.cancelButtonName)
+    //   setCancelButtonName(props.cancelButtonName);
     if (props.options) {
       if (props.options.submitButtonName)
         setSubmitButtonName(props.options.submitButtonName);
-      if (props.options.closeButtonName)
-        setCancelButtonName(props.options.closeButtonName);
+      // if (props.options.closeButtonName)
+      //   setCancelButtonName(props.options.closeButtonName);
       if (props.options.disableSubmit)
         setDisableSubmit(true);
       if (props.options.disableClose)
@@ -81,11 +82,11 @@ export const EnhancedModal = (props) => {
   let content = (
     <Dialog fullWidth={true} open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title"  >
       <Grid container alignItems="center">
-        <Grid item xs={10}>
+        <Grid item xs={11}>
           <DialogTitle id="form-dialog-title">{_DialogTitle}</DialogTitle>
         </Grid>
-        <Grid item xs={2} align="center">
-          {disableClose !== true && <Button onClick={onClose} color={swapButtonColors ? 'primary' : 'secondary'}>{cancelButtonName}</Button>}
+        <Grid item xs={1} align="center">
+          {disableClose !== true && <CloseIcon sx={{color:'#707070',cursor:'pointer',mr:2}} onClick={onClose}></CloseIcon>}
         </Grid>
       </Grid>
       <DialogContent>{_DialogContent}</DialogContent>
