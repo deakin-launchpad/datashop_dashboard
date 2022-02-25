@@ -118,6 +118,10 @@ const themesOptions = {
         contrastText: '#ffffff',
         main: '#326EBD'
       },
+      secondary:{
+        contrastText: '#616162',
+        main: '#F2F6FE'
+      },
       success: {
         contrastText: '#ffffff',
         main: '#4caf50'
