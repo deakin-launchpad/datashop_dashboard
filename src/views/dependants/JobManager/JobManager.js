@@ -35,6 +35,7 @@ export const JobManager = () => {
     const response = await API.createJob(data);
     if (response.success) {
       formik.values.downloadableURL = "";
+      formik.values.jobName = "";
       formik.values.jsonData = "";
       setSelectedService("");
       setSelectedDataType(dataTypes[0]);
@@ -103,8 +104,8 @@ export const JobManager = () => {
     setDataForTable(
       data.map((item) => ({
         Status: item.jobStatus,
-        JobName: "Job Name (Hard Coded)",
-        Workers: "5 workers (Hard coded)",
+        JobName: item.jobName,
+        ExecutionTime: item.executionTime,
         OperationTime: new Date(parseInt(item.createdAt)).toLocaleDateString(
           "en-AU",
           {
@@ -129,15 +130,18 @@ export const JobManager = () => {
     initialValues: {
       downloadableURL: "",
       jsonData: "",
+      jobName: "",
     },
     validationSchema: () => {
       return Yup.object().shape({
         downloadableURL: Yup.string().max(255),
+        jobName: Yup.string(),
         jsonData: Yup.string(),
       });
     },
     onSubmit: async (values, { resetForm }) => {
       const data = {
+        jobName: values.jobName,
         endpoint: selectedService.url,
         serviceID: selectedService._id,
         datafileURL: {
@@ -154,6 +158,14 @@ export const JobManager = () => {
     <Box>
       <Formik initialValues={formik.initialValues}>
         <form noValidate onSubmit={formik.handleSubmit}>
+          <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
+          <TextField
+            sx={{ py: 1 }}
+            fullWidth
+            name="jobName"
+            value={formik.values.jobName}
+            onChange={formik.handleChange}
+          />
           <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
           <Select
             placeholder="Select service"
@@ -341,6 +353,7 @@ export const JobManager = () => {
             title=" "
             options={{
               selector: true,
+              enableSort: true,
               ignoreKeys: [
                 "deakinSSO",
                 "firstLogin",
