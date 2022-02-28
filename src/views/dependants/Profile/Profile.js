@@ -1,12 +1,13 @@
 import {
   Box,
   InputLabel,
-  TextField,Button
+  TextField,Button,Paper,Grid
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import {  notify } from "components/index";
 import Avatar from '@mui/material/Avatar';
+import UploadIcon from '@mui/icons-material/Upload';
 import { useFormik,Formik } from "formik";
 import * as Yup from "yup";
   
@@ -88,75 +89,83 @@ export const Profile = () => {
     getUserProfile();
   }, [getUserProfile]);
 
-  let form = (
+  let userProfileForm = (
     <Formik enableReinitialize={true}  initialValues={formik.initialValue}>
       <form noValidate onSubmit={formik.handleSubmit}>
         <Box sx={{justifyContent: 'center',
           alignItems: 'center',mb:2, position:'relative',
           display: 'flex'}}>
           <Avatar sx={{ width: 90, height: 90 }} alt={currentUser.firstName} src={profilePicture} />
-          {editing ?<input style={{position:'absolute',width: 90, height: 90,opacity:0}} type="file" onChange={pictureChangeHandle}></input> :null}
+          {editing ?<Box sx={{position:'absolute',width: 90, height: 90}}> <UploadIcon  sx={{position:'absolute',width: 90, height: 90,color:'rgba(192,192,192,.5)'}} /><input style={{position:'absolute',width: 90, height: 90,opacity:0}} type="file" onChange={pictureChangeHandle}></input></Box>  :null}
         </Box>
-        {editing ? <TextField
-          error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-          fullWidth
-          helperText={formik.touched.firstName && formik.errors.firstName}
-          label="First Name"
-          margin="normal"
-          name="firstName"
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          type="text"
-          value={
-            formik.values.firstName
-          }
-          variant="outlined"
-        />:<Box>
-          <InputLabel htmlFor="firstName">
+        <Grid container spacing={4}>
+          <Grid item xs={6}>
+            {editing ? <TextField
+              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              fullWidth
+              helperText={formik.touched.firstName && formik.errors.firstName}
+              label="First Name"
+              margin="normal"
+              name="firstName"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="text"
+              value={
+                formik.values.firstName
+              }
+              variant="outlined"
+            />:<Box>
+              <InputLabel htmlFor="firstName">
             First Name
-          </InputLabel>
-          <TextField
-            disabled
-            fullWidth
-            margin="normal"
-            name="firstName"
-            placeholder="first name"
-            type="text"
-            value={
-              currentUser.firstName
-            }
-            variant="outlined"
-          />
-        </Box>}
-        {editing? <TextField
-          error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-          fullWidth
-          helperText={formik.touched.lastName && formik.errors.lastName}
-          label="Last Name"
-          margin="normal"
-          name="lastName"
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          type="text"
-          value={
-            formik.values.lastName
-          }
-          variant="outlined"
-        /> : <Box>
-          <InputLabel htmlFor="lastName">
+              </InputLabel>
+              <TextField
+                disabled
+                fullWidth
+                margin="normal"
+                name="firstName"
+                placeholder="first name"
+                type="text"
+                value={
+                  currentUser.firstName
+                }
+                variant="outlined"
+              />
+            </Box>}
+          </Grid>
+          <Grid item xs={6}>
+            {editing? <TextField
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              fullWidth
+              helperText={formik.touched.lastName && formik.errors.lastName}
+              label="Last Name"
+              margin="normal"
+              name="lastName"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="text"
+              value={
+                formik.values.lastName
+              }
+              variant="outlined"
+            /> : <Box>
+              <InputLabel htmlFor="lastName">
           Last Name
-          </InputLabel>
-          <TextField
-            fullWidth
-            margin="normal"
-            name="lastName"
-            placeholder="last name"
-            type="text"
-            value={currentUser.lastName}
-            disabled
-            variant="outlined"
-          />
-        </Box> }
+              </InputLabel>
+              <TextField
+                fullWidth
+                margin="normal"
+                name="lastName"
+                placeholder="last name"
+                type="text"
+                value={currentUser.lastName}
+                disabled
+                variant="outlined"
+              />
+            </Box> }
+          </Grid>
+        </Grid>
+       
+        
         {editing? <TextField
           error={formik.touched.organization && Boolean(formik.errors.organization)}
           fullWidth
@@ -255,7 +264,7 @@ export const Profile = () => {
           />
         </Box>
         }
-        <Box sx={{ mt: 4 ,textAlign:'right'}}>
+        <Box sx={{ mt: 4 ,textAlign:'center'}}>
           <Button
             sx={{px:5,mr:4}}
             color="secondary"
@@ -288,6 +297,10 @@ export const Profile = () => {
       </form>
     </Formik>
   );
-  return <Box sx={{ml:4}}>{form}</Box>;
+  return <Box sx={{ml:4}}>
+    <Paper elevation={2} sx={{py:3,px:12}}>
+      {userProfileForm}
+    </Paper>
+  </Box>;
 };
   

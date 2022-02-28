@@ -69,7 +69,7 @@ ActionButtonSwitch.propTypes = {
 };
 const ActionButton = (props) => {
   return (
-    <Button variant={"outlined"} onClick={(e) => props.function(e)}>
+    <Button sx={{minWidth:120}} variant={"outlined"} onClick={(e) => props.function(e)}>
       {props.label !== undefined ? props.label : "Click Me!"}
     </Button>
   );

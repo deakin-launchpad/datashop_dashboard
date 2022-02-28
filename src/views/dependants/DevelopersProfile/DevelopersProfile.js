@@ -1,14 +1,13 @@
 import {
   Box,
   Typography,
-  CardContent,
-  Card,
-  Paper,TextField
+  Paper,
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import Avatar from '@mui/material/Avatar';
+import ContactPageOutlinedIcon from '@mui/icons-material/ContactPageOutlined';
 import { useFormik, Formik } from "formik";
   
 export const DevelopersProfile = () => {
@@ -24,13 +23,12 @@ export const DevelopersProfile = () => {
       let result = [];
       res.map((item)=>{
         let newItem ={
-          picture:item.picture,
-          firstName:item.firstName,
-          lastName:item.lastName,
-          organization:item.organization,
-          description:item.description,
-          researchInterests:item.researchInterests,
-          services:item.services,
+          'Picture':item.picture,
+          'Name':item.firstName +' ' + item.lastName,
+          'Organization':item.organization,
+          'Description':item.description,
+          'Research Interests':item.researchInterests,
+          'Services':item.services,
         };
         result.push(newItem);
       });
@@ -47,87 +45,40 @@ export const DevelopersProfile = () => {
   
   let formik = useFormik({
     initialValues: {
-      firstName:'',
-      lastName:'',
+      name:'',
       description:'',
       organization:'',
       researchInterests:'',
     },
   });
+  const profileTitle = (title)=>{
+    return <Typography variant="body1" sx={{color:'#7B7B7B',display:'flex',alignItems:'center',fontSize:'18px',mt:2}}><Box sx={{width:6,height:30,background:'#79E4F7',mr:1,borderRadius:1}}></Box> {title}</Typography>;
+  };
   let DeveloperProfileModal = (
     <Box fullWidth>
       <Formik initialValues={formik.initialValues}>
-        <Card>
-          <CardContent>
-            <Box sx={{justifyContent: 'center',
-              alignItems: 'center',mb:2, position:'relative',
-              display: 'flex'}}>
-              <Avatar sx={{ width: 90, height: 90 }} alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} />
-            </Box>
-            <Box  sx={{display: 'flex',justifyContent: 'space-between',}}>
-              <TextField
-                style ={{width: '49%'}}
-                label="First Name"
-                margin="normal"
-                name="firstname"
-                type="text"
-                disabled
-                value={formik.values.firstName}
-                variant="outlined"
-              />
-              <TextField
-                disabled
-                style ={{width: '49%'}}
-                label="Last Name"
-                margin="normal"
-                name="lastname"
-                type="text"
-                value={formik.values.lastName}
-                variant="outlined"
-              /> 
-            </Box>
-                  
-            <TextField
-              fullWidth
-              disabled
-              label="Description"
-              margin="normal"
-              name="description"
-              type="text"
-              value={formik.values.description}
-              variant="outlined"
-              multiline
-              rows={4}
-            />            
-            <TextField
-              fullWidth
-              disabled
-              label="Organization"
-              margin="normal"
-              name="organization"
-              type="text"
-              value={formik.values.organization}
-              variant="outlined"
-            />
-            <TextField
-              fullWidth
-              disabled
-              label="Research Interests"
-              margin="normal"
-              name="researchInterests"
-              type="text"
-              value={formik.values.researchInterests}
-              variant="outlined"
-            />   
-
-            <Typography variant="body1" sx={{mt:1,ml:1}}>
-              Service created:  
-              {selectedDeveloper.services?.map((service, i) => (
-                <li key={"service-" + i}>{service.name}</li>
-              ))}
-            </Typography>
-          </CardContent>
-        </Card>
+        <Box sx={{px:2}}>
+          <Box sx={{justifyContent: 'center',
+            alignItems: 'center',mb:1, position:'relative',
+            display: 'flex'}}>
+            <Avatar sx={{ width: 90, height: 90 }} alt={selectedDeveloper.firstName} src={selectedDeveloper.picture} />
+          </Box>
+          <Typography sx={{textAlign:'center',mb:4}} variant="h6" color="#545454">
+            {formik.values.name.toUpperCase()}
+          </Typography>
+          {profileTitle('Description')}
+          <Typography color="#ABABAB" sx={{mx:2,my:1}}>{formik.values.description === '' ? 'No description': formik.values.description}</Typography>
+          {profileTitle('Organization')}
+          <Typography color="#ABABAB" sx={{mx:2,my:1}}>{formik.values.organization === '' ? 'Unknown': formik.values.organization}</Typography>
+          {profileTitle('Research Interests')}
+          <Box sx={{mx:2,my:1}}>{formik.values.researchInterests === '' ? <Typography  color="#ABABAB" sx={{my:1}}>Unknown</Typography>: <Typography component="span" sx={{background:'#F2F6FE',color:'#ABABAB',borderRadius:2,py:1,px:2,mt:1}}>{formik.values.researchInterests}</Typography> }</Box>
+          {profileTitle('Service Created')}
+          <Box sx={{mx:2,my:1}}>
+            {selectedDeveloper.Services?.map((service, i) => (
+              <Typography  key={"service-" + i} sx={{background:'#F2F6FE',color:'#ABABAB',borderRadius:1,py:1,px:2,mt:1}} >{service.name}</Typography>
+            ))}
+          </Box>
+        </Box>
       </Formik>
     </Box>
   );
@@ -136,7 +87,7 @@ export const DevelopersProfile = () => {
     <Box>
       <EnhancedModal
         isOpen={modalIsOpen}
-        dialogTitle={`Developer profile`}
+        dialogTitle={<ContactPageOutlinedIcon color="primary"/>}
         dialogContent={DeveloperProfileModal}
         options={{
           onClose: () => setModalIsOpen(false),
@@ -158,10 +109,7 @@ export const DevelopersProfile = () => {
           selector:true,
           ignoreKeys: [
             "__v",
-            "picture",
-            "userId",
-            "updatedAt",
-            "createdAt"
+            "Picture",
           ],
           actions: [
             {
@@ -170,11 +118,10 @@ export const DevelopersProfile = () => {
               type: "button",
               function: async (e, data) => {
                 setSelectedDeveloper(data);
-                formik.values.firstName = data.firstName;
-                formik.values.lastName = data.lastName;
-                formik.values.organization = data.organization ?? '';
-                formik.values.description = data.description ?? '';
-                formik.values.researchInterests = data.researchInterests  ?? '';
+                formik.values.name = data['Name'];
+                formik.values.organization = data['Organization'] ?? '';
+                formik.values.description = data['Description'] ?? '';
+                formik.values.researchInterests = data['Research Interests']  ?? '';
                 setModalIsOpen(true);
               },
             },
