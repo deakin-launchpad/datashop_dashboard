@@ -6,7 +6,7 @@ import {
   Button,
   TextField,
   FormControl,
-  Paper
+  Paper,
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
@@ -33,7 +33,7 @@ export const ServiceManager = () => {
           url: item.url,
           description: item.description,
           cost: item.cost,
-          creator_id:item.creator_id ?? 'null'
+          creator_id: item.creator_id ?? "null",
         };
         result.push(data);
       });
@@ -48,6 +48,19 @@ export const ServiceManager = () => {
     getService();
   }, [getService]);
 
+  const deleteService = async (data) => {
+    try {
+      const response = await API.deleteService(data.id);
+      if (response.success) {
+        getService();
+      } else {
+        notify("delete Object  Failed");
+      }
+    } catch (err) {
+      // creatObjectModal(false);
+      console.log(err);
+    }
+  };
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
@@ -205,7 +218,7 @@ export const ServiceManager = () => {
               {selectedService.name}
             </Typography>
             <Typography variant="body2">
-              Creator ID: {selectedService.creator_id ?? 'null'}
+              Creator ID: {selectedService.creator_id ?? "null"}
               <br />
             </Typography>
             <Typography variant="body2">
@@ -256,7 +269,7 @@ export const ServiceManager = () => {
           disableSubmit: true,
         }}
       />
-      <Box  maxWidth="xl" sx={{textAlign:'right',ml:4}}>
+      <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
           variant="contained"
@@ -269,32 +282,42 @@ export const ServiceManager = () => {
   );
 
   let tablecontent = (
-    <Box
-      maxWidth="xl"
-      sx={{mt:2,ml:4}}
-    >
-      {service.length > 0 ? <EnhancedTable
-        data={service}
-        title="Service Manager"
-        options={{
-          selector:true,
-          ignoreKeys: [
-            "__v",
-          ],
-          actions: [
-            {
-              name: "",
-              label: "View",
-              type: "button",
-              function: async (e, data) => {
-                setModalIsOpen(true);
-                setSelectedService(data);
+    <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
+      {service.length > 0 ? (
+        <EnhancedTable
+          data={service}
+          title="Service Manager"
+          options={{
+            selector: true,
+            ignoreKeys: ["__v"],
+            actions: [
+              {
+                name: "",
+                label: "View",
+                type: "button",
+                function: async (e, data) => {
+                  setModalIsOpen(true);
+                  setSelectedService(data);
+                },
               },
-            },
-          ],
-        }}
-      />:<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper>}
-      
+              {
+                name: "",
+                label: "Delete",
+                type: "button",
+                function: async (e, data) => {
+                  deleteService(data);
+                },
+              },
+            ],
+          }}
+        />
+      ) : (
+        <Paper sx={{ py: 4 }}>
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            No Data
+          </Typography>
+        </Paper>
+      )}
     </Box>
   );
   return (
