@@ -354,6 +354,8 @@ export const JobManager = () => {
             options={{
               selector: true,
               enableSort: true,
+              sortAscending: false,
+              selectSortBy: "OperationTime",
               ignoreKeys: [
                 "deakinSSO",
                 "firstLogin",
