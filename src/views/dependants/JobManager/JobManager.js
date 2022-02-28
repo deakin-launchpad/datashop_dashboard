@@ -373,7 +373,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    viewData(job[dataForTable.indexOf(data)]);
+                    viewData(data);
                   },
                 },
                 {
