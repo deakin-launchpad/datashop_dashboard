@@ -343,7 +343,7 @@ export const JobManager = () => {
         sx={{
           textAlign: "right",
           ml: 4,
-          p: 3,
+          pt: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "right",
