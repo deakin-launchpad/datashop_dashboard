@@ -7,12 +7,15 @@ import {
   MenuItem,
   Paper,
   Typography,
+  FormControl,
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
+
+const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -22,12 +25,8 @@ export const JobManager = () => {
   const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState("");
-  const [isFiltering, setIsFiltering] = useState({
-    SUBMITTED: false,
-    RUNNING: false,
-    FAILED: false,
-    SUCCESS: false,
-  });
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [statusToFilter, setStatusToFilter] = useState("");
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
@@ -123,19 +122,20 @@ export const JobManager = () => {
     resetTableData(job);
   }, [job]);
 
-  const jsonDataValidate =(data)=>{
-    if(!data.includes('gender')) return notify('No gender avalible.');
-    if(!data.includes('TotalHeight')) return notify('No TotalHeight avalible');
-    if(!data.includes('Inseam')) return notify('No Inseam avalible');
-    if(!data.includes('Bust')) return notify('No Bust avalible.');
-    if(!data.includes('UnderBust')) return notify('No UnderBust avalible');
-    if(!data.includes('Waist')) return notify('No Waist avalible');
-    if(!data.includes('HighHip')) return notify('No HighHip avalible.');
-    if(!data.includes('LowHip')) return notify('No LowHip avalible');
-    if(!data.includes('HighThigh')) return notify('No HighThigh avalible');
-    if(!data.includes('LowThigh')) return notify('No LowThigh avalible.');
-    if(!data.includes('NeckBase')) return notify('No NeckBase avalible');
-    if(!data.includes('Suitleglength')) return notify('No Suitleglength avalible');
+  const jsonDataValidate = (data) => {
+    if (!data.includes("gender")) return notify("No gender avalible.");
+    if (!data.includes("TotalHeight")) return notify("No TotalHeight avalible");
+    if (!data.includes("Inseam")) return notify("No Inseam avalible");
+    if (!data.includes("Bust")) return notify("No Bust avalible.");
+    if (!data.includes("UnderBust")) return notify("No UnderBust avalible");
+    if (!data.includes("Waist")) return notify("No Waist avalible");
+    if (!data.includes("HighHip")) return notify("No HighHip avalible.");
+    if (!data.includes("LowHip")) return notify("No LowHip avalible");
+    if (!data.includes("HighThigh")) return notify("No HighThigh avalible");
+    if (!data.includes("LowThigh")) return notify("No LowThigh avalible.");
+    if (!data.includes("NeckBase")) return notify("No NeckBase avalible");
+    if (!data.includes("Suitleglength"))
+      return notify("No Suitleglength avalible");
     return true;
   };
 
@@ -172,15 +172,15 @@ export const JobManager = () => {
         serviceID: selectedService._id,
         datafileURL: {
           url: values.downloadableURL,
-          json: dataTypeSelected === dataTypes[1] ? values.jsonData :"",
+          json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
         },
       };
-      if(dataTypeSelected === dataTypes[1]){
+      if (dataTypeSelected === dataTypes[1]) {
         const valided = jsonDataValidate(values.jsonData);
-        if(valided){
+        if (valided) {
           createJob(data);
         }
-      }else{
+      } else {
         createJob(data);
       }
       resetForm();
@@ -237,7 +237,10 @@ export const JobManager = () => {
           </Select>
           {dataTypeSelected === dataTypes[1] ? (
             <Box>
-              <Typography sx={{mt:2}} variant="body2">* Please keep the data structure and field name and change the values.</Typography>
+              <Typography sx={{ mt: 2 }} variant="body2">
+                * Please keep the data structure and field name and change the
+                values.
+              </Typography>
               <TextField
                 fullWidth
                 label="Json Data"
@@ -254,7 +257,6 @@ export const JobManager = () => {
                 onChange={formik.handleChange}
               />
             </Box>
-            
           ) : dataTypeSelected === dataTypes[2] ? (
             <TextField
               fullWidth
@@ -299,16 +301,20 @@ export const JobManager = () => {
     </Box>
   );
 
-  const filterStatus = (status, isFiltered) => {
+  const filterStatus = (status) => {
+    if (status === "ALL") {
+      resetTableData(job);
+      setIsFiltered(false);
+      return;
+    }
+    if (isFiltered) {
+      resetTableData(job);
+    }
+    setIsFiltered(true);
+    setStatusToFilter(status);
     setDataForTable((prevState) =>
       prevState.filter((item) => item.Status === status)
     );
-    if (isFiltered) {
-      setIsFiltering((prevState) => ({ ...prevState, [status]: false }));
-      resetTableData(job);
-    } else {
-      setIsFiltering((prevState) => ({ ...prevState, [status]: true }));
-    }
   };
 
   let content = (
@@ -331,56 +337,34 @@ export const JobManager = () => {
           disableSubmit: true,
         }}
       />
-      <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
-        <Button
-          size="middle"
-          variant="contained"
-          sx={{
-            mr:1,
-            backgroundColor: "#7f7f7f",
-            "&:hover": { backgroundColor: "#6a6a6a" },
-          }}
-          onClick={() => {
-            filterStatus("SUBMITTED", isFiltering.SUBMITTED);
-          }}
-        >
-          SUBMITTED
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          sx={{ mr:1}}
-          onClick={() => {
-            filterStatus("RUNNING", isFiltering.RUNNING);
-          }}
-        >
-          Running
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          color="error"
-          sx={{ mr:1}}
-          onClick={() => {
-            filterStatus("FAILED", isFiltering.FAILED);
-          }}
-        >
-          Failed
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          sx={{
-            mr:1,
-            backgroundColor: "green",
-            "&:hover": { backgroundColor: "#185a37" },
-          }}
-          onClick={() => {
-            filterStatus("SUCCESS", isFiltering.SUCCESS);
-          }}
-        >
-          Success
-        </Button>
+      <Box
+        maxWidth="xl"
+        sx={{
+          textAlign: "right",
+          ml: 4,
+          p: 3,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "right",
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ width: "8.5em" }}>
+          <InputLabel>Filter Status:</InputLabel>
+          <Select
+            label="Filter by status"
+            value={statusToFilter}
+            onChange={(e) => {
+              filterStatus(e.target.value);
+            }}
+          >
+            {statuses.map((s, i) => (
+              <MenuItem value={s} key={i}>
+                {s}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Button
           size="middle"
           variant="contained"
