@@ -795,6 +795,8 @@ TablePaginationComponent.propTypes = {
  * @example <EnhancedTable data={data} title='Hello World'
  *  options={{
       rowsPerPage: 10
+      enableSort: true,
+      selectSortBy: "Column Name",
       disablePaginationDefaults: false,
       selector: true,
       pagination: {{
@@ -865,7 +867,11 @@ export const EnhancedTable = (props) => {
   const [rowsPerPageOptions, setRowsPerPageOptions] = useState([]);
   const [keys, setKeys] = useState([]);
   const [sortBy, setSortBy] = useState("");
-  const [sortAccending, setSortAccending] = useState(true);
+  const [sortAccending, setSortAccending] = useState(
+    props.options?.sortAscending !== undefined
+      ? props.options.sortAscending
+      : true
+  );
 
   useEffect(() => {
     let rowsPP = rowsPerPage || 5;
@@ -894,8 +900,12 @@ export const EnhancedTable = (props) => {
   }, [props.data, props.options]);
 
   useEffect(() => {
+    if (props.options?.selectSortBy !== undefined) {
+      setSortBy(props.options.selectSortBy);
+      return;
+    }
     setSortBy(keys[0]);
-  }, [keys]);
+  }, [keys, props.options?.selectSortBy]);
 
   const emptyRows = useCallback(() => {
     return (
@@ -994,6 +1004,8 @@ EnhancedTable.propTypes = {
   options: PropTypes.shape({
     rowsPerPage: PropTypes.number,
     enableSort: PropTypes.bool,
+    selectSortBy: PropTypes.string,
+    sortAscending: PropTypes.bool,
     ignoreKeys: PropTypes.arrayOf(PropTypes.string),
     selector: PropTypes.bool,
     actionLocation: PropTypes.oneOf(["start", "end"]),
@@ -1004,6 +1016,7 @@ EnhancedTable.propTypes = {
       maxHeight: PropTypes.any,
       minWidth: PropTypes.any,
     }),
+
     actions: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,

@@ -24,9 +24,9 @@ export const JobManager = () => {
   const [selectedService, setSelectedService] = useState("");
   const [isFiltering, setIsFiltering] = useState({
     SUBMITTED: false,
-    Running: false,
-    Failed: false,
-    Completed: false,
+    RUNNING: false,
+    FAILED: false,
+    SUCCESS: false,
   });
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
@@ -304,13 +304,13 @@ export const JobManager = () => {
             filterStatus("SUBMITTED", isFiltering.SUBMITTED);
           }}
         >
-          Initiated
+          SUBMITTED
         </Button>
         <Button
           size="middle"
           variant="contained"
           onClick={() => {
-            filterStatus("Running", isFiltering.Running);
+            filterStatus("RUNNING", isFiltering.RUNNING);
           }}
         >
           Running
@@ -320,7 +320,7 @@ export const JobManager = () => {
           variant="contained"
           color="error"
           onClick={() => {
-            filterStatus("Failed", isFiltering.Failed);
+            filterStatus("FAILED", isFiltering.FAILED);
           }}
         >
           Failed
@@ -333,7 +333,7 @@ export const JobManager = () => {
             "&:hover": { backgroundColor: "#185a37" },
           }}
           onClick={() => {
-            filterStatus("Completed", isFiltering.Completed);
+            filterStatus("SUCCESS", isFiltering.SUCCESS);
           }}
         >
           Success
@@ -354,6 +354,8 @@ export const JobManager = () => {
             options={{
               selector: true,
               enableSort: true,
+              sortAscending: false,
+              selectSortBy: "OperationTime",
               ignoreKeys: [
                 "deakinSSO",
                 "firstLogin",
@@ -371,7 +373,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    viewData(job[dataForTable.indexOf(data)]);
+                    viewData(data);
                   },
                 },
                 {
