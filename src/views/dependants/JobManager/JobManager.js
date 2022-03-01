@@ -26,7 +26,7 @@ export const JobManager = () => {
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [isFiltered, setIsFiltered] = useState(false);
-  const [statusToFilter, setStatusToFilter] = useState("");
+  const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
@@ -302,6 +302,7 @@ export const JobManager = () => {
   );
 
   const filterStatus = (status) => {
+    setStatusToFilter(status);
     if (status === "ALL") {
       resetTableData(job);
       setIsFiltered(false);
@@ -311,7 +312,6 @@ export const JobManager = () => {
       resetTableData(job);
     }
     setIsFiltered(true);
-    setStatusToFilter(status);
     setDataForTable((prevState) =>
       prevState.filter((item) => item.Status === status)
     );
