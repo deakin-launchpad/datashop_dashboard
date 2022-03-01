@@ -12,7 +12,7 @@ import {
   MenuItem,
   TextField,
   Typography,
-  Paper
+  Paper,
 } from "@mui/material";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
@@ -30,7 +30,8 @@ export const DatasetsManager = () => {
   const [selectedService, setSelectedService] = useState("");
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
 
-  const [jobDataUrl,setJobDataUrl] = useState();
+  const [jobDataUrl, setJobDataUrl] = useState();
+  const [jobName, setJobName] = useState("");
 
   const uploadDataset = async (data) => {
     const response = await API.uploadDocument(data);
@@ -52,7 +53,7 @@ export const DatasetsManager = () => {
     const formData = new FormData();
     formData.append("documentFile", selectedFile);
     const response = await API.uploadDocument(formData);
-    if(response.success){
+    if (response.success) {
       setS3url(response.data.documentFileUrl.original);
     }
     uploadDataset(formData);
@@ -97,7 +98,7 @@ export const DatasetsManager = () => {
   });
 
   let uploadFilesContent = (
-    <Box sx={{mb:2}}>
+    <Box sx={{ mb: 2 }}>
       <input type="file" name="documentFile" onChange={changeHandler} />
       {isFilePicked ? (
         <Typography variant="root">
@@ -159,13 +160,13 @@ export const DatasetsManager = () => {
       </Formik>
     </Box>
   );
-  const filterDataSets = (data)=>{
+  const filterDataSets = (data) => {
     setDatasets(
       data.map((item) => ({
-        'Name': item.name,
-        'URL': item.dataURL,
-        'Description':item.description,
-        'Creator ID':item.creatorID
+        Name: item.name,
+        URL: item.dataURL,
+        Description: item.description,
+        "Creator ID": item.creatorID,
       }))
     );
   };
@@ -200,7 +201,7 @@ export const DatasetsManager = () => {
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
   };
-  const createJob = (data)=>{
+  const createJob = (data) => {
     setServiceModalOpen(true);
     setJobDataUrl(data.dataURL);
   };
@@ -209,10 +210,11 @@ export const DatasetsManager = () => {
     const _jobDataTosend = {
       datafileURL: {
         url: jobDataUrl,
-        json: ""
+        json: "",
       },
+      jobName: jobName,
       endpoint: selectedService.url,
-      serviceID:selectedService._id,
+      serviceID: selectedService._id,
     };
     const response = await API.createJob(_jobDataTosend);
     if (response.success) {
@@ -225,12 +227,24 @@ export const DatasetsManager = () => {
   };
 
   let serviceModal = (
-    <Container sx={{p:1}}>
-      <FormControl fullWidth >
-        <InputLabel sx={{pb:1}}>Select service</InputLabel>
+    <Container sx={{ p: 1 }}>
+      <FormControl fullWidth>
+        <TextField
+          sx={{ py: 1 }}
+          fullWidth
+          name="jobName"
+          label="Job Name"
+          value={jobName}
+          onChange={(event) => {
+            setJobName(event.target.value);
+          }}
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <InputLabel>Select Service</InputLabel>
         <Select
           value={selectedService}
-          label="Service"
+          label="Select Service"
           onChange={handleServiceChange}
         >
           {totalService.map((service, i) => {
@@ -241,7 +255,9 @@ export const DatasetsManager = () => {
             );
           })}
         </Select>
-        <Button sx={{mt:2}} variant="contained" onClick={postCreateJobData}>Submit</Button>
+        <Button sx={{ mt: 2 }} variant="contained" onClick={postCreateJobData}>
+          Submit
+        </Button>
       </FormControl>
     </Container>
   );
@@ -266,49 +282,50 @@ export const DatasetsManager = () => {
           disableSubmit: true,
         }}
       />
-      <Box
-        maxWidth="xl"
-        sx={{ml:4}}
-      >
-        <Box sx={{textAlign:'right'}}>
+      <Box maxWidth="xl" sx={{ ml: 4 }}>
+        <Box sx={{ textAlign: "right" }}>
           <Button
-            sx={{mb:2}}
+            sx={{ mb: 2 }}
             variant="contained"
             onClick={() => setDataModalOpen(true)}
           >
-          Upload Data
+            Upload Data
           </Button>
         </Box>
-        {datasets.length > 0 ? <EnhancedTable
-          data={datasets}
-          title="Datasets Manager"
-          options={{
-            selector:true,
-            ignoreKeys: [
-              "_id",
-              "__v",
-            ],
-            actions: [
-              {
-                name: "",
-                label: "Create Job",
-                type: "button",
-                function: async (e, data) => {
-                  createJob(data);
+        {datasets.length > 0 ? (
+          <EnhancedTable
+            data={datasets}
+            title="Datasets Manager"
+            options={{
+              selector: true,
+              ignoreKeys: ["_id", "__v"],
+              actions: [
+                {
+                  name: "",
+                  label: "Create Job",
+                  type: "button",
+                  function: async (e, data) => {
+                    createJob(data);
+                  },
                 },
-              },
-              {
-                name: "",
-                label: "Download",
-                type: "button",
-                function: async (e, data) => {
-                  window.location.href = data['URL'];
+                {
+                  name: "",
+                  label: "Download",
+                  type: "button",
+                  function: async (e, data) => {
+                    window.location.href = data["URL"];
+                  },
                 },
-              },
-            ],
-          }}
-        /> :<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper> }
-        
+              ],
+            }}
+          />
+        ) : (
+          <Paper sx={{ py: 4 }}>
+            <Typography variant="body1" sx={{ textAlign: "center" }}>
+              No Data
+            </Typography>
+          </Paper>
+        )}
       </Box>
     </Box>
   );
