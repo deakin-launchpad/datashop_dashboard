@@ -34,9 +34,6 @@ export const JobManager = () => {
   const createJob = async (data) => {
     const response = await API.createJob(data);
     if (response.success) {
-      formik.values.downloadableURL = "";
-      formik.values.jobName = "";
-      formik.values.jsonData = "";
       setSelectedService("");
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
@@ -126,16 +123,45 @@ export const JobManager = () => {
     resetTableData(job);
   }, [job]);
 
+  const jsonDataValidate =(data)=>{
+    if(!data.includes('gender')) return notify('No gender avalible.');
+    if(!data.includes('TotalHeight')) return notify('No TotalHeight avalible');
+    if(!data.includes('Inseam')) return notify('No Inseam avalible');
+    if(!data.includes('Bust')) return notify('No Bust avalible.');
+    if(!data.includes('UnderBust')) return notify('No UnderBust avalible');
+    if(!data.includes('Waist')) return notify('No Waist avalible');
+    if(!data.includes('HighHip')) return notify('No HighHip avalible.');
+    if(!data.includes('LowHip')) return notify('No LowHip avalible');
+    if(!data.includes('HighThigh')) return notify('No HighThigh avalible');
+    if(!data.includes('LowThigh')) return notify('No LowThigh avalible.');
+    if(!data.includes('NeckBase')) return notify('No NeckBase avalible');
+    if(!data.includes('Suitleglength')) return notify('No Suitleglength avalible');
+    return true;
+  };
+
   let formik = useFormik({
     initialValues: {
       downloadableURL: "",
-      jsonData: "",
+      jsonData: `{
+        "gender": "female",
+        "TotalHeight": 1715,
+        "Inseam": 845,
+        "Bust": 880,
+        "UnderBust": 780,
+        "Waist": 721,
+        "HighHip": 770,
+        "LowHip": 865,
+        "HighThigh": 491,
+        "LowThigh": 417,
+        "NeckBase": 460,
+        "Suitleglength": 190,
+      }`,
       jobName: "",
     },
     validationSchema: () => {
       return Yup.object().shape({
         downloadableURL: Yup.string().max(255),
-        jobName: Yup.string(),
+        jobName: Yup.string().required("Job name is required"),
         jsonData: Yup.string(),
       });
     },
@@ -146,10 +172,17 @@ export const JobManager = () => {
         serviceID: selectedService._id,
         datafileURL: {
           url: values.downloadableURL,
-          json: values.jsonData,
+          json: dataTypeSelected === dataTypes[1] ? values.jsonData :"",
         },
       };
-      createJob(data);
+      if(dataTypeSelected === dataTypes[1]){
+        const valided = jsonDataValidate(values.jsonData);
+        if(valided){
+          createJob(data);
+        }
+      }else{
+        createJob(data);
+      }
       resetForm();
     },
   });
@@ -165,6 +198,9 @@ export const JobManager = () => {
             name="jobName"
             value={formik.values.jobName}
             onChange={formik.handleChange}
+            error={formik.touched.jobName}
+            helperText={formik.touched.jobName && formik.errors.jobName}
+            onBlur={formik.handleBlur}
           />
           <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
           <Select
@@ -200,21 +236,25 @@ export const JobManager = () => {
             })}
           </Select>
           {dataTypeSelected === dataTypes[1] ? (
-            <TextField
-              fullWidth
-              label="Json Data"
-              margin="normal"
-              name="jsonData"
-              type="text"
-              value={formik.values.jsonData}
-              variant="outlined"
-              multiline
-              rows={4}
-              error={formik.touched.jsonData}
-              helperText={formik.touched.jsonData && formik.errors.jsonData}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-            />
+            <Box>
+              <Typography sx={{mt:2}} variant="body2">* Please keep the data structure and field name and change the values.</Typography>
+              <TextField
+                fullWidth
+                label="Json Data"
+                margin="normal"
+                name="jsonData"
+                type="text"
+                value={formik.values.jsonData}
+                variant="outlined"
+                multiline
+                rows={10}
+                error={formik.touched.jsonData}
+                helperText={formik.touched.jsonData && formik.errors.jsonData}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+              />
+            </Box>
+            
           ) : dataTypeSelected === dataTypes[2] ? (
             <TextField
               fullWidth
@@ -242,7 +282,6 @@ export const JobManager = () => {
               size="large"
               variant="contained"
               type="submit"
-              onClick={() => setModalIsOpen(false)}
             >
               Submit
             </Button>
@@ -297,6 +336,7 @@ export const JobManager = () => {
           size="middle"
           variant="contained"
           sx={{
+            mr:1,
             backgroundColor: "#7f7f7f",
             "&:hover": { backgroundColor: "#6a6a6a" },
           }}
@@ -309,6 +349,7 @@ export const JobManager = () => {
         <Button
           size="middle"
           variant="contained"
+          sx={{ mr:1}}
           onClick={() => {
             filterStatus("RUNNING", isFiltering.RUNNING);
           }}
@@ -319,6 +360,7 @@ export const JobManager = () => {
           size="middle"
           variant="contained"
           color="error"
+          sx={{ mr:1}}
           onClick={() => {
             filterStatus("FAILED", isFiltering.FAILED);
           }}
@@ -329,6 +371,7 @@ export const JobManager = () => {
           size="middle"
           variant="contained"
           sx={{
+            mr:1,
             backgroundColor: "green",
             "&:hover": { backgroundColor: "#185a37" },
           }}
