@@ -207,7 +207,7 @@ export const DatasetsManager = () => {
   };
 
   const postCreateJobData = async () => {
-    const _jobDataTosend = {
+    const _jobDataToSend = {
       datafileURL: {
         url: jobDataUrl,
         json: "",
@@ -216,9 +216,9 @@ export const DatasetsManager = () => {
       endpoint: selectedService.url,
       serviceID: selectedService._id,
     };
-    const response = await API.createJob(_jobDataTosend);
+    const response = await API.createJob(_jobDataToSend);
     if (response.success) {
-      notify("Job Creation successed!!");
+      notify("Job Creation succeeded!!");
       setServiceModalOpen(false);
     } else {
       notify("Job Creation Failed!!");

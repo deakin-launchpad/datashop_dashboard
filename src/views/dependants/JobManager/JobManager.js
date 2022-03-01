@@ -37,7 +37,7 @@ export const JobManager = () => {
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
       getJob();
-      notify("Job Creation successed!!");
+      notify("Job Creation succeeded!!");
     } else {
       setModalIsOpen(false);
       notify("Job Creation Failed!!");
@@ -123,19 +123,20 @@ export const JobManager = () => {
   }, [job]);
 
   const jsonDataValidate = (data) => {
-    if (!data.includes("gender")) return notify("No gender avalible.");
-    if (!data.includes("TotalHeight")) return notify("No TotalHeight avalible");
-    if (!data.includes("Inseam")) return notify("No Inseam avalible");
-    if (!data.includes("Bust")) return notify("No Bust avalible.");
-    if (!data.includes("UnderBust")) return notify("No UnderBust avalible");
-    if (!data.includes("Waist")) return notify("No Waist avalible");
-    if (!data.includes("HighHip")) return notify("No HighHip avalible.");
-    if (!data.includes("LowHip")) return notify("No LowHip avalible");
-    if (!data.includes("HighThigh")) return notify("No HighThigh avalible");
-    if (!data.includes("LowThigh")) return notify("No LowThigh avalible.");
-    if (!data.includes("NeckBase")) return notify("No NeckBase avalible");
+    if (!data.includes("gender")) return notify("No gender available.");
+    if (!data.includes("TotalHeight"))
+      return notify("No TotalHeight available");
+    if (!data.includes("Inseam")) return notify("No Inseam available");
+    if (!data.includes("Bust")) return notify("No Bust available.");
+    if (!data.includes("UnderBust")) return notify("No UnderBust available");
+    if (!data.includes("Waist")) return notify("No Waist available");
+    if (!data.includes("HighHip")) return notify("No HighHip available.");
+    if (!data.includes("LowHip")) return notify("No LowHip available");
+    if (!data.includes("HighThigh")) return notify("No HighThigh available");
+    if (!data.includes("LowThigh")) return notify("No LowThigh available.");
+    if (!data.includes("NeckBase")) return notify("No NeckBase available");
     if (!data.includes("Suitleglength"))
-      return notify("No Suitleglength avalible");
+      return notify("No Suitleglength available");
     return true;
   };
 
@@ -176,8 +177,8 @@ export const JobManager = () => {
         },
       };
       if (dataTypeSelected === dataTypes[1]) {
-        const valided = jsonDataValidate(values.jsonData);
-        if (valided) {
+        const valid = jsonDataValidate(values.jsonData);
+        if (valid) {
           createJob(data);
         }
       } else {
