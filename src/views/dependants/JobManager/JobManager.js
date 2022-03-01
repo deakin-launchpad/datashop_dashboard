@@ -199,7 +199,7 @@ export const JobManager = () => {
             name="jobName"
             value={formik.values.jobName}
             onChange={formik.handleChange}
-            error={formik.touched.jobName}
+            error={formik.errors.jobName !== undefined}
             helperText={formik.touched.jobName && formik.errors.jobName}
             onBlur={formik.handleBlur}
           />
