@@ -169,7 +169,7 @@ export const JobManager = () => {
     });
   };
 
-  const onSubmit = async (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     const data = {
       jobName: values.jobName,
       endpoint: selectedService.url,
@@ -195,7 +195,7 @@ export const JobManager = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         {({ errors, touched, isSubmitting }) => (
           <Form>
