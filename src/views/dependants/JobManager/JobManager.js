@@ -12,7 +12,7 @@ import {
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
-import { useFormik, Formik } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
@@ -140,10 +140,9 @@ export const JobManager = () => {
     return true;
   };
 
-  let formik = useFormik({
-    initialValues: {
-      downloadableURL: "",
-      jsonData: `{
+  const initialValues = {
+    downloadableURL: "",
+    jsonData: `{
         "gender": "female",
         "TotalHeight": 1715,
         "Inseam": 845,
@@ -157,139 +156,143 @@ export const JobManager = () => {
         "NeckBase": 460,
         "Suitleglength": 190,
       }`,
-      jobName: "",
-    },
-    validationSchema: () => {
-      return Yup.object().shape({
-        downloadableURL: Yup.string().max(255),
-        jobName: Yup.string().required("Job name is required"),
-        jsonData: Yup.string(),
-      });
-    },
-    onSubmit: async (values, { resetForm }) => {
-      const data = {
-        jobName: values.jobName,
-        endpoint: selectedService.url,
-        serviceID: selectedService._id,
-        datafileURL: {
-          url: values.downloadableURL,
-          json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
-        },
-      };
-      if (dataTypeSelected === dataTypes[1]) {
-        const valid = jsonDataValidate(values.jsonData);
-        if (valid) {
-          createJob(data);
-        }
-      } else {
+    jobName: "",
+    service: "",
+    dataType: "",
+  };
+
+  const validationSchema = () => {
+    return Yup.object().shape({
+      downloadableURL: Yup.string().max(255),
+      jobName: Yup.string().required("Job name is required"),
+      jsonData: Yup.string(),
+    });
+  };
+
+  const onSubmit = async (values, { resetForm }) => {
+    const data = {
+      jobName: values.jobName,
+      endpoint: selectedService.url,
+      serviceID: selectedService._id,
+      datafileURL: {
+        url: values.downloadableURL,
+        json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
+      },
+    };
+    if (dataTypeSelected === dataTypes[1]) {
+      const valid = jsonDataValidate(values.jsonData);
+      if (valid) {
         createJob(data);
       }
-      resetForm();
-    },
-  });
+    } else {
+      createJob(data);
+    }
+    resetForm();
+  };
 
   let createJobModal = (
     <Box>
-      <Formik initialValues={formik.initialValues}>
-        <form noValidate onSubmit={formik.handleSubmit}>
-          <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
-          <TextField
-            sx={{ py: 1 }}
-            fullWidth
-            name="jobName"
-            value={formik.values.jobName}
-            onChange={formik.handleChange}
-            error={formik.errors.jobName !== undefined}
-            helperText={formik.touched.jobName && formik.errors.jobName}
-            onBlur={formik.handleBlur}
-          />
-          <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
-          <Select
-            placeholder="Select service"
-            fullWidth
-            value={selectedService}
-            label="Service"
-            onChange={handleServiceChange}
-          >
-            {services.map((service, i) => {
-              return (
-                <MenuItem value={service} key={i}>
-                  {service.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-
-          <InputLabel sx={{ py: 1 }}>Data Type</InputLabel>
-          <Select
-            placeholder="Select Datatype"
-            fullWidth
-            value={dataTypeSelected}
-            label="Datatype"
-            onChange={handleDataTypeChange}
-          >
-            {dataTypes.map((type, i) => {
-              return (
-                <MenuItem value={type} key={i}>
-                  {type}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          {dataTypeSelected === dataTypes[1] ? (
-            <Box>
-              <Typography sx={{ mt: 2 }} variant="body2">
-                * Please keep the data structure and field name and change the
-                values.
-              </Typography>
-              <TextField
-                fullWidth
-                label="Json Data"
-                margin="normal"
-                name="jsonData"
-                type="text"
-                value={formik.values.jsonData}
-                variant="outlined"
-                multiline
-                rows={10}
-                error={formik.touched.jsonData}
-                helperText={formik.touched.jsonData && formik.errors.jsonData}
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-              />
-            </Box>
-          ) : dataTypeSelected === dataTypes[2] ? (
-            <TextField
-              fullWidth
-              label="Data URL Link"
-              margin="normal"
-              name="downloadableURL"
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
+            <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
+            <Field
+              as={TextField}
+              name="jobName"
               type="text"
-              value={formik.values.downloadableURL}
-              variant="outlined"
-              error={
-                formik.touched.downloadableURL &&
-                Boolean(formik.errors.downloadableURL)
-              }
-              helperText={
-                formik.touched.downloadableURL && formik.errors.downloadableURL
-              }
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              fullWidth
+              error={errors.jobName !== undefined}
+              helperText={touched.jobName && errors.jobName}
             />
-          ) : null}
-          <Box sx={{ mt: 2 }}>
-            <Button
-              color="primary"
-              disabled={formik.isSubmitting}
-              size="large"
-              variant="contained"
-              type="submit"
+            <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
+            <Field
+              as={Select}
+              name="service"
+              placeholder="Select service"
+              fullWidth
+              value={selectedService}
+              label="Service"
+              onChange={handleServiceChange}
             >
-              Submit
-            </Button>
-          </Box>
-        </form>
+              {services.map((service, i) => {
+                return (
+                  <MenuItem value={service} key={i}>
+                    {service.name}
+                  </MenuItem>
+                );
+              })}
+            </Field>
+
+            <InputLabel sx={{ py: 1 }}>Data Type</InputLabel>
+            <Field
+              as={Select}
+              name="dataType"
+              placeholder="Select Datatype"
+              fullWidth
+              value={dataTypeSelected}
+              label="Datatype"
+              onChange={handleDataTypeChange}
+            >
+              {dataTypes.map((type, i) => {
+                return (
+                  <MenuItem value={type} key={i}>
+                    {type}
+                  </MenuItem>
+                );
+              })}
+            </Field>
+            {dataTypeSelected === dataTypes[1] ? (
+              <Box>
+                <Typography sx={{ mt: 2 }} variant="body2">
+                  * Please keep the data structure and field name and change the
+                  values.
+                </Typography>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Json Data"
+                  margin="normal"
+                  name="jsonData"
+                  type="text"
+                  variant="outlined"
+                  multiline
+                  rows={10}
+                  error={touched.jsonData}
+                  helperText={touched.jsonData && errors.jsonData}
+                />
+              </Box>
+            ) : dataTypeSelected === dataTypes[2] ? (
+              <Field
+                as={TextField}
+                fullWidth
+                label="Data URL Link"
+                margin="normal"
+                name="downloadableURL"
+                type="text"
+                variant="outlined"
+                error={
+                  touched.downloadableURL && Boolean(errors.downloadableURL)
+                }
+                helperText={touched.downloadableURL && errors.downloadableURL}
+              />
+            ) : null}
+            <Box sx={{ mt: 2 }}>
+              <Button
+                color="primary"
+                disabled={isSubmitting}
+                size="large"
+                variant="contained"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Box>
+          </Form>
+        )}
       </Formik>
     </Box>
   );
