@@ -204,6 +204,7 @@ export const JobManager = () => {
               as={TextField}
               name="jobName"
               type="text"
+              autoComplete="off"
               fullWidth
               error={errors.jobName !== undefined}
               helperText={touched.jobName && errors.jobName}
