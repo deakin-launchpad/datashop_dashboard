@@ -1,7 +1,5 @@
-
-import { useState, useEffect } from 'react';
-import { socketInstance } from './index';
-
+import { useState, useEffect } from "react";
+import { socketInstance } from "./index";
 
 export const useSocket = (variant, event, callback) => {
   /**
@@ -16,15 +14,20 @@ export const useSocket = (variant, event, callback) => {
     _setError(error);
   };
   useEffect(() => {
-    if (socketInstance === null)
-      setError('Socket not initilized! Check Configuration to enable it.');
-    if (String(variant).toLowerCase() !== 'on' && String(variant).toLowerCase() !== 'emit' && String(variant).toLowerCase() !== 'off')
-      setError('Unsupported Variant Provided! Please use one of "on" "emit" or "off"');
+    if (socketInstance === null) {
+      setError("Socket not initilized! Check Configuration to enable it.");
+    }
+    if (
+      String(variant).toLowerCase() !== "on" &&
+      String(variant).toLowerCase() !== "emit" &&
+      String(variant).toLowerCase() !== "off"
+    )
+      setError(
+        'Unsupported Variant Provided! Please use one of "on" "emit" or "off"'
+      );
     else {
-      if (event === null || event === '')
-        setError('Event Required!');
-      else if (typeof event !== 'string')
-        setError('Event not string');
+      if (event === null || event === "") setError("Event Required!");
+      else if (typeof event !== "string") setError("Event not string");
       else {
         if (callback instanceof Function)
           socketInstance[variant](event, (response) => callback(response));

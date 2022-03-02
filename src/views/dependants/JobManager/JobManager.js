@@ -13,6 +13,7 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { useFormik, Formik } from "formik";
 import * as Yup from "yup";
+import { useSocket } from "helpers/index";
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -74,6 +75,10 @@ export const JobManager = () => {
       window.location.href = data.insightsURL;
     }
   };
+
+  useSocket("on", "notification", (response) => {
+    console.log(response);
+  });
 
   useEffect(() => {
     getJob();
