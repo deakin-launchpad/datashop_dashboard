@@ -100,9 +100,9 @@ export const JobManager = () => {
     setDataForTable(
       data.map((item) => ({
         Status: item.jobStatus,
-        JobName: item.jobName,
-        ExecutionTime: item.executionTime,
-        OperationTime: new Date(parseInt(item.createdAt)).toLocaleDateString(
+        "Job Name": item.jobName,
+        "Execution Time": item.executionTime,
+        "Operation Time": new Date(parseInt(item.createdAt)).toLocaleDateString(
           "en-AU",
           {
             year: "numeric",
@@ -387,7 +387,7 @@ export const JobManager = () => {
               selector: true,
               enableSort: true,
               sortAscending: false,
-              selectSortBy: "OperationTime",
+              selectSortBy: "Operation Time",
               ignoreKeys: [
                 "deakinSSO",
                 "firstLogin",

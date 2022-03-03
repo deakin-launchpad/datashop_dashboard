@@ -27,13 +27,13 @@ export const ServiceManager = () => {
       let result = [];
       res.map((item) => {
         let data = {
-          name: item.name,
-          id: item._id,
-          requirments: item.requirements,
-          url: item.url,
-          description: item.description,
-          cost: item.cost,
-          creator_id: item.creator_id ?? "null",
+          Name: item.name,
+          ID: item._id,
+          Requirements: item.requirements,
+          URL: item.url,
+          Description: item.description,
+          Cost: item.cost,
+          "Creator ID": item.creator_id ?? "null",
         };
         result.push(data);
       });
@@ -71,11 +71,11 @@ export const ServiceManager = () => {
 
   const validationSchema = () => {
     return Yup.object().shape({
-      url: Yup.string().max(255).required("url Is Required"),
-      description: Yup.string().max(255).required("description Is Required"),
+      url: Yup.string().max(255).required("URL Is Required"),
+      description: Yup.string().max(255).required("Description Is Required"),
       name: Yup.string().min(5).max(255).required("Password Is Required"),
-      cost: Yup.number().required("description Is Required"),
-      requirements: Yup.string().max(255).required("description Is Required"),
+      cost: Yup.number().required("Description Is Required"),
+      requirements: Yup.string().max(255).required("Description Is Required"),
     });
   };
 
@@ -126,7 +126,7 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label=" description/endpoint"
+              label=" Description/Endpoint"
               margin="normal"
               name="description"
               type="text"
@@ -137,7 +137,7 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label=" cost "
+              label="Cost "
               margin="normal"
               name="cost"
               type="text"
@@ -148,11 +148,11 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label=" requirements "
+              label="Requirements "
               margin="normal"
               name="requirements"
               type="text"
-              placeholder="eg:requirment1,requirement2,"
+              placeholder="eg: requirement1,requirement2 "
               variant="outlined"
               error={touched.requirements && Boolean(errors.requirements)}
               helperText={touched.requirements && errors.requirements}
@@ -226,7 +226,7 @@ export const ServiceManager = () => {
     <Box>
       <EnhancedModal
         isOpen={modalIsOpen}
-        dialogTitle={`Detail of service`}
+        dialogTitle={`Detail of Service`}
         dialogContent={ServiceDetailModal}
         options={{
           onClose: () => setModalIsOpen(false),
@@ -235,7 +235,7 @@ export const ServiceManager = () => {
       />
       <EnhancedModal
         isOpen={serviceModal}
-        dialogTitle={`Create new service`}
+        dialogTitle={`Create New Service`}
         dialogContent={createServiceModal}
         options={{
           onClose: () => setserviceModal(false),

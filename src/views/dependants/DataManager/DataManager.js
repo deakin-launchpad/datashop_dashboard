@@ -110,7 +110,7 @@ export const DatasetsManager = () => {
   let createDataEntryModal = (
     <Box>
       {uploadFilesContent}
-      <Typography>File to upload: {s3url}</Typography>
+      <Typography>File to Upload: {s3url}</Typography>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -121,7 +121,7 @@ export const DatasetsManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label="data entry Name"
+              label="Data Entry Name"
               margin="normal"
               name="name"
               type="text"
@@ -132,7 +132,7 @@ export const DatasetsManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label=" description"
+              label="Description"
               margin="normal"
               name="description"
               type="text"
@@ -150,7 +150,7 @@ export const DatasetsManager = () => {
                 variant="contained"
                 type="submit"
               >
-                Create data entry
+                Create Data Entry
               </Button>
             </Box>
           </Form>
@@ -264,7 +264,7 @@ export const DatasetsManager = () => {
     <Box>
       <EnhancedModal
         isOpen={dataModalOpen}
-        dialogTitle={`Upload new data entry`}
+        dialogTitle={`Upload New Data Entry`}
         dialogContent={createDataEntryModal}
         options={{
           onClose: () => setDataModalOpen(false),
