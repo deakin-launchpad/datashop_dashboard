@@ -351,8 +351,9 @@ export const JobManager = () => {
         <FormControl sx={{ width: "8.5em" }}>
           <InputLabel>Filter Status:</InputLabel>
           <Select
-            label="Filter by status"
+            label="Filter status"
             value={statusToFilter}
+            sx={{ textAlign: "center" }}
             onChange={(e) => {
               filterStatus(e.target.value);
             }}
