@@ -48,7 +48,20 @@ export const JobManager = () => {
       notify("Job Creation Failed!!");
     }
   };
-
+  const deleteJob = async (data) => {
+    try {
+      console.log("job detail----->", data);
+      const response = await API.deleteJob(data.id);
+      if (response.success) {
+        getJob();
+      } else {
+        notify("delete Job Failed");
+      }
+    } catch (err) {
+      // creatObjectModal(false);
+      console.log(err);
+    }
+  };
   const getJob = useCallback(async () => {
     const response = await API.getJob();
     if (response.success) {
@@ -108,6 +121,7 @@ export const JobManager = () => {
   const resetTableData = (data) => {
     setDataForTable(
       data.map((item) => ({
+        id: item._id,
         Status: item.jobStatus,
         JobName: item.jobName,
         ExecutionTime: item.executionTime,
@@ -367,7 +381,7 @@ export const JobManager = () => {
                 "__v",
                 "createdAt",
                 "insightsURL",
-                "serviceID",
+                "id",
               ],
               actions: [
                 {
@@ -385,8 +399,8 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    dataForTable.splice(dataForTable.indexOf(data), 1);
-                    setDataForTable((prevState) => [...prevState]);
+                    console.log("data.id :", data.id);
+                    deleteJob(data);
                   },
                 },
               ],

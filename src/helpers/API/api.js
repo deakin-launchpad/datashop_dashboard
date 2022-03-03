@@ -283,6 +283,16 @@ class API {
       .then(() => generateSuccess(AccessToken))
       .catch((error) => errorHelper(error));
   }
+  deleteJob(_id) {
+    return axiosInstance
+      .delete(`job/deleteJob/${_id}`, {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then(() => generateSuccess(AccessToken))
+      .catch((error) => errorHelper(error));
+  }
 }
 const instance = new API();
 export default instance;

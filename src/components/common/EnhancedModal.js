@@ -1,29 +1,37 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button,Grid } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Grid,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import PropTypes from "prop-types";
 /**
-* 17/09/2019 : Options for actionsButtons are moved inside options
-* Note v 0.2.0-alpha : Update Your code accordingly previous params maybe depreceted in future versions.
-*
-*
-* Params to send are as follows:
-* @isOpen : type<Boolean> : toggles the Modal
-* @dialogTitle : type<String> : Title for the modal
-* @dialogContent : type<Node/Component> : Component to be displayed as component
-* @options : type <Object> : options for component controling
-*          @submitButtonName : type<String> : Custom name for the submit button
-*          @closeButtonName : type<String> : Custom name for cancel button
-*          @disableSubmit : type<Boolean> : disable submit Button
-*          @disableClose : type<Boolean> : disable close Button
-*          @onClose : type<function> : function to perform onClose
-*          @onSubmit : type<function> : function to perfrom onSubmit
-*          @swapButtonColors : type<Boolean> : Swap Action Button Colors
-*/
+ * 17/09/2019 : Options for actionsButtons are moved inside options
+ * Note v 0.2.0-alpha : Update Your code accordingly previous params maybe depreceted in future versions.
+ *
+ *
+ * Params to send are as follows:
+ * @isOpen : type<Boolean> : toggles the Modal
+ * @dialogTitle : type<String> : Title for the modal
+ * @dialogContent : type<Node/Component> : Component to be displayed as component
+ * @options : type <Object> : options for component controling
+ *          @submitButtonName : type<String> : Custom name for the submit button
+ *          @closeButtonName : type<String> : Custom name for cancel button
+ *          @disableSubmit : type<Boolean> : disable submit Button
+ *          @disableClose : type<Boolean> : disable close Button
+ *          @onClose : type<function> : function to perform onClose
+ *          @onSubmit : type<function> : function to perfrom onSubmit
+ *          @swapButtonColors : type<Boolean> : Swap Action Button Colors
+ */
 export const EnhancedModal = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [_DialogTitle, _setDialogTitle] = useState('');
-  const [_DialogContent, _setDialogContent] = useState('');
-  const [submitButtonName, setSubmitButtonName] = useState('Submit');
+  const [_DialogTitle, _setDialogTitle] = useState("");
+  const [_DialogContent, _setDialogContent] = useState("");
+  const [submitButtonName, setSubmitButtonName] = useState("Submit");
   // const [cancelButtonName, setCancelButtonName] = useState('');
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [disableClose, setDisableClose] = useState(false);
@@ -36,12 +44,9 @@ export const EnhancedModal = (props) => {
     }
   }, [props.isOpen]);
   useEffect(() => {
-    if (props.dialogTitle)
-      _setDialogTitle(props.dialogTitle);
-    if (props.dialogContent)
-      _setDialogContent(props.dialogContent);
-    if (props.submitButtonName)
-      setSubmitButtonName(props.submitButtonName);
+    if (props.dialogTitle) _setDialogTitle(props.dialogTitle);
+    if (props.dialogContent) _setDialogContent(props.dialogContent);
+    if (props.submitButtonName) setSubmitButtonName(props.submitButtonName);
     // if (props.cancelButtonName)
     //   setCancelButtonName(props.cancelButtonName);
     if (props.options) {
@@ -49,10 +54,8 @@ export const EnhancedModal = (props) => {
         setSubmitButtonName(props.options.submitButtonName);
       // if (props.options.closeButtonName)
       //   setCancelButtonName(props.options.closeButtonName);
-      if (props.options.disableSubmit)
-        setDisableSubmit(true);
-      if (props.options.disableClose)
-        setDisableClose(true);
+      if (props.options.disableSubmit) setDisableSubmit(true);
+      if (props.options.disableClose) setDisableClose(true);
       if (props.options.swapButtonColors)
         setSwapButtonColors(props.options.swapButtonColors);
     }
@@ -80,20 +83,48 @@ export const EnhancedModal = (props) => {
     }
   };
   let content = (
-    <Dialog fullWidth={true} open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title"  >
+    <Dialog
+      fullWidth={true}
+      open={isOpen}
+      onClose={onClose}
+      aria-labelledby="form-dialog-title"
+    >
       <Grid container alignItems="center">
         <Grid item xs={11}>
           <DialogTitle id="form-dialog-title">{_DialogTitle}</DialogTitle>
         </Grid>
         <Grid item xs={1} align="center">
-          {disableClose !== true && <CloseIcon sx={{color:'#707070',cursor:'pointer',mr:2}} onClick={onClose}></CloseIcon>}
+          {disableClose !== true && (
+            <CloseIcon
+              sx={{ color: "#707070", cursor: "pointer", mr: 2 }}
+              onClick={onClose}
+            ></CloseIcon>
+          )}
         </Grid>
       </Grid>
       <DialogContent>{_DialogContent}</DialogContent>
       <DialogActions>
-        {disableSubmit !== true && <Button variant="contained" onClick={onSubmit} color={swapButtonColors ? 'secondary' : 'primary'}>{submitButtonName}</Button>}
+        {disableSubmit !== true && (
+          <Button
+            variant="contained"
+            onClick={onSubmit}
+            color={swapButtonColors ? "secondary" : "primary"}
+          >
+            {submitButtonName}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
   return content;
+};
+
+EnhancedModal.propTypes = {
+  isOpen: PropTypes.bool,
+  dialogTitle: PropTypes.string,
+  dialogContent: PropTypes.node,
+  options: PropTypes.object,
+  onClose: PropTypes.func,
+  onSubmit: PropTypes.func,
+  submitButtonName: PropTypes.string,
 };

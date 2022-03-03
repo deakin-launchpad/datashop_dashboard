@@ -2,8 +2,9 @@
  *  Created by Sanchit Dang
  * */
 
-import { useEffect, useState } from 'react';
-import { Snackbar } from '@mui/material';
+import { useEffect, useState } from "react";
+import { Snackbar } from "@mui/material";
+import PropTypes from "prop-types";
 
 let OpenNotificationFunction;
 
@@ -16,16 +17,16 @@ let OpenNotificationFunction;
 
 const EnhancedNotification = (props) => {
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
-  const [verticalPosition, setVerticalPosition] = useState('bottom');
-  const [horizontalPosition, setHorizonPosition] = useState('right');
+  const [message, setMessage] = useState("");
+  const [verticalPosition, setVerticalPosition] = useState("bottom");
+  const [horizontalPosition, setHorizonPosition] = useState("right");
   const openNotification = (newMessage) => {
     setOpen(true);
     setMessage(newMessage);
   };
   const closeNotification = () => {
     setOpen(false);
-    setMessage('');
+    setMessage("");
   };
   useEffect(() => {
     OpenNotificationFunction = openNotification;
@@ -38,36 +39,42 @@ const EnhancedNotification = (props) => {
       setVerticalPosition(props.vertical);
     }
   }, [props]);
-  const messageSpan = (<span id="snackbar-message-id" dangerouslySetInnerHTML={{ __html: message }} />);
+  const messageSpan = (
+    <span
+      id="snackbar-message-id"
+      dangerouslySetInnerHTML={{ __html: message }}
+    />
+  );
   const content = (
     <Snackbar
-      anchorOrigin={{ vertical: verticalPosition, horizontal: horizontalPosition }}
+      anchorOrigin={{
+        vertical: verticalPosition,
+        horizontal: horizontalPosition,
+      }}
       message={messageSpan}
       autoHideDuration={3000}
       onClose={closeNotification}
       open={open}
       ContentProps={{
-        'aria-describedby': 'snackbar-message-id',
+        "aria-describedby": "snackbar-message-id",
       }}
     />
   );
   if (message === undefined) return null;
-  if (message === '') return null;
+  if (message === "") return null;
   return content;
 };
 
 export const DisplayBrowserNotification = (message) => {
-  if (!('Notification' in window)) {
+  if (!("Notification" in window)) {
     alert(message);
-  }
-  else if (Notification.permission === 'granted') {
+  } else if (Notification.permission === "granted") {
     // If it's okay let's create a notification
     new Notification(message);
-  }
-  else if (Notification.permission !== 'denied') {
+  } else if (Notification.permission !== "denied") {
     Notification.requestPermission().then(function (permission) {
       // If the user accepts, let's create a notification
-      if (permission === 'granted') {
+      if (permission === "granted") {
         new Notification(message);
       }
     });
@@ -75,16 +82,17 @@ export const DisplayBrowserNotification = (message) => {
 };
 
 export const notify = (message, callback, variant) => {
-  if (variant === 'browser')
-    DisplayBrowserNotification(message);
-  else if (variant === 'both') {
+  if (variant === "browser") DisplayBrowserNotification(message);
+  else if (variant === "both") {
     OpenNotificationFunction(message);
     DisplayBrowserNotification(message);
-  } else
-    OpenNotificationFunction(message);
-  if (typeof callback === 'function')
-    callback();
+  } else OpenNotificationFunction(message);
+  if (typeof callback === "function") callback();
 };
 
+EnhancedNotification.propTypes = {
+  horizontal: PropTypes.string,
+  vertical: PropTypes.string,
+};
 
 export default EnhancedNotification;

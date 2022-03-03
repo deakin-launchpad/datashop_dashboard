@@ -289,7 +289,7 @@ export const ServiceManager = () => {
           title="Service Manager"
           options={{
             selector: true,
-            ignoreKeys: ["__v"],
+            ignoreKeys: ["id", "__v"],
             actions: [
               {
                 name: "",
