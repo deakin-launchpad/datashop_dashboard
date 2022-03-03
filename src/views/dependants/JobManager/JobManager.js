@@ -7,13 +7,17 @@ import {
   MenuItem,
   Paper,
   Typography,
+  FormControl,
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
-import { useFormik, Formik } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useSocket } from "helpers/index";
+import { format } from "date-fns";
+
+const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -23,26 +27,19 @@ export const JobManager = () => {
   const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState("");
-  const [isFiltering, setIsFiltering] = useState({
-    SUBMITTED: false,
-    Running: false,
-    Failed: false,
-    Completed: false,
-  });
+  const [isFiltered, setIsFiltered] = useState(false);
+  const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
   const createJob = async (data) => {
     const response = await API.createJob(data);
     if (response.success) {
-      formik.values.downloadableURL = "";
-      formik.values.jobName = "";
-      formik.values.jsonData = "";
       setSelectedService("");
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
       getJob();
-      notify("Job Creation successed!!");
+      notify("Job Creation succeeded!!");
     } else {
       setModalIsOpen(false);
       notify("Job Creation Failed!!");
@@ -123,18 +120,11 @@ export const JobManager = () => {
       data.map((item) => ({
         id: item._id,
         Status: item.jobStatus,
-        JobName: item.jobName,
-        ExecutionTime: item.executionTime,
-        OperationTime: new Date(parseInt(item.createdAt)).toLocaleDateString(
-          "en-AU",
-          {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          }
+        "Job Name": item.jobName,
+        "Execution Time": item.executionTime,
+        "Operation Time": format(
+          new Date(parseInt(item.createdAt)),
+          "yyyy-MM-dd HH:mm:ss"
         ),
         insightsURL: item.insightsURL,
       }))
@@ -145,128 +135,178 @@ export const JobManager = () => {
     resetTableData(job);
   }, [job]);
 
-  let formik = useFormik({
-    initialValues: {
-      downloadableURL: "",
-      jsonData: "",
-      jobName: "",
-    },
-    validationSchema: () => {
-      return Yup.object().shape({
-        downloadableURL: Yup.string().max(255),
-        jobName: Yup.string(),
-        jsonData: Yup.string(),
-      });
-    },
-    onSubmit: async (values, { resetForm }) => {
-      const data = {
-        jobName: values.jobName,
-        endpoint: selectedService.url,
-        serviceID: selectedService._id,
-        datafileURL: {
-          url: values.downloadableURL,
-          json: values.jsonData,
-        },
-      };
+  const jsonDataValidate = (data) => {
+    if (!data.includes("gender")) return notify("No gender available.");
+    if (!data.includes("TotalHeight"))
+      return notify("No TotalHeight available");
+    if (!data.includes("Inseam")) return notify("No Inseam available");
+    if (!data.includes("Bust")) return notify("No Bust available.");
+    if (!data.includes("UnderBust")) return notify("No UnderBust available");
+    if (!data.includes("Waist")) return notify("No Waist available");
+    if (!data.includes("HighHip")) return notify("No HighHip available.");
+    if (!data.includes("LowHip")) return notify("No LowHip available");
+    if (!data.includes("HighThigh")) return notify("No HighThigh available");
+    if (!data.includes("LowThigh")) return notify("No LowThigh available.");
+    if (!data.includes("NeckBase")) return notify("No NeckBase available");
+    if (!data.includes("Suitleglength"))
+      return notify("No Suitleglength available");
+    return true;
+  };
+
+  const initialValues = {
+    downloadableURL: "",
+    jsonData: `{
+        "gender": "female",
+        "TotalHeight": 1715,
+        "Inseam": 845,
+        "Bust": 880,
+        "UnderBust": 780,
+        "Waist": 721,
+        "HighHip": 770,
+        "LowHip": 865,
+        "HighThigh": 491,
+        "LowThigh": 417,
+        "NeckBase": 460,
+        "Suitleglength": 190,
+      }`,
+    jobName: "",
+    service: "",
+    dataType: "",
+  };
+
+  const validationSchema = () => {
+    return Yup.object().shape({
+      downloadableURL: Yup.string().max(255),
+      jobName: Yup.string().required("Job name is required"),
+      jsonData: Yup.string(),
+    });
+  };
+
+  const handleSubmit = async (values, { resetForm }) => {
+    const data = {
+      jobName: values.jobName,
+      endpoint: selectedService.url,
+      serviceID: selectedService._id,
+      datafileURL: {
+        url: values.downloadableURL,
+        json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
+      },
+    };
+    if (dataTypeSelected === dataTypes[1]) {
+      const valid = jsonDataValidate(values.jsonData);
+      if (valid) {
+        createJob(data);
+      }
+    } else {
       createJob(data);
-      resetForm();
-    },
-  });
+    }
+    resetForm();
+  };
 
   let createJobModal = (
     <Box>
-      <Formik initialValues={formik.initialValues}>
-        <form noValidate onSubmit={formik.handleSubmit}>
-          <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
-          <TextField
-            sx={{ py: 1 }}
-            fullWidth
-            name="jobName"
-            value={formik.values.jobName}
-            onChange={formik.handleChange}
-          />
-          <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
-          <Select
-            placeholder="Select service"
-            fullWidth
-            value={selectedService}
-            label="Service"
-            onChange={handleServiceChange}
-          >
-            {services.map((service, i) => {
-              return (
-                <MenuItem value={service} key={i}>
-                  {service.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-
-          <InputLabel sx={{ py: 1 }}>Data Type</InputLabel>
-          <Select
-            placeholder="Select Datatype"
-            fullWidth
-            value={dataTypeSelected}
-            label="Datatype"
-            onChange={handleDataTypeChange}
-          >
-            {dataTypes.map((type, i) => {
-              return (
-                <MenuItem value={type} key={i}>
-                  {type}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          {dataTypeSelected === dataTypes[1] ? (
-            <TextField
-              fullWidth
-              label="Json Data"
-              margin="normal"
-              name="jsonData"
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
+            <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
+            <Field
+              as={TextField}
+              name="jobName"
               type="text"
-              value={formik.values.jsonData}
-              variant="outlined"
-              multiline
-              rows={4}
-              error={formik.touched.jsonData}
-              helperText={formik.touched.jsonData && formik.errors.jsonData}
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-            />
-          ) : dataTypeSelected === dataTypes[2] ? (
-            <TextField
+              autoComplete="off"
               fullWidth
-              label="Data URL Link"
-              margin="normal"
-              name="downloadableURL"
-              type="text"
-              value={formik.values.downloadableURL}
-              variant="outlined"
-              error={
-                formik.touched.downloadableURL &&
-                Boolean(formik.errors.downloadableURL)
-              }
-              helperText={
-                formik.touched.downloadableURL && formik.errors.downloadableURL
-              }
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
+              error={errors.jobName !== undefined}
+              helperText={touched.jobName && errors.jobName}
             />
-          ) : null}
-          <Box sx={{ mt: 2 }}>
-            <Button
-              color="primary"
-              disabled={formik.isSubmitting}
-              size="large"
-              variant="contained"
-              type="submit"
-              onClick={() => setModalIsOpen(false)}
+            <InputLabel sx={{ py: 1 }}>Select Service</InputLabel>
+            <Field
+              as={Select}
+              name="service"
+              placeholder="Select Service"
+              fullWidth
+              value={selectedService}
+              label="Service"
+              onChange={handleServiceChange}
             >
-              Submit
-            </Button>
-          </Box>
-        </form>
+              {services.map((service, i) => {
+                return (
+                  <MenuItem value={service} key={i}>
+                    {service.name}
+                  </MenuItem>
+                );
+              })}
+            </Field>
+
+            <InputLabel sx={{ py: 1 }}>Data Type</InputLabel>
+            <Field
+              as={Select}
+              name="dataType"
+              placeholder="Select Datatype"
+              fullWidth
+              value={dataTypeSelected}
+              label="Datatype"
+              onChange={handleDataTypeChange}
+            >
+              {dataTypes.map((type, i) => {
+                return (
+                  <MenuItem value={type} key={i}>
+                    {type}
+                  </MenuItem>
+                );
+              })}
+            </Field>
+            {dataTypeSelected === dataTypes[1] ? (
+              <Box>
+                <Typography sx={{ mt: 2 }} variant="body2">
+                  * Please keep the data structure and field name and change the
+                  values.
+                </Typography>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Json Data"
+                  margin="normal"
+                  name="jsonData"
+                  type="text"
+                  variant="outlined"
+                  multiline
+                  rows={10}
+                  error={touched.jsonData}
+                  helperText={touched.jsonData && errors.jsonData}
+                />
+              </Box>
+            ) : dataTypeSelected === dataTypes[2] ? (
+              <Field
+                as={TextField}
+                fullWidth
+                label="Data URL Link"
+                margin="normal"
+                name="downloadableURL"
+                type="text"
+                variant="outlined"
+                error={
+                  touched.downloadableURL && Boolean(errors.downloadableURL)
+                }
+                helperText={touched.downloadableURL && errors.downloadableURL}
+              />
+            ) : null}
+            <Box sx={{ mt: 2 }}>
+              <Button
+                color="primary"
+                disabled={isSubmitting}
+                size="large"
+                variant="contained"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </Box>
+          </Form>
+        )}
       </Formik>
     </Box>
   );
@@ -279,16 +319,20 @@ export const JobManager = () => {
     </Box>
   );
 
-  const filterStatus = (status, isFiltered) => {
+  const filterStatus = (status) => {
+    setStatusToFilter(status);
+    if (status === "ALL") {
+      resetTableData(job);
+      setIsFiltered(false);
+      return;
+    }
+    if (isFiltered) {
+      resetTableData(job);
+    }
+    setIsFiltered(true);
     setDataForTable((prevState) =>
       prevState.filter((item) => item.Status === status)
     );
-    if (isFiltered) {
-      setIsFiltering((prevState) => ({ ...prevState, [status]: false }));
-      resetTableData(job);
-    } else {
-      setIsFiltering((prevState) => ({ ...prevState, [status]: true }));
-    }
   };
 
   let content = (
@@ -311,52 +355,35 @@ export const JobManager = () => {
           disableSubmit: true,
         }}
       />
-      <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
-        <Button
-          size="middle"
-          variant="contained"
-          sx={{
-            backgroundColor: "#7f7f7f",
-            "&:hover": { backgroundColor: "#6a6a6a" },
-          }}
-          onClick={() => {
-            filterStatus("SUBMITTED", isFiltering.SUBMITTED);
-          }}
-        >
-          Initiated
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          onClick={() => {
-            filterStatus("Running", isFiltering.Running);
-          }}
-        >
-          Running
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          color="error"
-          onClick={() => {
-            filterStatus("Failed", isFiltering.Failed);
-          }}
-        >
-          Failed
-        </Button>
-        <Button
-          size="middle"
-          variant="contained"
-          sx={{
-            backgroundColor: "green",
-            "&:hover": { backgroundColor: "#185a37" },
-          }}
-          onClick={() => {
-            filterStatus("Completed", isFiltering.Completed);
-          }}
-        >
-          Success
-        </Button>
+      <Box
+        maxWidth="xl"
+        sx={{
+          textAlign: "right",
+          ml: 4,
+          pt: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "right",
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ width: "8.5em" }}>
+          <InputLabel>Filter Status:</InputLabel>
+          <Select
+            label="Filter status"
+            value={statusToFilter}
+            sx={{ textAlign: "center" }}
+            onChange={(e) => {
+              filterStatus(e.target.value);
+            }}
+          >
+            {statuses.map((s, i) => (
+              <MenuItem value={s} key={i}>
+                {s}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Button
           size="middle"
           variant="contained"
@@ -373,6 +400,8 @@ export const JobManager = () => {
             options={{
               selector: true,
               enableSort: true,
+              sortAscending: false,
+              selectSortBy: "Operation Time",
               ignoreKeys: [
                 "deakinSSO",
                 "firstLogin",
@@ -390,7 +419,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    viewData(job[dataForTable.indexOf(data)]);
+                    viewData(data);
                   },
                 },
                 {

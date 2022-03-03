@@ -13,13 +13,12 @@ import {
   FourOFour,
   Home,
   Login,
-  MobileMenu,
   Register,
   DatasetsManager,
   ServiceManager,
   JobManager,
   DevelopersProfile,
-  Profile
+  Profile,
 } from "views";
 
 import { Layout } from "./layout";
@@ -122,22 +121,6 @@ export const AppRoutes = (props) => {
           >
             <Layout>
               <Home {...props} />
-            </Layout>
-          </AuthRoute>
-        }
-      />
-      <Route
-        exact
-        path="/menu"
-        element={
-          <AuthRoute
-            redirectTo="/login"
-            loginStatus={loginStatus}
-            parentProps={props}
-          >
-            <Layout>
-              {" "}
-              <MobileMenu {...props} />
             </Layout>
           </AuthRoute>
         }

@@ -14,7 +14,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import { useFormik, Formik } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 export const DatasetsManager = () => {
@@ -31,6 +31,7 @@ export const DatasetsManager = () => {
   const [serviceModalOpen, setServiceModalOpen] = useState(false);
 
   const [jobDataUrl, setJobDataUrl] = useState();
+  const [jobName, setJobName] = useState("");
 
   const uploadDataset = async (data) => {
     const response = await API.uploadDocument(data);
@@ -80,8 +81,6 @@ export const DatasetsManager = () => {
   const createDataEntry = async (data) => {
     const response = await API.createDataEntry(data);
     if (response.success) {
-      formik.values.description = "";
-      formik.values.name = "";
       setS3url("");
       setDataModalOpen(false);
       getDatasets();
@@ -90,26 +89,26 @@ export const DatasetsManager = () => {
     }
   };
 
-  let formik = useFormik({
-    initialValues: {
-      description: "",
-      name: "",
-    },
-    validationSchema: () => {
-      return Yup.object().shape({
-        description: Yup.string().max(255).required("description Is Required"),
-        name: Yup.string().min(5).max(255).required("Name Is Required"),
-      });
-    },
-    onSubmit: async (values) => {
-      const data = {
-        dataURL: s3url,
-        description: values.description,
-        name: values.name,
-      };
-      createDataEntry(data);
-    },
-  });
+  const initialValues = {
+    description: "",
+    name: "",
+  };
+  const validationSchema = () => {
+    return Yup.object().shape({
+      description: Yup.string().max(255).required("description Is Required"),
+      name: Yup.string().min(5).max(255).required("Name Is Required"),
+    });
+  };
+
+  const handleSubmit = async (values, { resetForm }) => {
+    const data = {
+      dataURL: s3url,
+      description: values.description,
+      name: values.name,
+    };
+    createDataEntry(data);
+    resetForm();
+  };
 
   let uploadFilesContent = (
     <Box sx={{ mb: 2 }}>
@@ -126,51 +125,51 @@ export const DatasetsManager = () => {
   let createDataEntryModal = (
     <Box>
       {uploadFilesContent}
-      <Typography>File to upload: {s3url}</Typography>
-      <Formik initialValues={formik.initialValues}>
-        <form noValidate onSubmit={formik.handleSubmit}>
-          <TextField
-            fullWidth
-            label="data entry Name"
-            margin="normal"
-            name="name"
-            type="text"
-            value={formik.values.name}
-            variant="outlined"
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <TextField
-            fullWidth
-            label=" description"
-            margin="normal"
-            name="description"
-            type="text"
-            value={formik.values.description}
-            variant="outlined"
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-
-          <Box sx={{ mt: 2 }}>
-            <Button
+      <Typography>File to Upload: {s3url}</Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
+            <Field
+              as={TextField}
               fullWidth
-              color="primary"
-              disabled={formik.isSubmitting}
-              size="large"
-              variant="contained"
-              type="submit"
-            >
-              Create data entry
-            </Button>
-          </Box>
-        </form>
+              label="Data Entry Name"
+              margin="normal"
+              name="name"
+              type="text"
+              variant="outlined"
+              error={touched.name && Boolean(errors.name)}
+              helperText={touched.name && errors.name}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              label="Description"
+              margin="normal"
+              name="description"
+              type="text"
+              variant="outlined"
+              error={touched.description && Boolean(errors.description)}
+              helperText={touched.description && errors.description}
+            />
+
+            <Box sx={{ mt: 2 }}>
+              <Button
+                fullWidth
+                color="primary"
+                disabled={isSubmitting}
+                size="large"
+                variant="contained"
+                type="submit"
+              >
+                Create Data Entry
+              </Button>
+            </Box>
+          </Form>
+        )}
       </Formik>
     </Box>
   );
@@ -222,17 +221,18 @@ export const DatasetsManager = () => {
   };
 
   const postCreateJobData = async () => {
-    const _jobDataTosend = {
+    const _jobDataToSend = {
       datafileURL: {
         url: jobDataUrl,
         json: "",
       },
+      jobName: jobName,
       endpoint: selectedService.url,
       serviceID: selectedService._id,
     };
-    const response = await API.createJob(_jobDataTosend);
+    const response = await API.createJob(_jobDataToSend);
     if (response.success) {
-      notify("Job Creation successed!!");
+      notify("Job Creation succeeded!!");
       setServiceModalOpen(false);
     } else {
       notify("Job Creation Failed!!");
@@ -243,10 +243,22 @@ export const DatasetsManager = () => {
   let serviceModal = (
     <Container sx={{ p: 1 }}>
       <FormControl fullWidth>
-        <InputLabel sx={{ pb: 1 }}>Select service</InputLabel>
+        <TextField
+          sx={{ py: 1 }}
+          fullWidth
+          name="jobName"
+          label="Job Name"
+          value={jobName}
+          onChange={(event) => {
+            setJobName(event.target.value);
+          }}
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <InputLabel>Select Service</InputLabel>
         <Select
           value={selectedService}
-          label="Service"
+          label="Select Service"
           onChange={handleServiceChange}
         >
           {totalService.map((service, i) => {
@@ -268,7 +280,7 @@ export const DatasetsManager = () => {
     <Box>
       <EnhancedModal
         isOpen={dataModalOpen}
-        dialogTitle={`Upload new data entry`}
+        dialogTitle={`Upload New Data Entry`}
         dialogContent={createDataEntryModal}
         options={{
           onClose: () => setDataModalOpen(false),
