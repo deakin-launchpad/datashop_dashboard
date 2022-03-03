@@ -6,12 +6,12 @@ import {
   Button,
   TextField,
   FormControl,
-  Paper
+  Paper,
 } from "@mui/material";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
-import { useFormik, Formik } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 export const ServiceManager = () => {
@@ -27,13 +27,13 @@ export const ServiceManager = () => {
       let result = [];
       res.map((item) => {
         let data = {
-          name: item.name,
-          id: item._id,
-          requirments: item.requirements,
-          url: item.url,
-          description: item.description,
-          cost: item.cost,
-          creator_id:item.creator_id ?? 'null'
+          Name: item.name,
+          ID: item._id,
+          Requirements: item.requirements,
+          URL: item.url,
+          Description: item.description,
+          Cost: item.cost,
+          "Creator ID": item.creator_id ?? "null",
         };
         result.push(data);
       });
@@ -53,11 +53,6 @@ export const ServiceManager = () => {
     data.requirements = requirements;
     const response = await API.createService(data);
     if (response.success) {
-      formik.values.url = "";
-      formik.values.description = "";
-      formik.values.name = "";
-      formik.values.cost = "";
-      formik.values.requirements = "";
       setserviceModal(false);
       getService();
     } else {
@@ -66,125 +61,116 @@ export const ServiceManager = () => {
     }
   };
 
-  let formik = useFormik({
-    initialValues: {
-      url: "",
-      description: "",
-      name: "",
-      cost: "",
-      requirements: "",
-    },
-    validationSchema: () => {
-      return Yup.object().shape({
-        url: Yup.string().max(255).required("url Is Required"),
-        description: Yup.string().max(255).required("description Is Required"),
-        name: Yup.string().min(5).max(255).required("Password Is Required"),
-        cost: Yup.number().required("description Is Required"),
-        requirements: Yup.string().max(255).required("description Is Required"),
-      });
-    },
-    onSubmit: async (values) => {
-      const data = {
-        url: values.url,
-        description: values.description,
-        name: values.name,
-        serviceId: values.serviceId,
-        cost: values.cost,
-        requirements: values.requirements,
-      };
-      createService(data);
-    },
-  });
+  const initialValues = {
+    url: "",
+    description: "",
+    name: "",
+    cost: "",
+    requirements: "",
+  };
+
+  const validationSchema = () => {
+    return Yup.object().shape({
+      url: Yup.string().max(255).required("URL Is Required"),
+      description: Yup.string().max(255).required("Description Is Required"),
+      name: Yup.string().min(5).max(255).required("Password Is Required"),
+      cost: Yup.number().required("Description Is Required"),
+      requirements: Yup.string().max(255).required("Description Is Required"),
+    });
+  };
+
+  const handleSubmit = async (values, { resetForm }) => {
+    const data = {
+      url: values.url,
+      description: values.description,
+      name: values.name,
+      serviceId: values.serviceId,
+      cost: values.cost,
+      requirements: values.requirements,
+    };
+    createService(data);
+    resetForm();
+  };
 
   let createServiceModal = (
     <Box>
-      <Formik initialValues={formik.initialValues}>
-        <form noValidate onSubmit={formik.handleSubmit}>
-          <TextField
-            fullWidth
-            label="Service Name"
-            margin="normal"
-            name="name"
-            type="text"
-            value={formik.values.name}
-            variant="outlined"
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <TextField
-            fullWidth
-            label="URL Link"
-            margin="normal"
-            name="url"
-            type="text"
-            value={formik.values.lastName}
-            variant="outlined"
-            error={formik.touched.url && Boolean(formik.errors.url)}
-            helperText={formik.touched.url && formik.errors.url}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <TextField
-            fullWidth
-            label=" description/endpoint"
-            margin="normal"
-            name="description"
-            type="text"
-            value={formik.values.description}
-            variant="outlined"
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <TextField
-            fullWidth
-            label=" cost "
-            margin="normal"
-            name="cost"
-            type="text"
-            value={formik.values.cost}
-            variant="outlined"
-            error={formik.touched.cost && Boolean(formik.errors.cost)}
-            helperText={formik.touched.cost && formik.errors.cost}
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
-          <TextField
-            fullWidth
-            label=" requirements "
-            margin="normal"
-            name="requirements"
-            type="text"
-            value={formik.values.requirements}
-            placeholder="eg:requirment1,requirement2,"
-            variant="outlined"
-            error={
-              formik.touched.requirements && Boolean(formik.errors.requirements)
-            }
-            helperText={
-              formik.touched.requirements && formik.errors.requirements
-            }
-            onBlur={formik.handleBlur}
-            onChange={formik.handleChange}
-          />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
+            <Field
+              as={TextField}
+              fullWidth
+              label="Service Name"
+              margin="normal"
+              name="name"
+              type="text"
+              variant="outlined"
+              error={touched.name && Boolean(errors.name)}
+              helperText={touched.name && errors.name}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              label="URL Link"
+              margin="normal"
+              name="url"
+              type="text"
+              variant="outlined"
+              error={touched.url && Boolean(errors.url)}
+              helperText={touched.url && errors.url}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              label=" Description/Endpoint"
+              margin="normal"
+              name="description"
+              type="text"
+              variant="outlined"
+              error={touched.description && Boolean(errors.description)}
+              helperText={touched.description && errors.description}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              label="Cost "
+              margin="normal"
+              name="cost"
+              type="text"
+              variant="outlined"
+              error={touched.cost && Boolean(errors.cost)}
+              helperText={touched.cost && errors.cost}
+            />
+            <Field
+              as={TextField}
+              fullWidth
+              label="Requirements "
+              margin="normal"
+              name="requirements"
+              type="text"
+              placeholder="eg: requirement1,requirement2 "
+              variant="outlined"
+              error={touched.requirements && Boolean(errors.requirements)}
+              helperText={touched.requirements && errors.requirements}
+            />
 
-          <Box sx={{ mt: 2 }}>
-            <Button
-              color="primary"
-              disabled={formik.isSubmitting}
-              size="large"
-              variant="contained"
-              type="submit"
-            >
-              Create Service
-            </Button>
-          </Box>
-        </form>
+            <Box sx={{ mt: 2 }}>
+              <Button
+                color="primary"
+                disabled={isSubmitting}
+                size="large"
+                variant="contained"
+                type="submit"
+              >
+                Create Service
+              </Button>
+            </Box>
+          </Form>
+        )}
       </Formik>
     </Box>
   );
@@ -205,7 +191,7 @@ export const ServiceManager = () => {
               {selectedService.name}
             </Typography>
             <Typography variant="body2">
-              Creator ID: {selectedService.creator_id ?? 'null'}
+              Creator ID: {selectedService.creator_id ?? "null"}
               <br />
             </Typography>
             <Typography variant="body2">
@@ -240,7 +226,7 @@ export const ServiceManager = () => {
     <Box>
       <EnhancedModal
         isOpen={modalIsOpen}
-        dialogTitle={`Detail of service`}
+        dialogTitle={`Detail of Service`}
         dialogContent={ServiceDetailModal}
         options={{
           onClose: () => setModalIsOpen(false),
@@ -249,14 +235,14 @@ export const ServiceManager = () => {
       />
       <EnhancedModal
         isOpen={serviceModal}
-        dialogTitle={`Create new service`}
+        dialogTitle={`Create New Service`}
         dialogContent={createServiceModal}
         options={{
           onClose: () => setserviceModal(false),
           disableSubmit: true,
         }}
       />
-      <Box  maxWidth="xl" sx={{textAlign:'right',ml:4}}>
+      <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
           variant="contained"
@@ -269,32 +255,34 @@ export const ServiceManager = () => {
   );
 
   let tablecontent = (
-    <Box
-      maxWidth="xl"
-      sx={{mt:2,ml:4}}
-    >
-      {service.length > 0 ? <EnhancedTable
-        data={service}
-        title="Service Manager"
-        options={{
-          selector:true,
-          ignoreKeys: [
-            "__v",
-          ],
-          actions: [
-            {
-              name: "",
-              label: "View",
-              type: "button",
-              function: async (e, data) => {
-                setModalIsOpen(true);
-                setSelectedService(data);
+    <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
+      {service.length > 0 ? (
+        <EnhancedTable
+          data={service}
+          title="Service Manager"
+          options={{
+            selector: true,
+            ignoreKeys: ["__v"],
+            actions: [
+              {
+                name: "",
+                label: "View",
+                type: "button",
+                function: async (e, data) => {
+                  setModalIsOpen(true);
+                  setSelectedService(data);
+                },
               },
-            },
-          ],
-        }}
-      />:<Paper sx={{py:4}}><Typography variant="body1" sx={{textAlign:'center'}}>No Data</Typography></Paper>}
-      
+            ],
+          }}
+        />
+      ) : (
+        <Paper sx={{ py: 4 }}>
+          <Typography variant="body1" sx={{ textAlign: "center" }}>
+            No Data
+          </Typography>
+        </Paper>
+      )}
     </Box>
   );
   return (

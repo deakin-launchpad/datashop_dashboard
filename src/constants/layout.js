@@ -79,7 +79,7 @@ class Layout {
           icon: "fe:logout",
           helpingAttribute: "",
           customTitle: "Welcome to Boiler Plate",
-          isFavourite: false,
+          isFavourite: true,
         }),
       ],
     };
