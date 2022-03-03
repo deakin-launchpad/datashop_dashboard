@@ -116,7 +116,11 @@ const themesOptions = {
       mode: 'light',
       primary: {
         contrastText: '#ffffff',
-        main: '#5664d2'
+        main: '#326EBD'
+      },
+      secondary:{
+        contrastText: '#616162',
+        main: '#F2F6FE'
       },
       success: {
         contrastText: '#ffffff',
@@ -226,7 +230,7 @@ export const createTheme = (config = {}) => {
   let theme = createMuiTheme(merge({}, baseOptions, themeOptions, {
     ...(config.roundedCorners && {
       shape: {
-        borderRadius: 16
+        borderRadius: 6
       }
     })
   }, {

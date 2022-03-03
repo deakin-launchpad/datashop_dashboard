@@ -13,12 +13,14 @@ import {
   FourOFour,
   Home,
   Login,
-  MobileMenu,
   Register,
-  UsersManager,
+  DatasetsManager,
   ServiceManager,
   JobManager,
+  DevelopersProfile,
+  Profile,
 } from "views";
+
 import { Layout } from "./layout";
 
 const AuthRoute = ({ children, redirectTo, parentProps, loginStatus }) => {
@@ -125,22 +127,6 @@ export const AppRoutes = (props) => {
       />
       <Route
         exact
-        path="/menu"
-        element={
-          <AuthRoute
-            redirectTo="/login"
-            loginStatus={loginStatus}
-            parentProps={props}
-          >
-            <Layout>
-              {" "}
-              <MobileMenu {...props} />
-            </Layout>
-          </AuthRoute>
-        }
-      />
-      <Route
-        exact
         path="/examples"
         element={
           <AuthRoute
@@ -157,7 +143,37 @@ export const AppRoutes = (props) => {
       />
       <Route
         exact
-        path="/users"
+        path="/developers"
+        element={
+          <AuthRoute
+            redirectTo="/login"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              <DevelopersProfile {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/profile"
+        element={
+          <AuthRoute
+            redirectTo="/login"
+            loginStatus={loginStatus}
+            parentProps={props}
+          >
+            <Layout>
+              <Profile {...props} />
+            </Layout>
+          </AuthRoute>
+        }
+      />
+      <Route
+        exact
+        path="/Datasets"
         element={
           <AuthRoute
             redirectTo="/login"
@@ -166,7 +182,7 @@ export const AppRoutes = (props) => {
           >
             <Layout>
               {" "}
-              <UsersManager {...props} />
+              <DatasetsManager {...props} />
             </Layout>
           </AuthRoute>
         }
@@ -176,7 +192,7 @@ export const AppRoutes = (props) => {
         path="/service"
         element={
           <AuthRoute
-            redirectTo="/service"
+            redirectTo="/login"
             loginStatus={loginStatus}
             parentProps={props}
           >
@@ -192,7 +208,7 @@ export const AppRoutes = (props) => {
         path="/job"
         element={
           <AuthRoute
-            redirectTo="/job"
+            redirectTo="/login"
             loginStatus={loginStatus}
             parentProps={props}
           >

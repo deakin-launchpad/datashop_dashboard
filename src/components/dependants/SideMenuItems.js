@@ -45,7 +45,7 @@ export const SideMenuItems = () => {
 
   const renderMenuButton = (name, icon, link, customTitle, key) => {
     return (
-      <ListItem key={key} button selected={selectedIndex === key} component={Link} to={link} onClick={(e) => {
+      <ListItem sx={{my:1,borderRadius:2}} key={key} button selected={selectedIndex === key} component={Link} to={link} onClick={(e) => {
         handleListItemClick(e, key);
         return setPageTitle((customTitle === undefined || customTitle === '' ? name : customTitle));
       }}>
@@ -53,10 +53,10 @@ export const SideMenuItems = () => {
           <ParentIcon style={{
             margin: '0 0 6px 5px'
           }}>
-            <InlineIcon icon={icon} />
+            <InlineIcon color="inherit" icon={icon} />
           </ParentIcon>
         </ListItemIcon>
-        <ListItemText primary={name} />
+        <ListItemText sx={{color:'white'}} primary={name} />
       </ListItem >
     );
   };
@@ -70,16 +70,16 @@ export const SideMenuItems = () => {
           <ParentIcon style={{
             margin: '0 0 6px 5px'
           }}>
-            <InlineIcon icon={icon} />
+            <InlineIcon color="inherit" icon={icon} />
           </ParentIcon>
         </ListItemIcon>
-        <ListItemText primary={name} />
+        <ListItemText sx={{color:'white'}} primary={name} />
       </ListItem>
     );
   };
 
   return (
-    <List>
+    <List sx={{mt:4,px:2}}>
       {LayoutConfig.getMenuItems(currentUserRole).map((value, i) => {
         return menuitemsController(value, i);
       })}

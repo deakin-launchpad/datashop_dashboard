@@ -2,7 +2,7 @@
  *  Created by Sanchit Dang
  ***/
 import { useState, useContext, useCallback } from 'react';
-import { Typography, Box, Container, Card, CardContent, Divider, Link } from '@mui/material';
+import { Typography, Box, CardContent, Link ,Grid} from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { LoginContext, DeviceInfoContext, LayoutContext } from 'contexts';
 import { LoginForm, SsoLogin } from 'components';
@@ -11,17 +11,32 @@ import { ConnectionConfig } from 'constants/index';
 import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(() => createStyles({
-  developMessage: {
-    position: 'absolute',
-    bottom: '2vh',
-    margin: 'auto',
-    width: '100%'
+  leftSpan:{
+    height: '100vh',
+    position:'relative',
+    background: `#326EBD url(${require('../../../assets/images/bg/authentication_left_bg.png').default})`,
+    backgroundSize:'100% 100%'
+  },
+  leftTextPosition:{
+    width:'80%',
+    position:'absolute',
+    margin:'auto',
+    left:0,
+    right:0,
+    top:'15%',
+    zIndex:2
+  },
+  rightSpan:{
+    height: '100vh',
+    background: `url(${require('../../../assets/images/bg/authentication_bg.png').default})`,
+    backgroundSize:'100% 100%',
+    padding:40
   }
 }));
 
 export const Login = () => {
   const classes = useStyles();
-  const [pageHeading] = useState('Login');
+  const [pageHeading] = useState('Sign in to DataShop');
   const { setAccessToken } = useContext(LoginContext);
   const { deviceUUID, deviceName } = useContext(DeviceInfoContext);
   const { setCurrentUserRole } = useContext(LayoutContext);
@@ -51,51 +66,49 @@ export const Login = () => {
   }, [setCurrentUserRole]);
 
   let content = (
-    <Box sx={{
-      backgroundColor: 'background.default',
-      display: 'flex', flexDirection: 'column',
-      minHeight: '100vh'
-    }} >
-      <Container maxWidth="sm" sx={{
-        py: {
-          xs: '80px',
-          sm: window.screen.availHeight / 50
-        }
-      }}  >
-        <Card>
-          <CardContent sx={{ display: 'flex', flexDirection: 'column', p: 4 }} >
-            <Box sx={{
-              alignItems: 'center', display: 'flex', justifyContent: 'space-between', mb: 3,
-            }}>
-              <div>
-                <Typography color="textPrimary" variant="h4" >
+    <Box>
+      <Grid container>
+        <Grid item xs={4} className={classes.leftSpan}>
+          <Box className={classes.leftTextPosition}>
+            <Typography variant="h3" component="h3" color="white" >DataShop</Typography>
+            <Typography variant="h5" component="h5" color="white">Can fill in the relevant function
+description</Typography>
+          </Box>
+          <Box sx={{position:'absolute',zIndex:1,left:15,bottom:40}}>
+            <img width="95%" src={require('../../../assets/images/bg/login_pic.png').default}/>
+          </Box>
+        </Grid>
+        <Grid item xs={8}>  
+          <Box className={classes.rightSpan}>
+            <img width={200} src={require('../../../assets/images/logo/logo.png').default} />
+            <CardContent sx={{ display: 'flex', flexDirection: 'column', p: 4 }} >
+              <Box sx={{
+                mx: 10,
+                mt:10,
+                mb:3
+              }}>
+                <Typography color="textPrimary" variant="h5" >
                   {pageHeading}
                 </Typography>
-              </div>
-            </Box>
-            <Box sx={{ flexGrow: 1, mt: 3 }} >
-              <LoginForm login={performLogin} onSuccess={getUserRole} />
-            </Box>
-            {ConnectionConfig.useDeakinSSO && <Box sx={{ mt: 2 }}>
-              <SsoLogin />
-            </Box>}
-            <Divider sx={{ my: 3 }} />
-            <Link
-              color="textSecondary"
-              component={RouterLink}
-              to="/register"
-              variant="body2"
-            >
-              Create new account
-            </Link>
-          </CardContent>
-        </Card>
-      </Container>
-      <Box mt={5}>
-        <Typography className={classes.developMessage} variant="body2" color="textSecondary" align="center">
-          Developed by Deakin Launchpad
-        </Typography>
-      </Box>
+                <Typography variant="body1">Not a member? <Link
+                  color="#326EBD"
+                  component={RouterLink}
+                  to="/register"
+                  variant="body2"
+                >
+              Sign up
+                </Link> now</Typography>
+              </Box>
+              <Box sx={{ mx:10 }} >
+                <LoginForm login={performLogin} onSuccess={getUserRole} />
+              </Box>
+              {ConnectionConfig.useDeakinSSO && <Box sx={{ mt: 2 }}>
+                <SsoLogin />
+              </Box>}
+            </CardContent>
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
   return content;

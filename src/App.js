@@ -5,8 +5,7 @@ import { useEffect } from 'react';
 import './helpers/database/idb';
 import { AppRoutes } from './bricks/index';
 import { ContextManager } from 'contexts';
-import { Notification, DevModeSwitch, LoginCheck, GlobalStyles } from 'components';
-import { DeveloperConfig } from 'constants/index';
+import { Notification, LoginCheck, GlobalStyles } from 'components';
 import { ThemeProvider } from 'theme';
 
 const App = (props) => {
@@ -19,7 +18,6 @@ const App = (props) => {
         <LoginCheck>
           <AppRoutes {...props} />
           <GlobalStyles />
-          {DeveloperConfig.visible ? <DevModeSwitch /> : ''}
           <Notification />
         </LoginCheck>
       </ThemeProvider>

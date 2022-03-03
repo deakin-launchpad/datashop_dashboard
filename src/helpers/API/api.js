@@ -64,7 +64,7 @@ class API {
   async logoutUser() {
     return axiosInstance
       .put(
-        "logout",
+        "user/logout",
         {},
         {
           headers: {
@@ -103,7 +103,7 @@ class API {
    */
   async register(data) {
     return axiosInstance
-      .post(`register`, data)
+      .post(`user/register`, data)
       .then((response) => generateSuccess(response.data.data))
       .catch((error) => errorHelper(error));
   }
@@ -124,6 +124,46 @@ class API {
   getService() {
     return axiosInstance
       .get("service/getService", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  getUserProfile() {
+    return axiosInstance
+      .get("user/getUserProfile", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  editUserProfile(data){
+    return axiosInstance
+      .put("user/profile", data,{
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+    
+  }
+  
+  getDevelopers() {
+    return axiosInstance
+      .get("user/developerProfiles", {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
@@ -164,6 +204,64 @@ class API {
       .then((response) => {
         return generateSuccess(response.data.data);
       })
+      .catch((error) => errorHelper(error));
+  }
+  getDatasets() {
+    return axiosInstance
+      .get("data/getDataEntries", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+  /**
+   * 
+   * @param {FormData} data document file as form-data
+   * @returns {Object} responseObj
+   */
+  async uploadDocument(data) {
+    return await axiosInstance
+      .post("upload/uploadDocument", data, {
+        headers: {
+          "Content-Type": "multipart/form-data; boundary='boundary'",
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  /**
+   * 
+   * @param {FormData} data image file as form-data
+   * @returns {Object} responseObj
+   */
+  async uploadImage(data) {
+    return await axiosInstance
+      .post("upload/uploadImage", data, {
+        headers: {
+          "Content-Type": "multipart/form-data; boundary='boundary'",
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  createDataEntry(data) {
+    return axiosInstance
+      .post("data/createDataEntry", data, {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then(() => generateSuccess(AccessToken))
       .catch((error) => errorHelper(error));
   }
 }

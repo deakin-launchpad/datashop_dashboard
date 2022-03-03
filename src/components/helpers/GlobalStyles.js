@@ -20,6 +20,28 @@ const useStyles = makeStyles(() => createStyles({
     '#root': {
       height: '100%',
       width: '100%'
+    },
+    /* Increase the specificity */
+    '.MuiListItemIcon-root':{
+      color:'white',
+    },
+    '.Mui-selected':{
+      backgroundColor:'#fff !important',
+      borderRight:'3px solid #1CCEF4',
+
+    },
+    '.Mui-selected  .MuiListItemText-root':{
+      color:'#326EBD'
+    },
+    '.Mui-selected  .MuiListItemIcon-root':{
+      color:'#326EBD'
+    },
+    '.MuiAppBar-root':{
+      backgroundColor:'#F2F6FE',
+      color:'unset',
+      top:'auto',
+      right:'auto',
+      paddingLeft:'10px'
     }
   }
 }));

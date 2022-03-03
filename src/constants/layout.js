@@ -30,29 +30,37 @@ class Layout {
           type: "button",
           icon: "ant-design:home-filled",
           helpingAttribute: "/home",
-          customTitle: "Welcome to Boiler Plate",
+          customTitle: "Welcome to Datashop",
           isFavourite: true,
         }),
         new MenuItem({
-          name: "Example",
+          name: "Profile",
           type: "button",
-          icon: "bytesize:code",
-          helpingAttribute: "/examples",
-          customTitle: "Example Code File",
+          icon: "carbon:user-profile",
+          helpingAttribute: "/profile",
+          customTitle: "Profile",
           isFavourite: true,
         }),
         new MenuItem({
-          name: "Users Manager",
+          name: "Developers",
           type: "button",
-          icon: "bytesize:user",
-          helpingAttribute: "/users",
-          customTitle: "Users Manager",
+          icon: "gis:globe-users",
+          helpingAttribute: "/developers",
+          customTitle: "Developers",
+          isFavourite: true,
+        }),
+        new MenuItem({
+          name: "Data Manager",
+          type: "button",
+          icon: "entypo:code",
+          helpingAttribute: "/Datasets",
+          customTitle: "Data Manager",
           isFavourite: true,
         }),
         new MenuItem({
           name: "Service Manager",
           type: "button",
-          icon: "bytesize:user",
+          icon: "charm:stack",
           helpingAttribute: "/service",
           customTitle: "Service Manager",
           isFavourite: true,
@@ -60,7 +68,7 @@ class Layout {
         new MenuItem({
           name: "Job Manager",
           type: "button",
-          icon: "bytesize:user",
+          icon: "carbon:task-complete",
           helpingAttribute: "/Job",
           customTitle: "Job Manager",
           isFavourite: true,
@@ -71,7 +79,7 @@ class Layout {
           icon: "fe:logout",
           helpingAttribute: "",
           customTitle: "Welcome to Boiler Plate",
-          isFavourite: false,
+          isFavourite: true,
         }),
       ],
     };
@@ -92,9 +100,9 @@ class Layout {
 
     this.defaultContainerSX = {
       backgroundColor: "background.default",
-      display: "flex",
-      flexDirection: "column",
-      minHeight: "calc(100% - 64px)",
+      // display: "flex",
+      // flexDirection: "column",
+      minHeight: "calc(100% - 124px)",
     };
   }
 

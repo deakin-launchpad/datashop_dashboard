@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles(() => ({
   content: {
-    display: 'contents'
+    display: 'contents',
   }
 }));
 
