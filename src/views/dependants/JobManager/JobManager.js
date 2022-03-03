@@ -14,6 +14,7 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { format } from "date-fns";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
@@ -102,16 +103,9 @@ export const JobManager = () => {
         Status: item.jobStatus,
         "Job Name": item.jobName,
         "Execution Time": item.executionTime,
-        "Operation Time": new Date(parseInt(item.createdAt)).toLocaleDateString(
-          "en-AU",
-          {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          }
+        "Operation Time": format(
+          new Date(parseInt(item.createdAt)),
+          "yyyy-MM-dd HH:mm:ss"
         ),
         insightsURL: item.insightsURL,
       }))
@@ -209,11 +203,11 @@ export const JobManager = () => {
               error={errors.jobName !== undefined}
               helperText={touched.jobName && errors.jobName}
             />
-            <InputLabel sx={{ py: 1 }}>Select service</InputLabel>
+            <InputLabel sx={{ py: 1 }}>Select Service</InputLabel>
             <Field
               as={Select}
               name="service"
-              placeholder="Select service"
+              placeholder="Select Service"
               fullWidth
               value={selectedService}
               label="Service"
