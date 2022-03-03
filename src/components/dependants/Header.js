@@ -1,11 +1,13 @@
 import { useState, useContext } from 'react';
 import clsx from 'clsx';
-import { Drawer, Divider, IconButton,Box,AppBar,Toolbar,Typography,useMediaQuery } from '@mui/material';
+import { Drawer, Divider, IconButton,Box,AppBar,Toolbar,Typography,useMediaQuery ,Tooltip,Menu,MenuItem} from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { LayoutContext } from 'contexts';
 import { SideMenuItems } from './SideMenuItems';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AddCardIcon from '@mui/icons-material/AddCard';
 
 export const Header = () => {
   let isItDesktop = useMediaQuery('(min-width:600px) and (min-height:600px)');
@@ -88,6 +90,14 @@ export const Header = () => {
   }));
   const {pageTitle,headerElements,layoutConfiguration } = useContext(LayoutContext);
   const [open, setOpen] = useState(isItDesktop ? (layoutConfiguration.sideMenu.default === 'open' ? true : false) : false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const walletOpen = Boolean(anchorEl);
+  const handleWalletClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleWalletClose = () => {
+    setAnchorEl(null);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -116,6 +126,71 @@ export const Header = () => {
                 {pageTitle}
               </Typography>
           }
+          <Tooltip title="Wallet">
+            <IconButton
+              onClick={handleWalletClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={walletOpen ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={walletOpen ? 'true' : undefined}
+            >
+              <AccountBalanceWalletIcon />
+              <Typography>$ 0</Typography>
+            </IconButton>
+          </Tooltip>
+          <Menu
+            anchorEl={anchorEl}
+            id="account-menu"
+            open={walletOpen}
+            onClose={handleWalletClose}
+            onClick={handleWalletClose}
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: 'visible',
+                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                mt: 1.5,
+                '& .MuiAvatar-root': {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                '&:before': {
+                  content: '""',
+                  display: 'block',
+                  position: 'absolute',
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  transform: 'translateY(-50%) rotate(45deg)',
+                  zIndex: 0,
+                },
+              },
+            }}
+            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          >
+            <MenuItem>
+              <AddCardIcon fontSize="small" sx={{mr:1}} />
+             Add funds
+            </MenuItem>
+            <Divider />
+            <MenuItem>
+               balance: $0
+            </MenuItem>
+            <MenuItem>
+               pending: $0
+            </MenuItem>
+            <MenuItem>
+               gain: $0
+            </MenuItem>
+            <MenuItem>
+               spend: $0
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
       {
