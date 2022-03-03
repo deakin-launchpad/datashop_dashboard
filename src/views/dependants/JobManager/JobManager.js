@@ -21,6 +21,8 @@ const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState("");
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
   const [job, setJob] = useState([]);
@@ -46,17 +48,13 @@ export const JobManager = () => {
     }
   };
   const deleteJob = async (data) => {
-    try {
-      console.log("job detail----->", data);
-      const response = await API.deleteJob(data.id);
-      if (response.success) {
-        getJob();
-      } else {
-        notify("delete Job Failed");
-      }
-    } catch (err) {
-      // creatObjectModal(false);
-      console.log(err);
+    const response = await API.deleteJob(data.id);
+    if (response.success) {
+      getJob();
+      setDeleteModal(false);
+    } else {
+      notify("delete Job Failed");
+      setDeleteModal(false);
     }
   };
   const getJob = useCallback(async () => {
@@ -202,6 +200,12 @@ export const JobManager = () => {
     }
     resetForm();
   };
+
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Job?</Typography>
+    </Box>
+  );
 
   let createJobModal = (
     <Box>
@@ -355,6 +359,17 @@ export const JobManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => deleteJob(selectedJob),
+        }}
+      />
+
       <Box
         maxWidth="xl"
         sx={{
@@ -429,7 +444,9 @@ export const JobManager = () => {
                   function: async (e, data) => {
                     if (!data) return;
                     console.log("data.id :", data.id);
-                    deleteJob(data);
+                    setSelectedJob(data);
+                    setDeleteModal(true);
+                    // deleteJob(data);
                   },
                 },
               ],
