@@ -3,7 +3,7 @@
  * */
 
 import { useEffect, useState } from "react";
-import { Snackbar } from "@mui/material";
+import { Snackbar,Alert } from "@mui/material";
 import PropTypes from "prop-types";
 
 let OpenNotificationFunction;
@@ -20,13 +20,17 @@ const EnhancedNotification = (props) => {
   const [message, setMessage] = useState("");
   const [verticalPosition, setVerticalPosition] = useState("bottom");
   const [horizontalPosition, setHorizonPosition] = useState("right");
-  const openNotification = (newMessage) => {
+  const [variant,setVariant] = useState("");
+
+  const openNotification = (newMessage,variant) => {
+    if(variant) setVariant(variant); 
     setOpen(true);
     setMessage(newMessage);
   };
   const closeNotification = () => {
     setOpen(false);
     setMessage("");
+    setVariant("");
   };
   useEffect(() => {
     OpenNotificationFunction = openNotification;
@@ -58,7 +62,11 @@ const EnhancedNotification = (props) => {
       ContentProps={{
         "aria-describedby": "snackbar-message-id",
       }}
-    />
+    >
+      {variant ?  <Alert onClose={closeNotification} severity={variant} sx={{ width: '100%' }}>
+        {message}
+      </Alert> : null} 
+    </Snackbar>
   );
   if (message === undefined) return null;
   if (message === "") return null;
@@ -82,17 +90,23 @@ export const DisplayBrowserNotification = (message) => {
 };
 
 export const notify = (message, callback, variant) => {
+  console.log(variant,'ve');
   if (variant === "browser") DisplayBrowserNotification(message);
   else if (variant === "both") {
     OpenNotificationFunction(message);
     DisplayBrowserNotification(message);
-  } else OpenNotificationFunction(message);
+  }
+  else if(variant === "success" || variant ==="warning"){
+    OpenNotificationFunction(message,variant);
+  }
+  else OpenNotificationFunction(message);
   if (typeof callback === "function") callback();
 };
 
 EnhancedNotification.propTypes = {
   horizontal: PropTypes.string,
   vertical: PropTypes.string,
+  severity:PropTypes.string,
 };
 
 export default EnhancedNotification;

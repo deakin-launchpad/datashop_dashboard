@@ -32,6 +32,8 @@ export const JobManager = () => {
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
+  const [statusChange,setStatusChange] = useState(false);
+
   const createJob = async (data) => {
     const response = await API.createJob(data);
     if (response.success) {
@@ -39,10 +41,10 @@ export const JobManager = () => {
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
       getJob();
-      notify("Job Creation succeeded!!");
+      notify("Job Created!!");
     } else {
       setModalIsOpen(false);
-      notify("Job Creation Failed!!");
+      notify("Job Created Failed!!");
     }
   };
   const deleteJob = async (data) => {
@@ -85,14 +87,14 @@ export const JobManager = () => {
       window.location.href = data.insightsURL;
     }
   };
-
   useSocket("on", "notification", (response) => {
-    console.log(response);
+    if(response.message){
+      setStatusChange(true);
+    }
   });
-
   useEffect(() => {
     getJob();
-  }, [getJob]);
+  }, [getJob,statusChange]);
 
   const getService = useCallback(async () => {
     const response = await API.getService();

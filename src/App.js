@@ -7,18 +7,26 @@ import { AppRoutes } from './bricks/index';
 import { ContextManager } from 'contexts';
 import { Notification, LoginCheck, GlobalStyles } from 'components';
 import { ThemeProvider } from 'theme';
+import { useSocket } from "helpers/index";
+import { notify } from 'components/index';
 
-const App = (props) => {
+const App = (props) => { 
   useEffect(() => {
     document.title = process.env.REACT_APP_NAME;
   }, []);
+
+  useSocket("on", "notification", (response) => {
+    if(response.success) return  notify(response.message,null,'success');
+    return  notify(response.message,null,'warning');
+  });
+
   return (
     <ContextManager>
       <ThemeProvider>
         <LoginCheck>
           <AppRoutes {...props} />
           <GlobalStyles />
-          <Notification />
+          <Notification  />
         </LoginCheck>
       </ThemeProvider>
     </ContextManager>
