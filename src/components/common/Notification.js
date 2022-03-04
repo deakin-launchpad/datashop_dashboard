@@ -90,7 +90,6 @@ export const DisplayBrowserNotification = (message) => {
 };
 
 export const notify = (message, callback, variant) => {
-  console.log(variant,'ve');
   if (variant === "browser") DisplayBrowserNotification(message);
   else if (variant === "both") {
     OpenNotificationFunction(message);
