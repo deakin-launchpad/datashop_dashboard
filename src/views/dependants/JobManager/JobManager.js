@@ -443,10 +443,8 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    console.log("data.id :", data.id);
                     setSelectedJob(data);
                     setDeleteModal(true);
-                    // deleteJob(data);
                   },
                 },
               ],

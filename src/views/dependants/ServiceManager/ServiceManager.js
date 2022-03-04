@@ -19,7 +19,8 @@ export const ServiceManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [serviceModal, setserviceModal] = useState(false);
-
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedDeleteService, setSelectedDeleteService] = useState("");
   const getService = useCallback(async () => {
     const response = await API.getService();
     if (response.success) {
@@ -49,16 +50,11 @@ export const ServiceManager = () => {
   }, [getService]);
 
   const deleteService = async (data) => {
-    try {
-      const response = await API.deleteService(data.id);
-      if (response.success) {
-        getService();
-      } else {
-        notify("delete Object  Failed");
-      }
-    } catch (err) {
-      // creatObjectModal(false);
-      console.log(err);
+    const response = await API.deleteService(data.id);
+    if (response.success) {
+      getService();
+    } else {
+      notify("delete Object  Failed");
     }
   };
   const createService = async (data) => {
@@ -104,7 +100,11 @@ export const ServiceManager = () => {
     createService(data);
     resetForm();
   };
-
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Job?</Typography>
+    </Box>
+  );
   let createServiceModal = (
     <Box>
       <Formik
@@ -255,6 +255,18 @@ export const ServiceManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => {
+            deleteService(selectedDeleteService), setDeleteModal(false);
+          },
+        }}
+      />
       <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
@@ -288,10 +300,12 @@ export const ServiceManager = () => {
               },
               {
                 name: "",
-                label: "Delete",
+                label: "remove",
                 type: "button",
                 function: async (e, data) => {
-                  deleteService(data);
+                  if (!data) return;
+                  setSelectedDeleteService(data);
+                  setDeleteModal(true);
                 },
               },
             ],

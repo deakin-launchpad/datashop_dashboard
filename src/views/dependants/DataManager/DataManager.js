@@ -32,6 +32,9 @@ export const DatasetsManager = () => {
 
   const [jobDataUrl, setJobDataUrl] = useState();
   const [jobName, setJobName] = useState("");
+  // delete comfirmation
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedData, setSelectedData] = useState("");
 
   const uploadDataset = async (data) => {
     const response = await API.uploadDocument(data);
@@ -64,17 +67,11 @@ export const DatasetsManager = () => {
   }, [handleFileUploadSubmission]);
 
   const deleteDataEntry = async (data) => {
-    try {
-      console.log("data detail----->", data);
-      const response = await API.deleteDataEntry(data._id);
-      if (response.success) {
-        getDatasets();
-      } else {
-        notify("delete Object  Failed");
-      }
-    } catch (err) {
-      // creatObjectModal(false);
-      console.log(err);
+    const response = await API.deleteDataEntry(data._id);
+    if (response.success) {
+      getDatasets();
+    } else {
+      notify("delete Object  Failed");
     }
   };
 
@@ -109,7 +106,11 @@ export const DatasetsManager = () => {
     createDataEntry(data);
     resetForm();
   };
-
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Job?</Typography>
+    </Box>
+  );
   let uploadFilesContent = (
     <Box sx={{ mb: 2 }}>
       <input type="file" name="documentFile" onChange={changeHandler} />
@@ -296,6 +297,18 @@ export const DatasetsManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => {
+            deleteDataEntry(selectedData), setDeleteModal(false);
+          },
+        }}
+      />
       <Box maxWidth="xl" sx={{ ml: 4 }}>
         <Box sx={{ textAlign: "right" }}>
           <Button
@@ -332,10 +345,12 @@ export const DatasetsManager = () => {
                 },
                 {
                   name: "",
-                  label: "Delete",
+                  label: "remove",
                   type: "button",
                   function: async (e, data) => {
-                    deleteDataEntry(data);
+                    if (!data) return;
+                    setSelectedData(data);
+                    setDeleteModal(true);
                   },
                 },
               ],
