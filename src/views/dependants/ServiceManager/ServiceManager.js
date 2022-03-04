@@ -20,6 +20,7 @@ export const ServiceManager = () => {
   const [selectedService, setSelectedService] = useState("");
   const [serviceModal, setserviceModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [dataForTable, setDataForTable] = useState([]);
   const [selectedDeleteService, setSelectedDeleteService] = useState("");
   const getService = useCallback(async () => {
     const response = await API.getService();
@@ -49,12 +50,28 @@ export const ServiceManager = () => {
     getService();
   }, [getService]);
 
+  const resetTableData = (data) => {
+    setDataForTable(
+      data.map((item) => ({
+        name: item.name,
+        id: item.id,
+        requirments: item.requirements,
+        url: item.url,
+        description: item.description,
+        cost: item.cost,
+        creator_id: item.creator_id ?? "null",
+      }))
+    );
+  };
+  useEffect(() => {
+    resetTableData(service);
+  }, [service]);
   const deleteService = async (data) => {
     const response = await API.deleteService(data.id);
     if (response.success) {
-      getService();
+      // getService();
     } else {
-      notify("delete Object  Failed");
+      notify("delete Object Failed");
     }
   };
   const createService = async (data) => {
@@ -102,7 +119,7 @@ export const ServiceManager = () => {
   };
   let deleteConfirmModal = (
     <Box>
-      <Typography>Do you want to delete this Job?</Typography>
+      <Typography>Do you want to delete this Service?</Typography>
     </Box>
   );
   let createServiceModal = (
@@ -263,7 +280,9 @@ export const ServiceManager = () => {
           submitButtonName: "Delete",
           onClose: () => setDeleteModal(false),
           onSubmit: () => {
-            deleteService(selectedDeleteService), setDeleteModal(false);
+            deleteService(selectedDeleteService),
+            setDeleteModal(false),
+            dataForTable.splice(dataForTable.indexOf(selectedDeleteService), 1);
           },
         }}
       />
@@ -281,9 +300,9 @@ export const ServiceManager = () => {
 
   let tablecontent = (
     <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
-      {service.length > 0 ? (
+      {dataForTable.length > 0 ? (
         <EnhancedTable
-          data={service}
+          data={dataForTable}
           title="Service Manager"
           options={{
             selector: true,

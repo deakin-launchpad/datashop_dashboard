@@ -35,6 +35,7 @@ export const DatasetsManager = () => {
   // delete comfirmation
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedData, setSelectedData] = useState("");
+  const [dataForTable, setDataForTable] = useState([]);
 
   const uploadDataset = async (data) => {
     const response = await API.uploadDocument(data);
@@ -67,9 +68,9 @@ export const DatasetsManager = () => {
   }, [handleFileUploadSubmission]);
 
   const deleteDataEntry = async (data) => {
-    const response = await API.deleteDataEntry(data._id);
+    const response = await API.deleteDataEntry(data.id);
     if (response.success) {
-      getDatasets();
+      console.log("_");
     } else {
       notify("delete Object  Failed");
     }
@@ -108,7 +109,7 @@ export const DatasetsManager = () => {
   };
   let deleteConfirmModal = (
     <Box>
-      <Typography>Do you want to delete this Job?</Typography>
+      <Typography>Do you want to delete this Dataset?</Typography>
     </Box>
   );
   let uploadFilesContent = (
@@ -185,6 +186,23 @@ export const DatasetsManager = () => {
       }))
     );
   };
+  const resetTableData = (data) => {
+    setDataForTable(
+      data.map((item) => ({
+        name: item.name,
+        id: item._id,
+        requirments: item.requirements,
+        url: item.url,
+        description: item.description,
+        cost: item.cost,
+        creator_id: item.creator_id ?? "null",
+      }))
+    );
+  };
+  useEffect(() => {
+    resetTableData(datasets);
+  }, [datasets]);
+  
   const getDatasets = useCallback(async () => {
     const response = await API.getDatasets();
     if (response.success) {
@@ -305,7 +323,7 @@ export const DatasetsManager = () => {
           submitButtonName: "Delete",
           onClose: () => setDeleteModal(false),
           onSubmit: () => {
-            deleteDataEntry(selectedData), setDeleteModal(false);
+            deleteDataEntry(selectedData), setDeleteModal(false),dataForTable.splice(dataForTable.indexOf(selectedData), 1);
           },
         }}
       />
@@ -321,7 +339,7 @@ export const DatasetsManager = () => {
         </Box>
         {datasets.length > 0 ? (
           <EnhancedTable
-            data={datasets}
+            data={dataForTable}
             title="Datasets Manager"
             options={{
               selector: true,

@@ -34,7 +34,7 @@ export const JobManager = () => {
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
-  const [statusChange,setStatusChange] = useState(false);
+  const [statusChange, setStatusChange] = useState(false);
 
   const createJob = async (data) => {
     const response = await API.createJob(data);
@@ -43,7 +43,7 @@ export const JobManager = () => {
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
       getJob();
-      notify("Job Created!!");
+      // notify("Job Created!!");
     } else {
       setModalIsOpen(false);
       notify("Job Created Failed!!");
@@ -52,7 +52,7 @@ export const JobManager = () => {
   const deleteJob = async (data) => {
     const response = await API.deleteJob(data.id);
     if (response.success) {
-      getJob();
+      // getJob();
       setDeleteModal(false);
     } else {
       notify("delete Job Failed");
@@ -86,13 +86,13 @@ export const JobManager = () => {
     }
   };
   useSocket("on", "notification", (response) => {
-    if(response.message){
+    if (response.message) {
       setStatusChange(true);
     }
   });
   useEffect(() => {
     getJob();
-  }, [getJob,statusChange]);
+  }, [getJob, statusChange]);
 
   const getService = useCallback(async () => {
     const response = await API.getService();
@@ -368,7 +368,8 @@ export const JobManager = () => {
         options={{
           submitButtonName: "Delete",
           onClose: () => setDeleteModal(false),
-          onSubmit: () => deleteJob(selectedJob),
+          onSubmit: () => {deleteJob(selectedJob),dataForTable.splice(dataForTable.indexOf(selectedJob), 1);
+            setDataForTable((prevState) => [...prevState]);},
         }}
       />
 
