@@ -14,12 +14,15 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { useSocket } from "helpers/index";
 import { format } from "date-fns";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState("");
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
   const [job, setJob] = useState([]);
@@ -31,6 +34,8 @@ export const JobManager = () => {
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
+  const [statusChange, setStatusChange] = useState(false);
+
   const createJob = async (data) => {
     const response = await API.createJob(data);
     if (response.success) {
@@ -38,13 +43,22 @@ export const JobManager = () => {
       setSelectedDataType(dataTypes[0]);
       setModalIsOpen(false);
       getJob();
-      notify("Job Creation succeeded!!");
+      // notify("Job Created!!");
     } else {
       setModalIsOpen(false);
-      notify("Job Creation Failed!!");
+      notify("Job Created Failed!!");
     }
   };
-
+  const deleteJob = async (data) => {
+    const response = await API.deleteJob(data.id);
+    if (response.success) {
+      // getJob();
+      setDeleteModal(false);
+    } else {
+      notify("delete Job Failed");
+      setDeleteModal(false);
+    }
+  };
   const getJob = useCallback(async () => {
     const response = await API.getJob();
     if (response.success) {
@@ -71,10 +85,14 @@ export const JobManager = () => {
       window.location.href = data.insightsURL;
     }
   };
-
+  useSocket("on", "notification", (response) => {
+    if (response.message) {
+      setStatusChange(true);
+    }
+  });
   useEffect(() => {
     getJob();
-  }, [getJob]);
+  }, [getJob, statusChange]);
 
   const getService = useCallback(async () => {
     const response = await API.getService();
@@ -100,6 +118,7 @@ export const JobManager = () => {
   const resetTableData = (data) => {
     setDataForTable(
       data.map((item) => ({
+        id: item._id,
         Status: item.jobStatus,
         "Job Name": item.jobName,
         "Execution Time": item.executionTime,
@@ -183,6 +202,12 @@ export const JobManager = () => {
     }
     resetForm();
   };
+
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Job?</Typography>
+    </Box>
+  );
 
   let createJobModal = (
     <Box>
@@ -336,6 +361,18 @@ export const JobManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => {deleteJob(selectedJob),dataForTable.splice(dataForTable.indexOf(selectedJob), 1);
+            setDataForTable((prevState) => [...prevState]);},
+        }}
+      />
+
       <Box
         maxWidth="xl"
         sx={{
@@ -391,7 +428,7 @@ export const JobManager = () => {
                 "__v",
                 "createdAt",
                 "insightsURL",
-                "serviceID",
+                "id",
               ],
               actions: [
                 {
@@ -409,8 +446,8 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
-                    dataForTable.splice(dataForTable.indexOf(data), 1);
-                    setDataForTable((prevState) => [...prevState]);
+                    setSelectedJob(data);
+                    setDeleteModal(true);
                   },
                 },
               ],

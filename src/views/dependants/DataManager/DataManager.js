@@ -32,6 +32,10 @@ export const DatasetsManager = () => {
 
   const [jobDataUrl, setJobDataUrl] = useState();
   const [jobName, setJobName] = useState("");
+  // delete comfirmation
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [selectedData, setSelectedData] = useState("");
+  const [dataForTable, setDataForTable] = useState([]);
 
   const uploadDataset = async (data) => {
     const response = await API.uploadDocument(data);
@@ -62,6 +66,15 @@ export const DatasetsManager = () => {
   useEffect(() => {
     handleFileUploadSubmission();
   }, [handleFileUploadSubmission]);
+
+  const deleteDataEntry = async (data) => {
+    const response = await API.deleteDataEntry(data.id);
+    if (response.success) {
+      console.log("_");
+    } else {
+      notify("delete Object  Failed");
+    }
+  };
 
   const createDataEntry = async (data) => {
     const response = await API.createDataEntry(data);
@@ -94,7 +107,11 @@ export const DatasetsManager = () => {
     createDataEntry(data);
     resetForm();
   };
-
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Dataset?</Typography>
+    </Box>
+  );
   let uploadFilesContent = (
     <Box sx={{ mb: 2 }}>
       <input type="file" name="documentFile" onChange={changeHandler} />
@@ -161,6 +178,7 @@ export const DatasetsManager = () => {
   const filterDataSets = (data) => {
     setDatasets(
       data.map((item) => ({
+        _id: item._id,
         Name: item.name,
         URL: item.dataURL,
         Description: item.description,
@@ -168,6 +186,23 @@ export const DatasetsManager = () => {
       }))
     );
   };
+  const resetTableData = (data) => {
+    setDataForTable(
+      data.map((item) => ({
+        name: item.name,
+        id: item._id,
+        requirments: item.requirements,
+        url: item.url,
+        description: item.description,
+        cost: item.cost,
+        creator_id: item.creator_id ?? "null",
+      }))
+    );
+  };
+  useEffect(() => {
+    resetTableData(datasets);
+  }, [datasets]);
+  
   const getDatasets = useCallback(async () => {
     const response = await API.getDatasets();
     if (response.success) {
@@ -280,6 +315,18 @@ export const DatasetsManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => {
+            deleteDataEntry(selectedData), setDeleteModal(false),dataForTable.splice(dataForTable.indexOf(selectedData), 1);
+          },
+        }}
+      />
       <Box maxWidth="xl" sx={{ ml: 4 }}>
         <Box sx={{ textAlign: "right" }}>
           <Button
@@ -292,7 +339,7 @@ export const DatasetsManager = () => {
         </Box>
         {datasets.length > 0 ? (
           <EnhancedTable
-            data={datasets}
+            data={dataForTable}
             title="Datasets Manager"
             options={{
               selector: true,
@@ -312,6 +359,16 @@ export const DatasetsManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     window.location.href = data["URL"];
+                  },
+                },
+                {
+                  name: "",
+                  label: "remove",
+                  type: "button",
+                  function: async (e, data) => {
+                    if (!data) return;
+                    setSelectedData(data);
+                    setDeleteModal(true);
                   },
                 },
               ],

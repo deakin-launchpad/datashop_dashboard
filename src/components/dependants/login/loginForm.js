@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { Box, Button, FormHelperText, TextField } from "@mui/material";
 import { LoginContext } from "contexts";
 import { ConnectionConfig, DeveloperConfig } from "constants/index";
+import { socketAuthCallback } from "helpers";
 
 export const LoginForm = (props) => {
   const { devMode, setAccessToken } = useContext(LoginContext);
@@ -41,11 +42,13 @@ export const LoginForm = (props) => {
           !ConnectionConfig.useACL
         ) {
           setAccessToken(response.data);
+          socketAuthCallback(response.data);
           setStatus({ success: true });
         } else {
           const response = await props.onSuccess();
           if (response) {
             setAccessToken(response.data);
+            socketAuthCallback(response.data);
             setStatus({ success: true });
           } else setStatus({ success: false });
         }
@@ -59,7 +62,8 @@ export const LoginForm = (props) => {
 
   let form = (
     <form noValidate onSubmit={formik.handleSubmit}>
-      <TextField sx={{mb:4}}
+      <TextField
+        sx={{ mb: 4 }}
         error={formik.touched.emailId && Boolean(formik.errors.emailId)}
         fullWidth
         helperText={formik.touched.emailId && formik.errors.emailId}
@@ -94,9 +98,9 @@ export const LoginForm = (props) => {
           <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
-      <Box sx={{ mt: 4 ,textAlign:'right'}}>
+      <Box sx={{ mt: 4, textAlign: "right" }}>
         <Button
-          sx={{px:5}}
+          sx={{ px: 5 }}
           color="primary"
           disabled={formik.isSubmitting}
           size="large"

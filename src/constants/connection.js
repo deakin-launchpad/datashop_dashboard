@@ -1,8 +1,8 @@
 class Connection {
   constructor() {
-    this.useAccessTokenVerificationAPI = false;
+    this.useAccessTokenVerificationAPI = true;
     this.socket = {
-      initSocket: false,
+      initSocket: true,
       socketDefaultOptions: {},
       accessTokenVerification: true,
     };

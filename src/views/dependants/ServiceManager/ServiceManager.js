@@ -19,7 +19,9 @@ export const ServiceManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [serviceModal, setserviceModal] = useState(false);
-
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [dataForTable, setDataForTable] = useState([]);
+  const [selectedDeleteService, setSelectedDeleteService] = useState("");
   const getService = useCallback(async () => {
     const response = await API.getService();
     if (response.success) {
@@ -27,13 +29,13 @@ export const ServiceManager = () => {
       let result = [];
       res.map((item) => {
         let data = {
-          Name: item.name,
-          ID: item._id,
-          Requirements: item.requirements,
-          URL: item.url,
-          Description: item.description,
-          Cost: item.cost,
-          "Creator ID": item.creator_id ?? "null",
+          name: item.name,
+          id: item._id,
+          requirments: item.requirements,
+          url: item.url,
+          description: item.description,
+          cost: item.cost,
+          creator_id: item.creator_id ?? "null",
         };
         result.push(data);
       });
@@ -48,6 +50,30 @@ export const ServiceManager = () => {
     getService();
   }, [getService]);
 
+  const resetTableData = (data) => {
+    setDataForTable(
+      data.map((item) => ({
+        name: item.name,
+        id: item.id,
+        requirments: item.requirements,
+        url: item.url,
+        description: item.description,
+        cost: item.cost,
+        creator_id: item.creator_id ?? "null",
+      }))
+    );
+  };
+  useEffect(() => {
+    resetTableData(service);
+  }, [service]);
+  const deleteService = async (data) => {
+    const response = await API.deleteService(data.id);
+    if (response.success) {
+      // getService();
+    } else {
+      notify("delete Object Failed");
+    }
+  };
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
@@ -91,7 +117,11 @@ export const ServiceManager = () => {
     createService(data);
     resetForm();
   };
-
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Service?</Typography>
+    </Box>
+  );
   let createServiceModal = (
     <Box>
       <Formik
@@ -242,6 +272,20 @@ export const ServiceManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={deleteModal}
+        dialogTitle={`Comfirm Deletion`}
+        dialogContent={deleteConfirmModal}
+        options={{
+          submitButtonName: "Delete",
+          onClose: () => setDeleteModal(false),
+          onSubmit: () => {
+            deleteService(selectedDeleteService),
+            setDeleteModal(false),
+            dataForTable.splice(dataForTable.indexOf(selectedDeleteService), 1);
+          },
+        }}
+      />
       <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
@@ -256,13 +300,13 @@ export const ServiceManager = () => {
 
   let tablecontent = (
     <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
-      {service.length > 0 ? (
+      {dataForTable.length > 0 ? (
         <EnhancedTable
-          data={service}
+          data={dataForTable}
           title="Service Manager"
           options={{
             selector: true,
-            ignoreKeys: ["__v"],
+            ignoreKeys: ["id", "__v"],
             actions: [
               {
                 name: "",
@@ -271,6 +315,16 @@ export const ServiceManager = () => {
                 function: async (e, data) => {
                   setModalIsOpen(true);
                   setSelectedService(data);
+                },
+              },
+              {
+                name: "",
+                label: "remove",
+                type: "button",
+                function: async (e, data) => {
+                  if (!data) return;
+                  setSelectedDeleteService(data);
+                  setDeleteModal(true);
                 },
               },
             ],
