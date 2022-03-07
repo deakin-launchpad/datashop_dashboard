@@ -66,7 +66,7 @@ export const JobManager = () => {
       window.location.href = data.dataURL;
     } else if (
       data.insightsURL &&
-      /\.(doc|doc?x|json|pdf|zip)$/i.test(data.insightsURL)
+      /\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data.insightsURL)
     ) {
       window.location.href = data.insightsURL;
     }
