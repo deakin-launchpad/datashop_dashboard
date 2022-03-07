@@ -44,7 +44,7 @@ class API {
   accessTokenLogin() {
     return axiosInstance
       .post(
-        "accessTokenLogin",
+        "user/accessTokenLogin",
         {},
         {
           headers: {
