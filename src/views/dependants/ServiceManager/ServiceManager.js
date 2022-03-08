@@ -31,7 +31,7 @@ export const ServiceManager = () => {
         let data = {
           name: item.name,
           id: item._id,
-          requirments: item.requirements,
+          requirements: item.requirements,
           url: item.url,
           description: item.description,
           cost: item.cost,
@@ -55,7 +55,7 @@ export const ServiceManager = () => {
       data.map((item) => ({
         name: item.name,
         id: item.id,
-        requirments: item.requirements,
+        requirements: item.requirements,
         url: item.url,
         description: item.description,
         cost: item.cost,
