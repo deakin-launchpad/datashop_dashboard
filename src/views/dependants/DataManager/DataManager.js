@@ -189,13 +189,11 @@ export const DatasetsManager = () => {
   const resetTableData = (data) => {
     setDataForTable(
       data.map((item) => ({
-        name: item.name,
+        name: item['Name'],
         id: item._id,
-        requirments: item.requirements,
-        url: item.url,
-        description: item.description,
-        cost: item.cost,
-        creator_id: item.creator_id ?? "null",
+        url: item['URL'],
+        description: item['Description'],
+        creator_id: item['Creator ID'] ?? "null",
       }))
     );
   };
@@ -206,6 +204,7 @@ export const DatasetsManager = () => {
   const getDatasets = useCallback(async () => {
     const response = await API.getDatasets();
     if (response.success) {
+      console.log(response.data.data);
       if (isMounted) filterDataSets(response.data.data);
     } else {
       setDatasets([]);
