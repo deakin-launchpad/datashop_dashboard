@@ -9,6 +9,7 @@ import { LoginForm, SsoLogin } from 'components';
 import { API } from 'helpers';
 import { ConnectionConfig } from 'constants/index';
 import { Link as RouterLink } from 'react-router-dom';
+import { Logo } from '../Logo/logo';
 
 const useStyles = makeStyles(() => createStyles({
   leftSpan:{
@@ -80,7 +81,9 @@ description</Typography>
         </Grid>
         <Grid item xs={8}>  
           <Box className={classes.rightSpan}>
-            <img width={200} src={require('../../../assets/images/logo/logo.png').default} />
+            <Box sx={{mt:4,ml:4}}>
+              <Logo name='DataShop'></Logo>
+            </Box>  
             <CardContent sx={{ display: 'flex', flexDirection: 'column', p: 4 }} >
               <Box sx={{
                 mx: 10,

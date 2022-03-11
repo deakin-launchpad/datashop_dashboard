@@ -6,6 +6,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import MobileStepper from '@mui/material/MobileStepper';
 import { useNavigate } from 'react-router-dom';
+import { Logo } from '../Logo/logo';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
  
@@ -70,10 +71,12 @@ export const Landing = () => {
     <Box>
       <Grid container>
         <Grid item xs={5} className={classes.leftSpan}>
-          <img style={{marginTop:40,marginLeft:40}} width={200} src={require('../../../assets/images/logo/logo.png').default} />
+          <Box sx={{mt:6,ml:6}}>
+            <Logo name='DataShop'></Logo>
+          </Box>  
           <Box className={classes.leftTextPosition}>
-            <Typography variant="h2" component="h2" color="#41425B" >Innovative Data analysis</Typography>
-            <Typography variant="body1" component="body1" color="#939393">Descriptions of data shop content such as features</Typography>
+            <Typography variant="h2"  color="#41425B" >Innovative Data analysis</Typography>
+            <Typography variant="body1"  color="#939393">Descriptions of data shop content such as features</Typography>
             <Box sx={{mt:3}}>
               <Button onClick={()=> navigate('/login')} sx={{borderRadius:10,px:4,mr:3}} variant="contained" color="primary">Sign In</Button>
               <SignUpButton onClick={()=> navigate('/register')} sx={{borderRadius:10,px:4}}>Sign Up</SignUpButton>
