@@ -19,6 +19,7 @@ import {
   JobManager,
   DevelopersProfile,
   Profile,
+  Landing,
 } from "views";
 
 import { Layout } from "./layout";
@@ -73,7 +74,7 @@ export const AppRoutes = (props) => {
             loginStatus={loginStatus}
             parentProps={props}
           >
-            <Navigate to={{ pathname: "/login" }} {...props} />
+            <Landing />
           </UnauthRoute>
         }
       />
