@@ -9,6 +9,7 @@ import { notify } from 'components';
 import { Link as RouterLink } from 'react-router-dom';
 import { DeviceInfoContext } from 'contexts/index';
 import { API } from 'helpers/index';
+import { Logo } from '../Logo/logo';
 
 
 const useStyles = makeStyles(() => createStyles({
@@ -112,7 +113,9 @@ description</Typography>
         </Grid>
         <Grid item xs={8}>  
           <Box className={classes.rightSpan}>
-            <img width={200} src={require('../../../assets/images/logo/logo.png').default} />
+            <Box sx={{mt:4,ml:4}}>
+              <Logo name='DataShop'></Logo>
+            </Box>  
             <CardContent sx={{ display: 'flex', flexDirection: 'column', p: 4 }} >
               <Box sx={{
                 mx: 10,

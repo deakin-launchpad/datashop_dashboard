@@ -36,5 +36,5 @@ export {
   VideoCall,
   LoginForm,
   GlobalStyles,
-  SsoLogin
+  SsoLogin,
 };

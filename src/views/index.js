@@ -13,6 +13,8 @@ import { ServiceManager } from "./dependants/ServiceManager/ServiceManager";
 import { JobManager } from "./dependants/JobManager/JobManager";
 import {DevelopersProfile} from "./dependants/DevelopersProfile/DevelopersProfile";
 import {Profile} from "./dependants/Profile/Profile";
+import { Landing } from "./common/Landing/Landing";
+import { Logo } from "./common/Logo/logo";
 export {
   Example,
   Login,
@@ -25,5 +27,7 @@ export {
   ServiceManager,
   JobManager,
   DevelopersProfile,
-  Profile
+  Profile,
+  Landing,
+  Logo
 };
