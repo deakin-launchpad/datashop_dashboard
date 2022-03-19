@@ -19,9 +19,9 @@ export const ServiceManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [serviceModal, setserviceModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  // const [deleteModal, setDeleteModal] = useState(false);
   const [dataForTable, setDataForTable] = useState([]);
-  const [selectedDeleteService, setSelectedDeleteService] = useState("");
+  // const [selectedDeleteService, setSelectedDeleteService] = useState("");
   const getService = useCallback(async () => {
     const response = await API.getService();
     if (response.success) {
@@ -66,14 +66,14 @@ export const ServiceManager = () => {
   useEffect(() => {
     resetTableData(service);
   }, [service]);
-  const deleteService = async (data) => {
-    const response = await API.deleteService(data.id);
-    if (response.success) {
-      // getService();
-    } else {
-      notify("delete Object Failed");
-    }
-  };
+  // const deleteService = async (data) => {
+  //   const response = await API.deleteService(data.id);
+  //   if (response.success) {
+  //     // getService();
+  //   } else {
+  //     notify("delete Object Failed");
+  //   }
+  // };
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
@@ -117,11 +117,11 @@ export const ServiceManager = () => {
     createService(data);
     resetForm();
   };
-  let deleteConfirmModal = (
-    <Box>
-      <Typography>Do you want to delete this Service?</Typography>
-    </Box>
-  );
+  // let deleteConfirmModal = (
+  //   <Box>
+  //     <Typography>Do you want to delete this Service?</Typography>
+  //   </Box>
+  // );
   let createServiceModal = (
     <Box>
       <Formik
@@ -272,7 +272,7 @@ export const ServiceManager = () => {
           disableSubmit: true,
         }}
       />
-      <EnhancedModal
+      {/* <EnhancedModal
         isOpen={deleteModal}
         dialogTitle={`Comfirm Deletion`}
         dialogContent={deleteConfirmModal}
@@ -285,7 +285,7 @@ export const ServiceManager = () => {
             dataForTable.splice(dataForTable.indexOf(selectedDeleteService), 1);
           },
         }}
-      />
+      /> */}
       <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
@@ -317,16 +317,16 @@ export const ServiceManager = () => {
                   setSelectedService(data);
                 },
               },
-              {
-                name: "",
-                label: "remove",
-                type: "button",
-                function: async (e, data) => {
-                  if (!data) return;
-                  setSelectedDeleteService(data);
-                  setDeleteModal(true);
-                },
-              },
+              // {
+              //   name: "",
+              //   label: "remove",
+              //   type: "button",
+              //   function: async (e, data) => {
+              //     if (!data) return;
+              //     setSelectedDeleteService(data);
+              //     setDeleteModal(true);
+              //   },
+              // },
             ],
           }}
         />
