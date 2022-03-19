@@ -22,14 +22,14 @@ export const Home = () => {
         color="primary"
         variant="overline"
       >
-        Welcome to
+        Welcome To
       </Typography>
       <Typography
         align="center"
         color="textPrimary"
         variant="h3"
       >
-        Datashop dashboard
+        DataShop Dashboard
       </Typography>
       <Typography
         align="center"
@@ -37,7 +37,7 @@ export const Home = () => {
         variant="body1"
         sx={{ py: 3 }}
       >
-        To explore more visit the examples tab on the left.
+        To explore more visit the examples tab on the left
       </Typography>
     </Container>
   </Box>);

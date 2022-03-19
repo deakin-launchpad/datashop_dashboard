@@ -93,8 +93,8 @@ export const DatasetsManager = () => {
   };
   const validationSchema = () => {
     return Yup.object().shape({
-      description: Yup.string().max(255).required("description Is Required"),
-      name: Yup.string().min(5).max(255).required("Name Is Required"),
+      description: Yup.string().max(255).required("Description is Required"),
+      name: Yup.string().min(5).max(255).required("Name is Required"),
     });
   };
 
@@ -355,7 +355,7 @@ export const DatasetsManager = () => {
                   label: "Create Job",
                   type: "button",
                   function: async (e, data) => {
-                    createJobpre(data.url);
+                    createJobpre(data.Url);
                   },
                 },
                 {
@@ -369,7 +369,7 @@ export const DatasetsManager = () => {
                 },
                 {
                   name: "",
-                  label: "remove",
+                  label: "Remove",
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
