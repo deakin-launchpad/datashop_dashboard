@@ -53,27 +53,19 @@ export const ServiceManager = () => {
   const resetTableData = (data) => {
     setDataForTable(
       data.map((item) => ({
-        name: item.name,
+        Name: item.name,
         id: item.id,
-        requirements: item.requirements,
-        url: item.url,
-        description: item.description,
-        cost: item.cost,
-        creator_id: item.creator_id ?? "null",
+        Requirements: item.requirements,
+        Url: item.url,
+        Description: item.description,
+        Cost: item.cost,
+        Creator_id: item.creator_id ?? "null",
       }))
     );
   };
   useEffect(() => {
     resetTableData(service);
   }, [service]);
-  // const deleteService = async (data) => {
-  //   const response = await API.deleteService(data.id);
-  //   if (response.success) {
-  //     // getService();
-  //   } else {
-  //     notify("delete Object Failed");
-  //   }
-  // };
   const createService = async (data) => {
     let requirements = data.requirements.split(",");
     data.requirements = requirements;
@@ -221,7 +213,7 @@ export const ServiceManager = () => {
               {selectedService.name}
             </Typography>
             <Typography variant="body2">
-              Creator ID: {selectedService.creator_id ?? "null"}
+              Creator ID: {selectedService.Creator_id ?? "null"}
               <br />
             </Typography>
             <Typography variant="body2">
@@ -229,21 +221,21 @@ export const ServiceManager = () => {
               <br />
             </Typography>
             <Typography variant="body2">
-              Service Link: {selectedService.url}
+              Service Link: {selectedService.Url}
               <br />
             </Typography>
             <Typography variant="body2">
-              Endpoint name: {selectedService.description}
+              Endpoint name: {selectedService.Description}
               <br />
             </Typography>
             <Typography variant="body2">
-              {selectedService.requirements?.map((req, i) => (
+              {selectedService.Requirements?.map((req, i) => (
                 <li key={"requirement-" + i}>{req}</li>
               ))}
               <br />
             </Typography>
             <Typography variant="body2">
-              Price: ${selectedService.cost}
+              Price: ${selectedService.Cost}
               <br />
             </Typography>
           </CardContent>
@@ -306,7 +298,7 @@ export const ServiceManager = () => {
           title="Service Manager"
           options={{
             selector: true,
-            ignoreKeys: ["id", "__v"],
+            ignoreKeys: ["id", "__v","Creator_id"],
             actions: [
               {
                 name: "",
@@ -317,16 +309,6 @@ export const ServiceManager = () => {
                   setSelectedService(data);
                 },
               },
-              // {
-              //   name: "",
-              //   label: "remove",
-              //   type: "button",
-              //   function: async (e, data) => {
-              //     if (!data) return;
-              //     setSelectedDeleteService(data);
-              //     setDeleteModal(true);
-              //   },
-              // },
             ],
           }}
         />

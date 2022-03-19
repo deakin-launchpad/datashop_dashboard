@@ -68,7 +68,7 @@ export const DatasetsManager = () => {
   }, [handleFileUploadSubmission]);
 
   const deleteDataEntry = async (data) => {
-    const response = await API.deleteDataEntry(data.id);
+    const response = await API.deleteDataEntry(data.Id);
     if (response.success) {
       console.log("_");
     } else {
@@ -189,11 +189,11 @@ export const DatasetsManager = () => {
   const resetTableData = (data) => {
     setDataForTable(
       data.map((item) => ({
-        name: item['Name'],
-        id: item._id,
-        url: item['URL'],
-        description: item['Description'],
-        creator_id: item['Creator ID'] ?? "null",
+        Name: item['Name'],
+        Id: item._id,
+        Url: item['URL'],
+        Description: item['Description'],
+        Creator_id: item['Creator ID'] ?? "null",
       }))
     );
   };
@@ -348,7 +348,7 @@ export const DatasetsManager = () => {
             title="Datasets Manager"
             options={{
               selector: true,
-              ignoreKeys: ["_id", "__v"],
+              ignoreKeys: ["Id", "__v","Creator_id"],
               actions: [
                 {
                   name: "",
@@ -363,7 +363,8 @@ export const DatasetsManager = () => {
                   label: "Download",
                   type: "button",
                   function: async (e, data) => {
-                    window.location.href = data["URL"];
+                    console.log(data);
+                    window.location.href = data["Url"];
                   },
                 },
                 {

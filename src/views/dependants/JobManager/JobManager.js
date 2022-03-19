@@ -442,8 +442,24 @@ export const JobManager = () => {
                   label: "View",
                   type: "button",
                   function: async (e, data) => {
-                    if (!data) return notify("No Preview Avaliable");
-                    viewData(data);
+                    if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
+                      notify("No Preview Avaliable");
+                      console.log(data["insightsURL"]);} 
+                    else{viewData(data);
+                      console.log(data["insightsURL"]);}
+
+                  },
+                },
+                {
+                  name: "",
+                  label: "Download",
+                  type: "button",
+                  function: async (e, data) => {  
+                    if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
+                      notify("No Insight Url Avaliable");} 
+                    else{window.location.href = data["insightsURL"];
+                    }
+
                   },
                 },
                 {
