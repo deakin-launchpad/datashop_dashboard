@@ -464,7 +464,7 @@ export const JobManager = () => {
                 },
                 {
                   name: "",
-                  label: "remove",
+                  label: "Remove",
                   type: "button",
                   function: async (e, data) => {
                     if (!data) return;
