@@ -16,11 +16,16 @@ const App = (props) => {
   }, []);
 
   useSocket("on", "notification", (response) => {
-    console.log("message",response);
+    console.log("notification",response);
     if(response.success) return  notify(response.message,null,'success');
     return  notify(response.message,null,'warning');
   });
 
+  useSocket("on", "message", (response) => {
+    console.log("message",response);
+    // if(response.success) return  notify(response.message,null,'success');
+    // return  notify(response.message,null,'warning');
+  });
 
   return (
     <ContextManager>

@@ -34,9 +34,11 @@ export const JobManager = () => {
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
-  const [statusChange, setStatusChange] = useState(false);
+  const [statusChange, setStatusChange] = useState(" ");
 
   const createJob = async (data) => {
+    setModalIsOpen(false);
+    setStatusChange(" ");
     const response = await API.createJob(data);
     if (response.success) {
       setSelectedService("");
@@ -86,9 +88,8 @@ export const JobManager = () => {
     }
   };
   useSocket("on", "notification", (response) => {
-    if (response.message) {
-      setStatusChange(true);
-    }
+    console.log("response",response);
+    setStatusChange(response.message);
   });
   useEffect(() => {
     getJob();
@@ -196,9 +197,11 @@ export const JobManager = () => {
       const valid = jsonDataValidate(values.jsonData);
       if (valid) {
         createJob(data);
+        setSelectedService("");
       }
     } else {
       createJob(data);
+      setSelectedService("");
     }
     resetForm();
   };
@@ -368,8 +371,11 @@ export const JobManager = () => {
         options={{
           submitButtonName: "Delete",
           onClose: () => setDeleteModal(false),
-          onSubmit: () => {deleteJob(selectedJob),dataForTable.splice(dataForTable.indexOf(selectedJob), 1);
-            setDataForTable((prevState) => [...prevState]);},
+          onSubmit: () => {
+            deleteJob(selectedJob),
+            dataForTable.splice(dataForTable.indexOf(selectedJob), 1);
+            setDataForTable((prevState) => [...prevState]);
+          },
         }}
       />
 
@@ -436,7 +442,7 @@ export const JobManager = () => {
                   label: "View",
                   type: "button",
                   function: async (e, data) => {
-                    if (!data) return;
+                    if (!data) return notify("No Preview Avaliable");
                     viewData(data);
                   },
                 },

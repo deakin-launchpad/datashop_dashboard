@@ -233,12 +233,15 @@ export const DatasetsManager = () => {
   const handleServiceChange = (event) => {
     setSelectedService(event.target.value);
   };
-  const createJob = (data) => {
+  const createJobpre = (data) => {
     setServiceModalOpen(true);
-    setJobDataUrl(data.dataURL);
+    console.log("data url:",data);
+    setJobDataUrl(data);
   };
 
   const postCreateJobData = async () => {
+    setServiceModalOpen(false);
+    console.log("data2",jobDataUrl);
     const _jobDataToSend = {
       datafileURL: {
         url: jobDataUrl,
@@ -248,6 +251,9 @@ export const DatasetsManager = () => {
       endpoint: selectedService.url,
       serviceID: selectedService._id,
     };
+    setSelectedService("");
+    setJobDataUrl("");
+    setJobName("");
     const response = await API.createJob(_jobDataToSend);
     if (response.success) {
       notify("Job Creation succeeded!!");
@@ -349,7 +355,7 @@ export const DatasetsManager = () => {
                   label: "Create Job",
                   type: "button",
                   function: async (e, data) => {
-                    createJob(data);
+                    createJobpre(data.url);
                   },
                 },
                 {
