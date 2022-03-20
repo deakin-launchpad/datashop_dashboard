@@ -42,7 +42,7 @@ export const DatasetsManager = () => {
     if (response.success) {
       (response) => response.json();
     } else {
-      notify("Data Uploading Failed!!");
+      notify("Data Uploading Failed",null,'warning');
     }
   };
   const changeHandler = (event) => {
@@ -59,6 +59,7 @@ export const DatasetsManager = () => {
     const response = await API.uploadDocument(formData);
     if (response.success) {
       setS3url(response.data.documentFileUrl.original);
+
     }
     uploadDataset(formData);
   }, [isFilePicked, selectedFile]);
@@ -70,20 +71,21 @@ export const DatasetsManager = () => {
   const deleteDataEntry = async (data) => {
     const response = await API.deleteDataEntry(data.Id);
     if (response.success) {
-      console.log("_");
+      notify("Data is Deleted",null,'success');
     } else {
-      notify("delete Object  Failed");
+      notify("delete Object Failed",null,'warning');
     }
   };
 
   const createDataEntry = async (data) => {
     const response = await API.createDataEntry(data);
     if (response.success) {
+      notify("Data Uploading success",null,'success');
       setS3url("");
       setDataModalOpen(false);
       getDatasets();
     } else {
-      notify("data entry Creation Failed!!");
+      notify("data entry Creation Failed",null,'warning');
     }
   };
 
@@ -208,7 +210,7 @@ export const DatasetsManager = () => {
       if (isMounted) filterDataSets(response.data.data);
     } else {
       setDatasets([]);
-      notify("Failed to Fetch Data List");
+      notify("Failed to Fetch Data List",null,'warning');
     }
   }, [isMounted]);
 
@@ -222,7 +224,7 @@ export const DatasetsManager = () => {
       setTotalService(response.data.data);
     } else {
       setTotalService([]);
-      notify("Failed to Fetch Service List");
+      notify("Failed to Fetch Service List",null,'warning');
     }
   }, []);
 
@@ -256,10 +258,10 @@ export const DatasetsManager = () => {
     setJobName("");
     const response = await API.createJob(_jobDataToSend);
     if (response.success) {
-      notify("Job Creation succeeded!!");
+      notify("Job Creation succeeded",null,'success');
       setServiceModalOpen(false);
     } else {
-      notify("Job Creation Failed!!");
+      notify("Job Creation Failed!!",null,'warning');
       setServiceModalOpen(false);
     }
   };
@@ -364,7 +366,7 @@ export const DatasetsManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     console.log(data);
-                    window.location.href = data["Url"];
+                    window.open(data["Url"],"_blank");
                   },
                 },
                 {

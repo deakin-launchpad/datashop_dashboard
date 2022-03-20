@@ -49,7 +49,7 @@ export const Profile = () => {
       };
       const response = await API.editUserProfile(dataToSend);
       if (response.success) {
-        notify("profile updated!");
+        notify("profile updated!",null,'success');
         getUserProfile();
         setEditing(false);
       }
@@ -74,7 +74,7 @@ export const Profile = () => {
       setProfilePicture(res.picture);
     } else {
       setCurrentUser({});
-      notify("Failed to Fetch User Profile");
+      notify("Failed to Fetch User Profile",null,'warning');
     }
   }, []);
 
