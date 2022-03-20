@@ -80,7 +80,7 @@ export const DatasetsManager = () => {
   const createDataEntry = async (data) => {
     const response = await API.createDataEntry(data);
     if (response.success) {
-      notify("Data Uploading success",null,'success');
+      notify("Data Uploading Success",null,'success');
       setS3url("");
       setDataModalOpen(false);
       getDatasets();
