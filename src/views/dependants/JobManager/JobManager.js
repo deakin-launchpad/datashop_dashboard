@@ -435,6 +435,7 @@ export const JobManager = () => {
                 "createdAt",
                 "insightsURL",
                 "id",
+                "Execution Time",
               ],
               actions: [
                 {
@@ -457,7 +458,7 @@ export const JobManager = () => {
                   function: async (e, data) => {  
                     if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
                       notify("No Insight Url Avaliable");} 
-                    else{window.location.href = data["insightsURL"];
+                    else{window.open( data["insightsURL"],"_blank");
                     }
 
                   },

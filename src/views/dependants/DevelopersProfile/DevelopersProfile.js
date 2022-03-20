@@ -30,7 +30,7 @@ export const DevelopersProfile = () => {
       setService(result);
     } else {
       setService([]);
-      notify("Failed to Fetch Developers List");
+      notify("Failed to Fetch Developers List",null,'warning');
     }
   }, []);
 
