@@ -71,7 +71,7 @@ export const ServiceManager = () => {
     data.requirements = requirements;
     const response = await API.createService(data);
     if (response.success) {
-      notify("Service Createtion Successed",null,'success');
+      notify("Service Creation Successed",null,'success');
       setserviceModal(false);
       getService();
     } else {

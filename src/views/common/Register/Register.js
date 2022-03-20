@@ -60,7 +60,7 @@ export const Register = () => {
       lastName
     });
     if(response.success){
-      notify('registered Successfully');
+      notify('Registered Successfully',null,'success');
       navigate('/login');
     }
   };
@@ -105,8 +105,7 @@ export const Register = () => {
         <Grid item xs={4} className={classes.leftSpan}>
           <Box className={classes.leftTextPosition}>
             <Typography variant="h3" component="h3" color="white" >DataShop</Typography>
-            {/* <Typography variant="h5" component="h5" color="white">Can fill in the relevant function
-description</Typography> */}
+            <Typography variant="h5" component="h5" color="white">Beta Version 0.7A</Typography>
           </Box>
           <Box sx={{position:'absolute',zIndex:1,left:15,bottom:40}}>
             <img width="95%" src={require('../../../assets/images/bg/signUp_pic.png').default}/>

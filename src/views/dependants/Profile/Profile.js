@@ -49,7 +49,7 @@ export const Profile = () => {
       };
       const response = await API.editUserProfile(dataToSend);
       if (response.success) {
-        notify("profile updated!",null,'success');
+        notify("Profile updated!",null,'success');
         getUserProfile();
         setEditing(false);
       }
