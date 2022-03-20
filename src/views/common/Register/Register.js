@@ -67,15 +67,16 @@ export const Register = () => {
   const validationCheck = () => {
     if (emailId.length < 0 || password.length < 0 || confirmPassword.length < 0 || firstName.length < 0 || lastName.length < 0
       || emailId === '' || password === '' || confirmPassword === '' || firstName === '' || lastName === '') {
-      return notify("Please fill in all the details.");
+      return notify("Please fill in all the details.",null,'warning');
     }
+    if(password.length < 6){return notify("Password Require At Least 6 Characters",null,'warning');}
     let emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let emailPatternTest = emailPattern.test(emailId);
     if (!emailPatternTest) {
       notify('Email not in proper format');
     }
     if (password !== confirmPassword) {
-      return notify("Passwords don't match.");
+      return notify("Passwords don't match.",null,'warning');
     }
     if (emailPatternTest) {
       return register();

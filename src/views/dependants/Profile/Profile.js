@@ -42,7 +42,7 @@ export const Profile = () => {
       const dataToSend = {
         firstName: values.firstName,
         lastName: values.lastName,
-        description: values.description,
+        description: values.description??"",
         organization: values.organization ?? "",
         picture: profilePicture ?? "",
         researchInterests: values.researchInterests ?? "",
