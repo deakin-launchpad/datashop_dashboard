@@ -22,14 +22,14 @@ class MenuItem {
 
 class Layout {
   constructor() {
-    this.landingPage = "/Home";
+    this.landingPage = "/home";
     this.menuItems = {
       DEFAULT: [
         new MenuItem({
           name: "Home",
           type: "button",
           icon: "ant-design:home-filled",
-          helpingAttribute: "/Home",
+          helpingAttribute: "/home",
           customTitle: "Welcome to Datashop",
           isFavourite: true,
         }),
@@ -37,15 +37,15 @@ class Layout {
           name: "Profile",
           type: "button",
           icon: "carbon:user-profile",
-          helpingAttribute: "/Profile",
+          helpingAttribute: "/profile",
           customTitle: "Profile",
           isFavourite: true,
         }),
         new MenuItem({
-          name: "Developers",
+          name: "Developer",
           type: "button",
           icon: "gis:globe-users",
-          helpingAttribute: "/Developers",
+          helpingAttribute: "/developers",
           customTitle: "Developers",
           isFavourite: true,
         }),
@@ -61,7 +61,7 @@ class Layout {
           name: "Service Manager",
           type: "button",
           icon: "charm:stack",
-          helpingAttribute: "/Service",
+          helpingAttribute: "/service",
           customTitle: "Service Manager",
           isFavourite: true,
         }),
