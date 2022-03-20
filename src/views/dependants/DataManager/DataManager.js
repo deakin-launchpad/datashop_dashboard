@@ -32,7 +32,7 @@ export const DatasetsManager = () => {
 
   const [jobDataUrl, setJobDataUrl] = useState();
   const [jobName, setJobName] = useState("");
-  // delete comfirmation
+  // delete confirmation
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedData, setSelectedData] = useState("");
   const [dataForTable, setDataForTable] = useState([]);
@@ -322,7 +322,7 @@ export const DatasetsManager = () => {
       />
       <EnhancedModal
         isOpen={deleteModal}
-        dialogTitle={`Comfirm Deletion`}
+        dialogTitle={`Confirm Deletion`}
         dialogContent={deleteConfirmModal}
         options={{
           submitButtonName: "Delete",

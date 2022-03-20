@@ -75,7 +75,7 @@ export const Landing = () => {
             <Logo name='DataShop'></Logo>
           </Box>  
           <Box className={classes.leftTextPosition}>
-            <Typography variant="h2"  color="#41425B" >Innovative Data analysis</Typography>
+            <Typography variant="h2"  color="#41425B" >Innovative Data Analysis</Typography>
             {/* <Typography variant="body1"  color="#939393">Descriptions of data shop content such as features</Typography> */}
             <Box sx={{mt:3}}>
               <Button onClick={()=> navigate('/login')} sx={{borderRadius:10,px:4,mr:3}} variant="contained" color="primary">Sign In</Button>
