@@ -42,7 +42,7 @@ export const Profile = () => {
       const dataToSend = {
         firstName: values.firstName,
         lastName: values.lastName,
-        description: values.description ?? "",
+        description: values.description,
         organization: values.organization ?? "",
         picture: profilePicture ?? "",
         researchInterests: values.researchInterests ?? "",
@@ -218,7 +218,7 @@ export const Profile = () => {
               fullWidth
               margin="normal"
               name="organization"
-              placeholder="organization"
+              placeholder="Organization"
               type="text"
               value={currentUser.organization}
               variant="outlined"

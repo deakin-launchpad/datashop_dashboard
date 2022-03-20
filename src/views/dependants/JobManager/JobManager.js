@@ -366,7 +366,7 @@ export const JobManager = () => {
       />
       <EnhancedModal
         isOpen={deleteModal}
-        dialogTitle={`Comfirm Deletion`}
+        dialogTitle={`Confirm Deletion`}
         dialogContent={deleteConfirmModal}
         options={{
           submitButtonName: "Delete",
