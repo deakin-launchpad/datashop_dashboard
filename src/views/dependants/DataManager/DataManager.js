@@ -71,9 +71,9 @@ export const DatasetsManager = () => {
   const deleteDataEntry = async (data) => {
     const response = await API.deleteDataEntry(data.Id);
     if (response.success) {
-      notify("Data is Deleted",null,'success');
+      notify("Data Deleted",null,'success');
     } else {
-      notify("delete Object Failed",null,'warning');
+      notify("Delete Data Failed",null,'warning');
     }
   };
 

@@ -48,16 +48,17 @@ export const JobManager = () => {
       // notify("Job Created!!");
     } else {
       setModalIsOpen(false);
-      notify("Job Created Failed!!");
+      notify("Job Created Failed",null, 'warning');
     }
   };
   const deleteJob = async (data) => {
     const response = await API.deleteJob(data.id);
     if (response.success) {
       // getJob();
+      notify("Job deleted",null, 'success');
       setDeleteModal(false);
     } else {
-      notify("delete Job Failed");
+      notify("delete Job Failed",null, 'warning');
       setDeleteModal(false);
     }
   };
@@ -67,7 +68,7 @@ export const JobManager = () => {
       setJob(response.data.data);
     } else {
       setJob([]);
-      notify("Failed to Fetch Job List");
+      notify("Failed to Fetch Job List",null,'warning');
     }
   }, []);
 
@@ -101,7 +102,7 @@ export const JobManager = () => {
       setServices(response.data.data);
     } else {
       setServices([]);
-      notify("Failed to Fetch Service List");
+      notify("Failed to Fetch Service List",null, 'warning');
     }
   }, []);
 
@@ -444,7 +445,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {
                     if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
-                      notify("No Preview Avaliable");
+                      notify("No Preview Avaliable",null, 'warning');
                       console.log(data["insightsURL"]);} 
                     else{viewData(data);
                       console.log(data["insightsURL"]);}
@@ -457,7 +458,7 @@ export const JobManager = () => {
                   type: "button",
                   function: async (e, data) => {  
                     if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
-                      notify("No Insight Url Avaliable");} 
+                      notify("No Insight Url Avaliable",null, 'warning');} 
                     else{window.open( data["insightsURL"],"_blank");
                     }
 

@@ -42,7 +42,7 @@ export const ServiceManager = () => {
       setService(result);
     } else {
       setService([]);
-      notify("Failed to Fetch Service List");
+      notify("Failed to Fetch Service List",null, 'warning');
     }
   }, []);
 
@@ -92,9 +92,9 @@ export const ServiceManager = () => {
     return Yup.object().shape({
       url: Yup.string().max(255).required("URL Is Required"),
       description: Yup.string().max(255).required("Description Is Required"),
-      name: Yup.string().min(5).max(255).required("Password Is Required"),
-      cost: Yup.number().required("Description Is Required"),
-      requirements: Yup.string().max(255).required("Description Is Required"),
+      name: Yup.string().min(5).max(255).required("Name Is Required"),
+      cost: Yup.number().required("Cost Is Required"),
+      requirements: Yup.string().max(255).required("Requirement Is Required"),
     });
   };
 
