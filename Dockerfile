@@ -7,6 +7,10 @@ WORKDIR /usr/src/app
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
+# Add Nginx Conf file 
+COPY  thedatasop.club.Conf /usr/src/app/ 
+
+
 # install and cache app dependencies
 COPY . .
 
@@ -17,7 +21,14 @@ RUN npm install -g serve
 RUN npm run build
 
 # Specify port
-EXPOSE 3000
+# EXPOSE 3000
 
+#setup nginx
+RUN sudo dnf -y install nginx
+RUN sudo systemctl enable --now nginx.service
+
+# Specify port
+EXPOSE 80 443 22
 # start app
-CMD ["serve", "-l", "3000", "-s", "build"]
+# CMD ["serve", "-l", "3000", "-s", "build"]
+RUN sudo systemctl restart nginx
