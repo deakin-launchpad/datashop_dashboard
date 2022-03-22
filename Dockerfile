@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 ENV PATH /app/node_modules/.bin:$PATH
 
 # Add Nginx Conf file 
-COPY  thedatasop.club.Conf /usr/src/app/ 
+COPY  thedatashop.club.conf /usr/src/app/ 
 
 
 # install and cache app dependencies
@@ -24,11 +24,11 @@ RUN npm run build
 # EXPOSE 3000
 
 #setup nginx
-RUN sudo dnf -y install nginx
-RUN sudo systemctl enable --now nginx.service
+# RUN sudo dnf -y install nginx
+# RUN sudo systemctl enable --now nginx.service
 
 # Specify port
 EXPOSE 80 443 22
 # start app
-# CMD ["serve", "-l", "3000", "-s", "build"]
-RUN sudo systemctl restart nginx
+# RUN sudo systemctl restart nginx
+CMD ["serve", "-l", "3000", "-s", "build"]
