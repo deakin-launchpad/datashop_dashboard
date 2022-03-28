@@ -2,7 +2,7 @@
  *  Created by Sanchit Dang
  ***/
 import { useState, useContext } from 'react';
-import { TextField, Typography,Grid, Button, Box,  CardContent, Link } from '@mui/material';
+import { TextField, Typography,Grid, Button, Box,  CardContent, Link,Select,MenuItem,FormControl } from '@mui/material';
 import { makeStyles, createStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
 import { notify } from 'components';
@@ -10,7 +10,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { DeviceInfoContext } from 'contexts/index';
 import { API } from 'helpers/index';
 import { Logo } from '../Logo/logo';
-
+const accountType = [
+  "User",
+  "Developer",
+];
 
 const useStyles = makeStyles(() => createStyles({
   leftSpan:{
@@ -48,6 +51,7 @@ export const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [role, setRole] = useState('');
   const navigate = useNavigate();
   const register = async() => {
     const response = await API.register({
@@ -57,7 +61,8 @@ export const Register = () => {
       phoneNumber,
       password,
       firstName,
-      lastName
+      lastName,
+      role
     });
     if(response.success){
       notify('Registered Successfully',null,'success');
@@ -82,6 +87,11 @@ export const Register = () => {
       return register();
     }
   };
+
+  const handleTypeChange = (event) => {
+    setRole(event.target.value);
+    // console.log(formik.values.panorama, "pr");
+  };
   let form = (<form noValidate>
     <Grid container spacing={4}>
       <Grid item xs={6}>
@@ -90,6 +100,19 @@ export const Register = () => {
       <Grid item  xs={6} >
         <TextField variant="outlined" margin="normal" required fullWidth id="lastName" label="Last Name" name="lastName" autoComplete="lastName" onChange={e => setLastName(e.target.value)} /></Grid>
     </Grid>
+    {/* <TextField variant="outlined" margin="normal" required fullWidth id="role" label="Role" name="role" autoComplete="role" onChange={e => setRole(e.target.value)} /> */}
+    <FormControl fullWidth>
+      <Typography>Choose Account Type</Typography>
+      <Select value={role} label="Account Type" onChange={handleTypeChange}>
+        {accountType.map((data, i) => {
+          return (
+            <MenuItem value={data} key={i}>
+              {data}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
     <TextField variant="outlined" margin="normal" required fullWidth id="email" label="Email Address" name="email" autoComplete="email" onChange={e => setEmailId(e.target.value)} />
     <TextField variant="outlined" margin="normal" required fullWidth id="countryCode" label="Country Code" name="countryCode" autoComplete="countryCode" value={countryCode} onChange={e => setCountryCode(e.target.value)} />
     <TextField variant="outlined" margin="normal" required fullWidth id="phone" label="Phone Number" name="phoneNumber" autoComplete="phoneNumber" onChange={e => setPhoneNumber(e.target.value)} />

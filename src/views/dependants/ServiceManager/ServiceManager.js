@@ -19,9 +19,12 @@ export const ServiceManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [serviceModal, setserviceModal] = useState(false);
-  // const [deleteModal, setDeleteModal] = useState(false);
+  const [currentRole, setCurrentRole] = useState();
+  const [roleId, setRoleID] = useState("");
+  
+  const [deleteModal, setDeleteModal] = useState(false);
   const [dataForTable, setDataForTable] = useState([]);
-  // const [selectedDeleteService, setSelectedDeleteService] = useState("");
+  const [selectedDeleteService, setSelectedDeleteService] = useState("");
   const getService = useCallback(async () => {
     const response = await API.getService();
     if (response.success) {
@@ -49,6 +52,23 @@ export const ServiceManager = () => {
   useEffect(() => {
     getService();
   }, [getService]);
+
+  const getUserProfile = useCallback(async () => {
+    const response = await API.getUserProfile();
+    if (response.success) {
+      const res = response.data.customerProfile;
+      setCurrentRole(res.role);
+      setRoleID(res.userId);
+      console.log("res.role",res.role);
+    } else {
+      setCurrentRole();
+      notify("Failed to Fetch User Profile",null,'warning');
+    }
+  }, []);
+
+  useEffect(() => {
+    getUserProfile();
+  }, [getUserProfile]);
 
   const resetTableData = (data) => {
     setDataForTable(
@@ -79,7 +99,14 @@ export const ServiceManager = () => {
       notify("Service Creation Failed",null,'warning');
     }
   };
-
+  const deleteService = async (data) => {
+    const response = await API.deleteService(data.id);
+    if (response.success) {
+      // getService();
+    } else {
+      notify("delete Object Failed");
+    }
+  };
   const initialValues = {
     url: "",
     description: "",
@@ -110,11 +137,11 @@ export const ServiceManager = () => {
     createService(data);
     resetForm();
   };
-  // let deleteConfirmModal = (
-  //   <Box>
-  //     <Typography>Do you want to delete this Service?</Typography>
-  //   </Box>
-  // );
+  let deleteConfirmModal = (
+    <Box>
+      <Typography>Do you want to delete this Service?</Typography>
+    </Box>
+  );
   let createServiceModal = (
     <Box>
       <Formik
@@ -265,7 +292,7 @@ export const ServiceManager = () => {
           disableSubmit: true,
         }}
       />
-      {/* <EnhancedModal
+      <EnhancedModal
         isOpen={deleteModal}
         dialogTitle={`Comfirm Deletion`}
         dialogContent={deleteConfirmModal}
@@ -278,7 +305,7 @@ export const ServiceManager = () => {
             dataForTable.splice(dataForTable.indexOf(selectedDeleteService), 1);
           },
         }}
-      /> */}
+      />
       <Box maxWidth="xl" sx={{ textAlign: "right", ml: 4 }}>
         <Button
           size="middle"
@@ -293,7 +320,7 @@ export const ServiceManager = () => {
 
   let tablecontent = (
     <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
-      {dataForTable.length > 0 ? (
+      {dataForTable.length > 0 ? currentRole==="User" ? (
         <EnhancedTable
           data={dataForTable}
           title="Service Manager"
@@ -314,12 +341,46 @@ export const ServiceManager = () => {
           }}
         />
       ) : (
+        <EnhancedTable
+          data={dataForTable}
+          title="Service Manager"
+          options={{
+            selector: true,
+            ignoreKeys: ["id", "__v","Creator_id"],
+            actions: [
+              {
+                name: "",
+                label: "View",
+                type: "button",
+                function: async (e, data) => {
+                  setModalIsOpen(true);
+                  setSelectedService(data);
+                },
+              },
+              {
+                name: "",
+                label: "Delete",
+                type: "button",
+                function: async (e, data) => {
+                  if(data.Creator_id===roleId){setDeleteModal(true);}
+                  else{
+                    console.log("service creator id",data.Creator_id);
+                    console.log("roleID: ",roleId);
+                    notify("This service is not created by you, you can not delete it",null,"warning");
+                  }
+
+                  setSelectedDeleteService(data);
+                },
+              },
+            ],
+          }}
+        />
+      ):        
         <Paper sx={{ py: 4 }}>
           <Typography variant="body1" sx={{ textAlign: "center" }}>
             No Data
           </Typography>
-        </Paper>
-      )}
+        </Paper>}
     </Box>
   );
   return (
