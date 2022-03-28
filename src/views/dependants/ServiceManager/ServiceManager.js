@@ -320,27 +320,7 @@ export const ServiceManager = () => {
 
   let tablecontent = (
     <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
-      {dataForTable.length > 0 ? currentRole==="User" ? (
-        <EnhancedTable
-          data={dataForTable}
-          title="Service Manager"
-          options={{
-            selector: true,
-            ignoreKeys: ["id", "__v","Creator_id"],
-            actions: [
-              {
-                name: "",
-                label: "View",
-                type: "button",
-                function: async (e, data) => {
-                  setModalIsOpen(true);
-                  setSelectedService(data);
-                },
-              },
-            ],
-          }}
-        />
-      ) : (
+      {dataForTable.length > 0 ? currentRole==="Developer" ? (
         <EnhancedTable
           data={dataForTable}
           title="Service Manager"
@@ -370,6 +350,26 @@ export const ServiceManager = () => {
                   }
 
                   setSelectedDeleteService(data);
+                },
+              },
+            ],
+          }}
+        />
+      ) : (
+        <EnhancedTable
+          data={dataForTable}
+          title="Service Manager"
+          options={{
+            selector: true,
+            ignoreKeys: ["id", "__v","Creator_id"],
+            actions: [
+              {
+                name: "",
+                label: "View",
+                type: "button",
+                function: async (e, data) => {
+                  setModalIsOpen(true);
+                  setSelectedService(data);
                 },
               },
             ],
