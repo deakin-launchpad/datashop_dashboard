@@ -24,7 +24,9 @@ export const JobManager = () => {
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState("");
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
+  const [urlModalIsOpen, setUrlModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
+  const [urlModal, setUrlModal] = useState("");
   const [job, setJob] = useState([]);
   const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
@@ -85,9 +87,11 @@ export const JobManager = () => {
       data.insightsURL &&
       /\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data.insightsURL)
     ) {
-      window.location.href = data.insightsURL;
+      setUrlModal(data.insightsURL);
+      setUrlModalIsOpen(true);
     }
   };
+
   useSocket("on", "notification", (response) => {
     console.log("response",response);
     setStatusChange(response.message);
@@ -321,13 +325,28 @@ export const JobManager = () => {
     </Box>
   );
 
-  const imageModelContentToShow = (img) => (
-    <Box
+  const imageModelContentToShow = (data) => 
+    (<Box
       sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
     >
-      <img width="50%" src={img} alt="img" />
-    </Box>
-  );
+      <img width="50%" src={data} alt="img" />
+    </Box>);
+  //{
+  //   if(/\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data)){
+  //     <p>{data}</p>;
+  //   }
+  //   else{(<Box
+  //     sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
+  //   >
+  //     <img width="50%" src={data} alt="img" />
+  //   </Box>);}
+  // };
+  const urlModalContentToShow = (data) => 
+    (<Box
+      sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
+    >
+      <a href={data}>Download</a>
+    </Box>);
 
   const filterStatus = (status) => {
     setStatusToFilter(status);
@@ -353,6 +372,15 @@ export const JobManager = () => {
         dialogContent={imageModelContentToShow(imageModal)}
         options={{
           onClose: () => setImageModalIsOpen(false),
+          disableSubmit: true,
+        }}
+      />
+      <EnhancedModal
+        isOpen={urlModalIsOpen}
+        dialogTitle={`Result`}
+        dialogContent={urlModalContentToShow(urlModal)}
+        options={{
+          onClose: () => setUrlModalIsOpen(false),
           disableSubmit: true,
         }}
       />
@@ -459,7 +487,8 @@ export const JobManager = () => {
                   function: async (e, data) => {  
                     if(data["insightsURL"]==="NO INSIGHTS"||data["insightsURL"]==="NO URL GENERATED YET"){
                       notify("No Insight Url Avaliable",null, 'warning');} 
-                    else{window.open( data["insightsURL"],"_blank");
+                    else{
+                      window.open( data["insightsURL"],"_blank");
                     }
 
                   },

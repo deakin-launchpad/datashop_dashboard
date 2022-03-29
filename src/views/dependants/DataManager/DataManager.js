@@ -349,6 +349,7 @@ export const DatasetsManager = () => {
             data={dataForTable}
             title="Datasets Manager"
             options={{
+              rowsPerPage: 10,
               selector: true,
               ignoreKeys: ["Id", "__v","Creator_id"],
               actions: [
