@@ -436,7 +436,7 @@ export const JobManager = () => {
                 "createdAt",
                 "insightsURL",
                 "id",
-                "Execution Time",
+                // "Execution Time",
               ],
               actions: [
                 {
