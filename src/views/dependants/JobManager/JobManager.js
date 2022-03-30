@@ -8,7 +8,13 @@ import {
   Paper,
   Typography,
   FormControl,
+  Table,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
 } from "@mui/material";
+// import { JsonToTable } from "react-json-to-table";
 import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
@@ -25,14 +31,17 @@ export const JobManager = () => {
   const [selectedJob, setSelectedJob] = useState("");
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
   const [urlModalIsOpen, setUrlModalIsOpen] = useState(false);
+  const [jsonModalIsOpen, setJsonModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
   const [urlModal, setUrlModal] = useState("");
+  const [jsonModal, setJsonModal] = useState("");
   const [job, setJob] = useState([]);
   const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [isFiltered, setIsFiltered] = useState(false);
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
+
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
@@ -75,20 +84,29 @@ export const JobManager = () => {
   }, []);
 
   const viewData = (data) => {
+    console.log("data---------",data);
+    console.log("url---------",data.insightsURL);
     if (!data.insightsURL) return;
     const regex = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
     const isImage = regex.test(data.insightsURL);
     if (isImage) {
       setImageModal(data.insightsURL);
       setImageModalIsOpen(true);
-    } else if (data.dataURL && data.dataURL !== "") {
-      window.location.href = data.dataURL;
-    } else if (
-      data.insightsURL &&
-      /\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data.insightsURL)
-    ) {
+    } else if (data.insightsURL &&
+    /\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data.insightsURL)) {
       setUrlModal(data.insightsURL);
       setUrlModalIsOpen(true);
+    } else 
+    // if(data.dataURL && data.dataURL !== "" ) 
+    {
+      console.log("here json------------------");
+      console.log("here data------------------",data.insightsURL.slice(1,-1));
+      console.log("type of------------------",typeof(data.insightsURL));
+      var temp1 = data.insightsURL.replace(/'/g,'"');
+      var temp=JSON.parse(temp1);
+
+      setJsonModal(temp);
+      setJsonModalIsOpen(true);
     }
   };
 
@@ -331,21 +349,31 @@ export const JobManager = () => {
     >
       <img width="50%" src={data} alt="img" />
     </Box>);
-  //{
-  //   if(/\.(doc|doc?x|json|pdf|zip|csv)$/i.test(data)){
-  //     <p>{data}</p>;
-  //   }
-  //   else{(<Box
-  //     sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
-  //   >
-  //     <img width="50%" src={data} alt="img" />
-  //   </Box>);}
-  // };
   const urlModalContentToShow = (data) => 
     (<Box
       sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
     >
       <a href={data}>Download</a>
+    </Box>);
+  const jsonModalContentToShow = (data) => 
+    (<Box
+      sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
+    >
+      <Table aria-label="caption table">
+        <TableHead>
+          <TableRow>
+            {Object.keys(data).map((item) => (
+              <TableCell key={item}>{item}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {Object.values(data).map((item) => (
+            <TableCell key={item}>{item}</TableCell>
+          ))}
+        </TableBody>
+      </Table>
+      {/* <a href={data}>Download</a> */}
     </Box>);
 
   const filterStatus = (status) => {
@@ -381,6 +409,15 @@ export const JobManager = () => {
         dialogContent={urlModalContentToShow(urlModal)}
         options={{
           onClose: () => setUrlModalIsOpen(false),
+          disableSubmit: true,
+        }}
+      />
+      <EnhancedModal
+        isOpen={jsonModalIsOpen}
+        dialogTitle={`Result`}
+        dialogContent={jsonModalContentToShow(jsonModal)}
+        options={{
+          onClose: () => setJsonModalIsOpen(false),
           disableSubmit: true,
         }}
       />

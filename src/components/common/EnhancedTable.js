@@ -841,7 +841,7 @@ export const EnhancedTable = (props) => {
       overflowX: "auto",
     },
     tableWrapper: {
-      maxHeight: props?.options?.ui?.maxHeight || 680,
+      maxHeight: props?.options?.ui?.maxHeight || 600,
       overflowY: "auto",
       "-webkit-overflow-scrolling": "touch",
     },
