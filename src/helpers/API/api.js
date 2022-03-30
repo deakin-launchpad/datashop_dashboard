@@ -293,6 +293,18 @@ class API {
       .then(() => generateSuccess(AccessToken))
       .catch((error) => errorHelper(error));
   }
+  getInfo() {
+    return axiosInstance
+      .get("info/getInfo", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
 }
 const instance = new API();
 export default instance;
