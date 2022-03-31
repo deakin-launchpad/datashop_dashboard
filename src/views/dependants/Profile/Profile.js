@@ -85,8 +85,10 @@ export const Profile = () => {
 
   const generateURL = () => {
     // notify("Share Link Copied!",null,'success');
-    navigator.clipboard.writeText("http://thedatashop.club/users/"+currentUser.userId);
-    window.open( "http://thedatashop.club/users/"+currentUser.userId,"_blank");
+    // navigator.clipboard.writeText("http://thedatashop.club/users/"+currentUser.userId);
+    console.log("http://thedatashop.club/users/"+currentUser.userId);
+    var url = "http://thedatashop.club/users/"+currentUser.userId;
+    window.open(url);
 
   };
 
@@ -107,7 +109,7 @@ export const Profile = () => {
             alt={currentUser.firstName}
             src={profilePicture}
           />
-          <Button onClick={()=>{generateURL();notify("Share Link Copied!",null,'success');}}>Share</Button>
+          <Button onClick={()=>{generateURL();}}>Share</Button>
           {editing ? (
             <Box sx={{ position: "absolute", width: 90, height: 90 }}>
               {" "}

@@ -17,8 +17,6 @@ export const PublicUserProfile = () => {
   const getUserProfile = async (userId) => {
     const response = await API.getPublicUserProfile(userId);
     if (response.success) {
-      console.log("data3:----",response.data.customerProfile);
-      console.log("data4:----",response.data.customerProfile.serviceData.data);
       setServices(response.data.customerProfile.serviceData.data);
       setUserOrg(response.data.customerProfile.organization);
       setUserPicture(response.data.customerProfile.picture);
@@ -138,7 +136,7 @@ export const PublicUserProfile = () => {
         </Box>
         <br></br>
         {" "}
-        <Button variant="contained" href="http://thedatashop.club/register">Sign Up to Datashop!</Button>
+        <Button variant="contained" href="http://thedatashop.club">Sign Up to Datashop!</Button>
       </Box>
 
     </Box>
