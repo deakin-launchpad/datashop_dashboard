@@ -1,5 +1,5 @@
 
-import { Box, Container, Typography,Card,CardContent,Grid } from '@mui/material';
+import { Box, Container, Typography,Card,CardContent,Grid,Button } from '@mui/material';
 import { API } from "helpers";
 import { useState, useCallback, useEffect } from "react";
 import * as React from 'react';
@@ -43,7 +43,7 @@ export const Home = () => {
         Developer number: {developers.length}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        Lastest Joined: {developers.slice(0,3).map((item)=> {return(
+        Lastest Joined: {developers.slice(-3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"
@@ -68,7 +68,7 @@ export const Home = () => {
       Job Created: {jobCount}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        Lastest Added: {jobs.slice(0,3).map((item)=> {return(
+        Lastest Added: {jobs.slice(-3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"
@@ -92,7 +92,7 @@ export const Home = () => {
     Services Added: {serviceCount}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        Lastest Added: {services.slice(0,3).map((item)=> {return(
+        Lastest Added: {services.slice(-3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"
@@ -129,17 +129,18 @@ export const Home = () => {
       }}
     >
       <Typography
-        color="primary"
-        variant="overline"
+        align="center"
+        color="textPrimary"
+        variant="h3"
       >
-        Welcome To
+        DataShop Dashboard
       </Typography>
       <Typography
         align="center"
         color="textPrimary"
         variant="h3"
       >
-        DataShop Dashboard
+        <p>{" "}</p>
       </Typography>
       <Typography
         align="center"
@@ -149,10 +150,20 @@ export const Home = () => {
       >
         To explore more visit the examples tab on the left
       </Typography>
-      <Grid container spacing={5}>
-        <Grid item xs={10}><Card variant="outlined">{jobInfo}</Card></Grid>
-        <Grid item xs={10}><Card variant="outlined">{serviceInfo}</Card></Grid>
-        <Grid item xs={10}><Card variant="outlined">{devloperInfo}</Card></Grid>
+      <Button
+        color="primary"
+        size="middle"
+        variant="contained"
+        onClick={()=>{window.open("https://deakin-launchpad.github.io/datashop-documentation/");}}
+      >
+          Developer Guide
+        {" "}
+      </Button>
+
+      <Grid container spacing={5} align="center">
+        <Grid item xs={10}><Card variant="outlined" align="center">{jobInfo}</Card></Grid>
+        <Grid item xs={10}><Card variant="outlined" align="center">{serviceInfo}</Card></Grid>
+        <Grid item xs={10}><Card variant="outlined" align="center">{devloperInfo}</Card></Grid>
       </Grid>
     </Container>
   </Box>);

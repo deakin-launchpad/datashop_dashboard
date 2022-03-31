@@ -314,6 +314,15 @@ export const ServiceManager = () => {
         >
           Create Service
         </Button>
+        {" "}
+        <Button
+          color="primary"
+          size="middle"
+          variant="contained"
+          onClick={()=>{window.open("https://deakin-launchpad.github.io/datashop-documentation/");}}
+        >
+          Developer Guide
+        </Button>
       </Box>
     </Box>
   );
