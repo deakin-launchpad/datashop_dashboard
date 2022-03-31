@@ -86,6 +86,7 @@ export const Profile = () => {
   const generateURL = () => {
     // notify("Share Link Copied!",null,'success');
     navigator.clipboard.writeText("http://thedatashop.club/users/"+currentUser.userId);
+    window.open( "http://thedatashop.club/users/"+currentUser.userId,"_blank");
 
   };
 
