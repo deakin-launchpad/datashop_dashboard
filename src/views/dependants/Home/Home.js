@@ -121,6 +121,7 @@ export const Home = () => {
       maxWidth="md"
       sx={{
         alignItems: 'center',
+        justifyContent:'center',
         display: 'flex',
         flexDirection: 'column',
         px: {
@@ -137,13 +138,6 @@ export const Home = () => {
       </Typography>
       <Typography
         align="center"
-        color="textPrimary"
-        variant="h3"
-      >
-        <p>{" "}</p>
-      </Typography>
-      <Typography
-        align="center"
         color="textSecondary"
         variant="body1"
         sx={{ py: 3 }}
@@ -154,13 +148,15 @@ export const Home = () => {
         color="primary"
         size="middle"
         variant="contained"
+
         onClick={()=>{window.open("https://deakin-launchpad.github.io/datashop-documentation/");}}
+
       >
           Developer Guide
-        {" "}
+
       </Button>
 
-      <Grid container spacing={5} align="center">
+      <Grid container spacing={5} sx={{mt:2}} align="center">
         <Grid item xs={10}><Card variant="outlined" align="center">{jobInfo}</Card></Grid>
         <Grid item xs={10}><Card variant="outlined" align="center">{serviceInfo}</Card></Grid>
         <Grid item xs={10}><Card variant="outlined" align="center">{devloperInfo}</Card></Grid>
