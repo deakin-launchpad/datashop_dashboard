@@ -20,6 +20,7 @@ import {
   DevelopersProfile,
   Profile,
   Landing,
+  PublicUserProfile
 } from "views";
 
 import { Layout } from "./layout";
@@ -220,6 +221,20 @@ export const AppRoutes = (props) => {
           </AuthRoute>
         }
       />
+      <Route
+        exact
+        path='/users/:userId' 
+        element={
+
+          <PublicUserProfile {...props} />
+
+        }
+      />
+      {/* <Route 
+        exact 
+        path='/users/:userId' 
+        render={() => (<PublicUserProfile {...props} />)} /> */}
+        
       <Route
         element={
           <AuthRoute

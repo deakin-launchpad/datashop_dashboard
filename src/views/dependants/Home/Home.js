@@ -43,7 +43,7 @@ export const Home = () => {
         Developer number: {developers.length}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        lastest Joined: {developers.slice(0,3).map((item)=> {return(
+        Lastest Joined: {developers.slice(0,3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"
@@ -68,7 +68,7 @@ export const Home = () => {
       Job Created: {jobCount}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        lastest Added: {jobs.slice(0,3).map((item)=> {return(
+        Lastest Added: {jobs.slice(0,3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"
@@ -92,7 +92,7 @@ export const Home = () => {
     Services Added: {serviceCount}
         </Typography>
         <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
-        lastest Added: {services.slice(0,3).map((item)=> {return(
+        Lastest Added: {services.slice(0,3).map((item)=> {return(
             <Typography
               key={item._id}
               component="div"

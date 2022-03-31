@@ -82,6 +82,13 @@ export const Profile = () => {
     getUserProfile();
   }, [getUserProfile]);
 
+
+  const generateURL = () => {
+    // notify("Share Link Copied!",null,'success');
+    navigator.clipboard.writeText("http://thedatashop.club/users/"+currentUser.userId);
+
+  };
+
   let userProfileForm = (
     <Formik enableReinitialize={true} initialValues={formik.initialValue}>
       <form noValidate onSubmit={formik.handleSubmit}>
@@ -99,6 +106,7 @@ export const Profile = () => {
             alt={currentUser.firstName}
             src={profilePicture}
           />
+          <Button onClick={()=>{generateURL();notify("Share Link Copied!",null,'success');}}>Share</Button>
           {editing ? (
             <Box sx={{ position: "absolute", width: 90, height: 90 }}>
               {" "}
