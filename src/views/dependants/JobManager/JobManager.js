@@ -116,39 +116,10 @@ export const JobManager = () => {
     resetTableData(job);
   }, [job]);
 
-  const jsonDataValidate = (data) => {
-    if (!data.includes("gender")) return notify("No gender available.");
-    if (!data.includes("TotalHeight"))
-      return notify("No TotalHeight available");
-    if (!data.includes("Inseam")) return notify("No Inseam available");
-    if (!data.includes("Bust")) return notify("No Bust available.");
-    if (!data.includes("UnderBust")) return notify("No UnderBust available");
-    if (!data.includes("Waist")) return notify("No Waist available");
-    if (!data.includes("HighHip")) return notify("No HighHip available.");
-    if (!data.includes("LowHip")) return notify("No LowHip available");
-    if (!data.includes("HighThigh")) return notify("No HighThigh available");
-    if (!data.includes("LowThigh")) return notify("No LowThigh available.");
-    if (!data.includes("NeckBase")) return notify("No NeckBase available");
-    if (!data.includes("Suitleglength"))
-      return notify("No Suitleglength available");
-    return true;
-  };
-
   const initialValues = {
     downloadableURL: "",
     jsonData: `{
-        "gender": "female",
-        "TotalHeight": 1715,
-        "Inseam": 845,
-        "Bust": 880,
-        "UnderBust": 780,
-        "Waist": 721,
-        "HighHip": 770,
-        "LowHip": 865,
-        "HighThigh": 491,
-        "LowThigh": 417,
-        "NeckBase": 460,
-        "Suitleglength": 190,
+        "numberToSet": ""
       }`,
     jobName: "",
     service: "",
@@ -174,11 +145,6 @@ export const JobManager = () => {
       },
     };
     if (dataTypeSelected === dataTypes[1]) {
-      const valid = jsonDataValidate(values.jsonData);
-      if (valid) {
-        createJob(data);
-      }
-    } else {
       createJob(data);
     }
     resetForm();
