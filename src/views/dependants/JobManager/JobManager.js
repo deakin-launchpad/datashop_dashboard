@@ -118,9 +118,7 @@ export const JobManager = () => {
 
   const initialValues = {
     downloadableURL: "",
-    jsonData: `{
-        "numberToSet": ""
-      }`,
+    jsonData: `{"numberToSet": ""}`,
     jobName: "",
     service: "",
     dataType: "",

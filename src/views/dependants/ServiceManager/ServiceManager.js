@@ -31,7 +31,7 @@ export const ServiceManager = () => {
           ID: item._id,
           Requirements: item.requirements,
           URL: item.url,
-          Description: item.description,
+          Endpoint: item.endpoint,
           Cost: item.cost,
           "Creator ID": item.creator_id ?? "null",
         };
@@ -63,7 +63,7 @@ export const ServiceManager = () => {
 
   const initialValues = {
     url: "",
-    description: "",
+    endpoint: "",
     name: "",
     cost: "",
     requirements: "",
@@ -72,7 +72,7 @@ export const ServiceManager = () => {
   const validationSchema = () => {
     return Yup.object().shape({
       url: Yup.string().max(255).required("URL Is Required"),
-      description: Yup.string().max(255).required("Description Is Required"),
+      endpoint: Yup.string().max(255).required("Endpoint Is Required"),
       name: Yup.string().min(5).max(255).required("Password Is Required"),
       cost: Yup.number().required("Description Is Required"),
       requirements: Yup.string().max(255).required("Description Is Required"),
@@ -82,7 +82,7 @@ export const ServiceManager = () => {
   const handleSubmit = async (values, { resetForm }) => {
     const data = {
       url: values.url,
-      description: values.description,
+      endpoint: values.endpoint,
       name: values.name,
       serviceId: values.serviceId,
       cost: values.cost,
@@ -126,13 +126,13 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label=" Description/Endpoint"
+              label=" Endpoint"
               margin="normal"
-              name="description"
+              name="endpoint"
               type="text"
               variant="outlined"
-              error={touched.description && Boolean(errors.description)}
-              helperText={touched.description && errors.description}
+              error={touched.endpoint && Boolean(errors.endpoint)}
+              helperText={touched.endpoint && errors.endpoint}
             />
             <Field
               as={TextField}
@@ -203,7 +203,7 @@ export const ServiceManager = () => {
               <br />
             </Typography>
             <Typography variant="body2">
-              Endpoint name: {selectedService.description}
+              Endpoint name: {selectedService.endpoint}
               <br />
             </Typography>
             <Typography variant="body2">
