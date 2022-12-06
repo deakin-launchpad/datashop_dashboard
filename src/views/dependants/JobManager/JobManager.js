@@ -118,7 +118,7 @@ export const JobManager = () => {
 
   const initialValues = {
     downloadableURL: "",
-    jsonData: `{"numberToSet": ""}`,
+    jsonData: `{"numberToSet":  }`,
     jobName: "",
     service: "",
     dataType: "",
@@ -128,7 +128,7 @@ export const JobManager = () => {
     return Yup.object().shape({
       downloadableURL: Yup.string().max(255),
       jobName: Yup.string().required("Job name is required"),
-      jsonData: Yup.string(),
+      jsonData: Yup.object(),
     });
   };
 
