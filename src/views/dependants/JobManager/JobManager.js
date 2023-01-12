@@ -29,7 +29,19 @@ export const JobManager = () => {
   const [isFiltered, setIsFiltered] = useState(false);
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
 
-  const dataTypes = ["Generated Data", "Json Data", "Data URL"];
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    // TODO: Change this here when i want to post to server
+    if (selectedImage) {
+      setImageUrl(URL.createObjectURL(selectedImage));
+    }
+  }, [selectedImage]);
+
+  console.log(imageUrl);
+
+  const dataTypes = ["Generated Data", "Json Data", "Data URL", "Image File"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
   const createJob = async (data) => {
     const response = await API.createJob(data);
@@ -225,19 +237,52 @@ export const JobManager = () => {
                 />
               </Box>
             ) : dataTypeSelected === dataTypes[2] ? (
-              <Field
-                as={TextField}
-                fullWidth
-                label="Data URL Link"
-                margin="normal"
-                name="downloadableURL"
-                type="text"
-                variant="outlined"
-                error={
-                  touched.downloadableURL && Boolean(errors.downloadableURL)
-                }
-                helperText={touched.downloadableURL && errors.downloadableURL}
-              />
+              <Box>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Data URL Link"
+                  margin="normal"
+                  name="downloadableURL"
+                  type="text"
+                  variant="outlined"
+                  error={
+                    touched.downloadableURL && Boolean(errors.downloadableURL)
+                  }
+                  helperText={touched.downloadableURL && errors.downloadableURL}
+                />
+              </Box>
+            ) : dataTypeSelected === dataTypes[3] ? (
+              // TODO: IMAGE UPLOADER
+              <>
+                <Box
+                  sx={{
+                    mt: 2,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button variant="contained" component="label">
+                    Upload Image
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => setSelectedImage(e.target.files[0])}
+                    />
+                  </Button>
+                </Box>
+                {imageUrl && selectedImage && (
+                  <Box mt={2} textAlign="center">
+                    <div>Image Preview:</div>
+                    <img
+                      src={imageUrl}
+                      alt={selectedImage.name}
+                      height="100px"
+                    />
+                  </Box>
+                )}
+              </>
             ) : null}
             <Box sx={{ mt: 2 }}>
               <Button
