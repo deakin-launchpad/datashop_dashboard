@@ -13,7 +13,6 @@ import { useState, useCallback, useEffect } from "react";
 import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
 import { format } from "date-fns";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
@@ -28,21 +27,25 @@ export const JobManager = () => {
   const [selectedService, setSelectedService] = useState("");
   const [isFiltered, setIsFiltered] = useState(false);
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
-
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [buffer, setBuffer] = useState();
 
   useEffect(() => {
-    // TODO: Change this here when i want to post to server
     if (selectedImage) {
       setImageUrl(URL.createObjectURL(selectedImage));
+      const file = selectedImage;
+      const reader = new window.FileReader();
+      reader.readAsArrayBuffer(file);
+      reader.onloadend = () => {
+        setBuffer({ buffer: Buffer(reader.result) });
+      };
     }
   }, [selectedImage]);
 
-  console.log(imageUrl);
-
   const dataTypes = ["Generated Data", "Json Data", "Data URL", "Image File"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
+
   const createJob = async (data) => {
     const response = await API.createJob(data);
     if (response.success) {
@@ -134,14 +137,7 @@ export const JobManager = () => {
     jobName: "",
     service: "",
     dataType: "",
-  };
-
-  const validationSchema = () => {
-    return Yup.object().shape({
-      downloadableURL: Yup.string().max(255),
-      jobName: Yup.string().required("Job name is required"),
-      jsonData: Yup.object(),
-    });
+    buffer,
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -151,22 +147,18 @@ export const JobManager = () => {
       serviceID: selectedService._id,
       datafileURL: {
         url: values.downloadableURL,
+        buffer: buffer.buffer,
         json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
       },
     };
-    if (dataTypeSelected === dataTypes[1]) {
-      createJob(data);
-    }
+    console.log(data);
+    createJob(data);
     resetForm();
   };
 
   let createJobModal = (
     <Box>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ errors, touched, isSubmitting }) => (
           <Form>
             <InputLabel sx={{ py: 1 }}>Job Name</InputLabel>
@@ -253,7 +245,6 @@ export const JobManager = () => {
                 />
               </Box>
             ) : dataTypeSelected === dataTypes[3] ? (
-              // TODO: IMAGE UPLOADER
               <>
                 <Box
                   sx={{
@@ -284,7 +275,14 @@ export const JobManager = () => {
                 )}
               </>
             ) : null}
-            <Box sx={{ mt: 2 }}>
+            <Box
+              sx={{
+                mt: 4,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <Button
                 color="primary"
                 disabled={isSubmitting}
