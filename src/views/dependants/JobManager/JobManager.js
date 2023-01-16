@@ -29,19 +29,39 @@ export const JobManager = () => {
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const [buffer, setBuffer] = useState();
+  const [blob, setblob] = useState();
 
   useEffect(() => {
-    if (selectedImage) {
+    async function post() {
       setImageUrl(URL.createObjectURL(selectedImage));
       const file = selectedImage;
-      const reader = new window.FileReader();
-      reader.readAsArrayBuffer(file);
-      reader.onloadend = () => {
-        setBuffer({ buffer: Buffer(reader.result) });
-      };
+      const base64 = await convertToBase64(file);
+      setblob(base64);
+    }
+    if (selectedImage) {
+      post();
+
+      // const file = selectedImage;
+      // const reader = new window.FileReader();
+      // reader.readAsArrayBuffer(file);
+      // reader.onloadend = () => {
+      //   setBuffer({ buffer: Buffer(reader.result) });
+      // };
     }
   }, [selectedImage]);
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
 
   const dataTypes = ["Generated Data", "Json Data", "Data URL", "Image File"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
@@ -137,7 +157,7 @@ export const JobManager = () => {
     jobName: "",
     service: "",
     dataType: "",
-    buffer,
+    blob,
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -147,7 +167,7 @@ export const JobManager = () => {
       serviceID: selectedService._id,
       datafileURL: {
         url: values.downloadableURL,
-        buffer: buffer.buffer,
+        blob: blob,
         json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
       },
     };
