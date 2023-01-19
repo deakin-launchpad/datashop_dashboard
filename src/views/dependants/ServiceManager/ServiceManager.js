@@ -13,6 +13,7 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { FormControlLabel, Switch } from "../../../../node_modules/@mui/material/index";
 
 export const ServiceManager = () => {
   const [service, setService] = useState([]);
@@ -34,6 +35,7 @@ export const ServiceManager = () => {
           Endpoint: item.endpoint,
           Cost: item.cost,
           "Creator ID": item.creator_id ?? "null",
+          "Requires Asset Opt In": item.requires_asset_opt_in
         };
         result.push(data);
       });
@@ -67,6 +69,7 @@ export const ServiceManager = () => {
     name: "",
     cost: "",
     requirements: "",
+    "requiresAssetOptIn": false
   };
 
   const validationSchema = () => {
@@ -76,6 +79,7 @@ export const ServiceManager = () => {
       name: Yup.string().min(5).max(255).required("Password Is Required"),
       cost: Yup.number().required("Description Is Required"),
       requirements: Yup.string().max(255).required("Description Is Required"),
+      requiresAssetOptIn: Yup.boolean().required("Asset Opt In needs to be specified")
     });
   };
 
@@ -87,6 +91,7 @@ export const ServiceManager = () => {
       serviceId: values.serviceId,
       cost: values.cost,
       requirements: values.requirements,
+      requiresAssetOptIn: values.requiresAssetOptIn
     };
     createService(data);
     resetForm();
@@ -137,7 +142,7 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label="Cost "
+              label="Cost"
               margin="normal"
               name="cost"
               type="text"
@@ -148,7 +153,7 @@ export const ServiceManager = () => {
             <Field
               as={TextField}
               fullWidth
-              label="Requirements "
+              label="Requirements"
               margin="normal"
               name="requirements"
               type="text"
@@ -157,7 +162,21 @@ export const ServiceManager = () => {
               error={touched.requirements && Boolean(errors.requirements)}
               helperText={touched.requirements && errors.requirements}
             />
-
+            <FormControlLabel
+              label="Requires Asset Opt In"
+              labelPlacement="start"
+              style={{ marginLeft: '0px' }}
+              control={
+                <Field
+                  as={Switch}
+                  id="requiresAssetOptIn"
+                  label="Requires Asset Opt In"
+                  margin="normal"
+                  name="requiresAssetOptIn"
+                  type="checkbox"
+                />
+              }
+            />
             <Box sx={{ mt: 2 }}>
               <Button
                 color="primary"
@@ -214,6 +233,10 @@ export const ServiceManager = () => {
             </Typography>
             <Typography variant="body2">
               Price: ${selectedService.cost}
+              <br />
+            </Typography>
+            <Typography variant="body2">
+              Price: ${selectedService.requires_asset_opt_in}
               <br />
             </Typography>
           </CardContent>

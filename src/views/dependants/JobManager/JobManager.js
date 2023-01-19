@@ -14,22 +14,31 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
 import { format } from "date-fns";
+import {PeraWalletConnect} from "@perawallet/connect";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
 export const JobManager = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
+  const [signLogicSigModalIsOpen, setSignLogicSigModalIsOpen] = useState(false);
   const [imageModal, setImageModal] = useState("");
   const [job, setJob] = useState([]);
   const [dataForTable, setDataForTable] = useState([]);
   const [services, setServices] = useState([]);
+  const [signedLogicSigExists, setSignedLogicSigExists] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [isFiltered, setIsFiltered] = useState(false);
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [blob, setblob] = useState();
+  const [accountAddress, setAccountAddress] = useState(null);
+  const isConnectedToPeraWallet = !!accountAddress;
+  const peraWallet = new PeraWalletConnect({
+    shouldShowSignTxnToast: true,
+    chainId: "416002"
+  });
 
   useEffect(() => {
     async function post() {
@@ -122,8 +131,36 @@ export const JobManager = () => {
   }, []);
 
   const handleServiceChange = (event) => {
-    setSelectedService(event.target.value);
+    if (event.target.value.requires_asset_opt_in && !signedLogicSigExists) {
+      setModalIsOpen(false);
+      setSignLogicSigModalIsOpen(true);
+      notify("Please sign logic sig to opt in to assets");
+      return;
+    } else {
+      setSelectedService(event.target.value);
+    }
   };
+
+  const handleConnectWalletClick = () => {
+    peraWallet
+      .connect()
+      .then((newAccounts) => {
+        console.log(newAccounts);
+        peraWallet.connector.on("disconnect", handleDisconnectWalletClick);
+        setAccountAddress(newAccounts[0]);
+      })
+      .catch((error) => {
+        if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
+          console.log(error);
+        }
+      });
+  };
+
+  const handleDisconnectWalletClick = () => {
+    peraWallet.disconnect();
+    setAccountAddress(null);
+  };
+
   const handleDataTypeChange = (event) => {
     setSelectedDataType(event.target.value);
   };
@@ -131,6 +168,22 @@ export const JobManager = () => {
   useEffect(() => {
     getService();
   }, [getService]);
+
+  useEffect(() => {
+    // Reconnect to the session when the component is mounted
+    peraWallet
+      .reconnectSession()
+      .then((accounts) => {
+        if (peraWallet.connector !== null) {
+          peraWallet.connector.on("disconnect", handleDisconnectWalletClick);
+          if (accounts.length) {
+            setAccountAddress(accounts[0]);
+          }
+        }
+      })
+      .catch((e) => console.log(e));
+  });
+
 
   const resetTableData = (data) => {
     setDataForTable(
@@ -150,6 +203,20 @@ export const JobManager = () => {
   useEffect(() => {
     resetTableData(job);
   }, [job]);
+
+  const getSignedLogicSigExists = useCallback(async () => {
+    const response = await API.getSignedLogicSigExists();
+    if (response.success) {
+      setSignedLogicSigExists(response.data);
+    } else {
+      setSignedLogicSigExists([]);
+      notify("Failed to Fetch Signed LogicSig Exists");
+    }
+  }, []);
+
+  useEffect(() => {
+    getSignedLogicSigExists();
+  }, [getSignedLogicSigExists]);
 
   const initialValues = {
     downloadableURL: "",
@@ -319,6 +386,21 @@ export const JobManager = () => {
     </Box>
   );
 
+  let signLogicSigModal = (
+    <Box>
+      <Typography sx={{ mt: 0 }}>
+        Please sign the logic signature transaction to opt in to assets
+      </Typography>
+      <Button
+        size="middle"
+        variant="contained"
+        onClick={isConnectedToPeraWallet ? handleDisconnectWalletClick : handleConnectWalletClick}
+      >
+        {isConnectedToPeraWallet ? "Disconnect" : "Connect to Pera Wallet"}
+      </Button>
+    </Box>
+  );
+
   const imageModelContentToShow = (img) => (
     <Box
       sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}
@@ -363,6 +445,15 @@ export const JobManager = () => {
           disableSubmit: true,
         }}
       />
+      <EnhancedModal
+        isOpen={signLogicSigModalIsOpen}
+        dialogTitle={`Sign logic Sig`}
+        dialogContent={signLogicSigModal}
+        options={{
+          onClose: () => setSignLogicSigModalIsOpen(false),
+          disableSubmit: true,
+        }}
+      />
       <Box
         maxWidth="xl"
         sx={{
@@ -398,6 +489,13 @@ export const JobManager = () => {
           onClick={() => setModalIsOpen(true)}
         >
           Create Job
+        </Button>
+        <Button
+          size="middle"
+          variant="contained"
+          onClick={() => setModalIsOpen(true)}
+        >
+          {signedLogicSigExists === false ? "No Signed Logic Sig" : "Signed Logic Sig"}
         </Button>
       </Box>
       <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>

@@ -147,6 +147,19 @@ class API {
       .catch((error) => errorHelper(error));
   }
 
+  getSignedLogicSigExists() {
+    return axiosInstance
+      .get("user/signedLogicSigExists", {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data.data.logicSigProvided);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
   editUserProfile(data){
     return axiosInstance
       .put("user/profile", data,{
