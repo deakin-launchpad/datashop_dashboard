@@ -1,4 +1,4 @@
-# Datashop dashboard 3.0.0
+# BaaS dashboard 3.0.0
 
 In order to use the boilerplate you will need NodeJS to be installed on your system.
 

@@ -51,7 +51,7 @@ const useStyles = makeStyles(() =>
 export const Register = () => {
   const classes = useStyles();
   const { deviceData } = useContext(DeviceInfoContext);
-  const [pageHeading] = useState("Sign up to DataShop");
+  const [pageHeading] = useState("Sign up to BaaS");
   const [emailId, setEmailId] = useState("");
   const [countryCode, setCountryCode] = useState("+61");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -212,7 +212,7 @@ export const Register = () => {
         <Grid item xs={4} className={classes.leftSpan}>
           <Box className={classes.leftTextPosition}>
             <Typography variant="h3" component="h3" color="white">
-              DataShop
+              BaaS
             </Typography>
             <Typography variant="h5" component="h5" color="white">
               Can fill in the relevant function description
@@ -227,17 +227,17 @@ export const Register = () => {
         </Grid>
         <Grid item xs={8}>
           <Box className={classes.rightSpan}>
-            <img
+            {/* <img
               width={200}
               src={require("../../../assets/images/logo/logo.png").default}
-            />
+            /> */}
             <CardContent
               sx={{ display: "flex", flexDirection: "column", p: 4 }}
             >
               <Box
                 sx={{
                   mx: 10,
-                  my: 3,
+                  my: 8,
                 }}
               >
                 <Typography color="textPrimary" variant="h5">
