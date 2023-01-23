@@ -147,15 +147,28 @@ class API {
       .catch((error) => errorHelper(error));
   }
 
-  getSignedLogicSigExists() {
+  getSignedLogicSig() {
     return axiosInstance
-      .get("user/signedLogicSigExists", {
+      .get("user/getSignedLogicSig", {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
       })
       .then((response) => {
-        return generateSuccess(response.data.data.logicSigProvided);
+        return generateSuccess(response.data.data);
+      })
+      .catch((error) => errorHelper(error));
+  }
+
+  setSignedLogicSig(data) {
+    return axiosInstance
+      .put("user/setSignedLogicSig", data, {
+        headers: {
+          authorization: "Bearer " + AccessToken,
+        },
+      })
+      .then((response) => {
+        return generateSuccess(response.data);
       })
       .catch((error) => errorHelper(error));
   }

@@ -11,7 +11,7 @@
     "@mui/lab": "^5.0.0-alpha.70",
     "@mui/material": "^5.0.6",
     "@mui/styles": "^5.1.0",
-    "@perawallet/connect": "^1.1.0",
+    "@randlabs/myalgo-connect": "^1.4.2",
     "@tinymce/tinymce-react": "3.12.6",
     "axios": "^0.24.0",
     "date-fns": "^2.21.1",
