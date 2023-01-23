@@ -1,5 +1,5 @@
 {
-  "name": "datashop-dashboard",
+  "name": "baas-dashboard",
   "version": "3.0.0",
   "private": true,
   "dependencies": {
