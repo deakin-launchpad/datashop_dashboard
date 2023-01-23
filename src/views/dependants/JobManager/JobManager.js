@@ -32,7 +32,7 @@ export const JobManager = () => {
   const [statusToFilter, setStatusToFilter] = useState(statuses[0]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
-  const [blob, setblob] = useState();
+  const [blob, setblob] = useState(null);
   const [accountAddress, setAccountAddress] = useState(null);
   const myAlgoWallet = new MyAlgoConnect();
   const myAlgoWalletSettings = {
@@ -75,7 +75,7 @@ export const JobManager = () => {
     });
   };
 
-  const dataTypes = ["Generated Data", "Json Data", "Data URL", "Image File"];
+  const dataTypes = ["Generated Data", "Json Data", "Data URL"];
   const [dataTypeSelected, setSelectedDataType] = useState(dataTypes[0]);
 
   const createJob = async (data) => {
@@ -222,15 +222,23 @@ export const JobManager = () => {
     jobName: "",
     service: "",
     dataType: "",
-    blob,
+    blob: null
   };
 
   const handleSubmit = async (values, { resetForm }) => {
-    if (dataTypeSelected === dataTypes[1] && selectedService.requires_asset_opt_in) {
-      let json = JSON.parse(values.jsonData);
-      json.signedLogicSig = signedLogicSig;
-      values.jsonData = JSON.stringify(json);
-    }
+    if (dataTypeSelected === dataTypes[1]) {
+      let json;
+      if (blob !== null) {
+        json = JSON.parse(values.jsonData);
+        json.blob = blob;
+        values.jsonData = JSON.stringify(json);
+      }
+      if (selectedService.requires_asset_opt_in) {
+        json = JSON.parse(values.jsonData);
+        json.signedLogicSig = signedLogicSig;
+        values.jsonData = JSON.stringify(json);
+      }
+    } 
 
     const data = {
       jobName: values.jobName,
@@ -238,7 +246,6 @@ export const JobManager = () => {
       serviceID: selectedService._id,
       datafileURL: {
         url: values.downloadableURL,
-        blob: blob,
         json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
       },
     };
@@ -318,6 +325,24 @@ export const JobManager = () => {
                   error={touched.jsonData}
                   helperText={touched.jsonData && errors.jsonData}
                 />
+                <Button variant="contained" component="label">
+                  Upload Image
+                  <input
+                    type="file"
+                    hidden
+                    onChange={(e) => setSelectedImage(e.target.files[0])}
+                  />
+                </Button>
+                {imageUrl && selectedImage && (
+                  <Box mt={2} textAlign="center">
+                    <div>Image Preview:</div>
+                    <img
+                      src={imageUrl}
+                      alt={selectedImage.name}
+                      height="100px"
+                    />
+                  </Box>
+                )}
               </Box>
             ) : dataTypeSelected === dataTypes[2] ? (
               <Box>
@@ -335,36 +360,6 @@ export const JobManager = () => {
                   helperText={touched.downloadableURL && errors.downloadableURL}
                 />
               </Box>
-            ) : dataTypeSelected === dataTypes[3] ? (
-              <>
-                <Box
-                  sx={{
-                    mt: 2,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Button variant="contained" component="label">
-                    Upload Image
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => setSelectedImage(e.target.files[0])}
-                    />
-                  </Button>
-                </Box>
-                {imageUrl && selectedImage && (
-                  <Box mt={2} textAlign="center">
-                    <div>Image Preview:</div>
-                    <img
-                      src={imageUrl}
-                      alt={selectedImage.name}
-                      height="100px"
-                    />
-                  </Box>
-                )}
-              </>
             ) : null}
             <Box
               sx={{
