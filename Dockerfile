@@ -1,23 +1,30 @@
-# base image
-FROM node:16-alpine as build
+# pull official base image
+FROM node:16-alpine
+
 
 # set working directory
-WORKDIR /usr/src/app
+WORKDIR /build
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# Copies package.json and package-lock.json to Docker environment
+#COPY package*.json ./
 
-# install and cache app dependencies
-COPY . .
+# Installs all node packages
+#RUN npm install
 
-RUN npm install --silent
+# Copies everything over to Docker environment
+COPY build .
+
+# Build for production.
+#RUN npm run build --production
+
+# Install `serve` to run the application.
 RUN npm install -g serve
 
-# Create Build
-RUN npm run build
+# Uses port which is used by the actual application
+EXPOSE 8080
 
-# Specify port
-EXPOSE 3000
+# Run application
+#CMD [ "npm", "start" ]
+#WORKDIR /build/web
 
-# start app
-CMD ["serve", "-l", "3000", "-s", "build"]
+CMD serve -l 8080 
