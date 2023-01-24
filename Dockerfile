@@ -12,7 +12,7 @@ WORKDIR /build
 #RUN npm install
 
 # Copies everything over to Docker environment
-COPY build .
+COPY . .
 
 # Build for production.
 #RUN npm run build --production
