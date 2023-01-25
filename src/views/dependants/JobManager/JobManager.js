@@ -198,7 +198,7 @@ export const JobManager = () => {
     getJob();
   }, [getJob]);
 
-  const close = useCallback(() => {
+  const updateTable = useCallback(() => {
     setTimeout(() => {
       getJob();
       resetTableData(job);
@@ -379,7 +379,7 @@ export const JobManager = () => {
                 type="submit"
                 onClick={() => {
                   setModalIsOpen(false);
-                  close();
+                  updateTable();
                 }}
               >
                 Submit
@@ -510,6 +510,13 @@ export const JobManager = () => {
           Create Job
         </Button>
       </Box>
+      <Button
+        variant="contained"
+        sx={{ mt: 4, ml: 4 }}
+        onClick={() => updateTable()}
+      >
+        Refresh
+      </Button>
       <Box maxWidth="xl" sx={{ mt: 2, ml: 4 }}>
         {dataForTable.length > 0 ? (
           <EnhancedTable
