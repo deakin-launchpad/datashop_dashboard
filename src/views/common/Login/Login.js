@@ -42,7 +42,7 @@ const useStyles = makeStyles(() =>
 
 export const Login = () => {
   const classes = useStyles();
-  const [pageHeading] = useState("Sign in to Blockoni");
+  const [pageHeading] = useState("Sign in to Blocconi");
   const { setAccessToken } = useContext(LoginContext);
   const { deviceUUID, deviceName } = useContext(DeviceInfoContext);
   const { setCurrentUserRole } = useContext(LayoutContext);
@@ -80,7 +80,7 @@ export const Login = () => {
         <Grid item xs={4} className={classes.leftSpan}>
           <Box className={classes.leftTextPosition}>
             <Typography variant="h3" component="h3" color="white">
-              Blockoni
+              Blocconi
             </Typography>
             <Typography variant="h5" component="h5" color="white">
               Can fill in the relevant function description

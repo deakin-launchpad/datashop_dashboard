@@ -173,9 +173,9 @@ class API {
       .catch((error) => errorHelper(error));
   }
 
-  editUserProfile(data){
+  editUserProfile(data) {
     return axiosInstance
-      .put("user/profile", data,{
+      .put("user/profile", data, {
         headers: {
           authorization: "Bearer " + AccessToken,
         },
@@ -184,9 +184,8 @@ class API {
         return generateSuccess(response.data.data);
       })
       .catch((error) => errorHelper(error));
-    
   }
-  
+
   getDevelopers() {
     return axiosInstance
       .get("user/developerProfiles", {
@@ -245,7 +244,7 @@ class API {
       .catch((error) => errorHelper(error));
   }
   /**
-   * 
+   *
    * @param {FormData} data document file as form-data
    * @returns {Object} responseObj
    */
@@ -263,7 +262,7 @@ class API {
   }
 
   /**
-   * 
+   *
    * @param {FormData} data image file as form-data
    * @returns {Object} responseObj
    */

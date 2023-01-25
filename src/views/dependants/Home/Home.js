@@ -21,7 +21,7 @@ export const Home = () => {
           Welcome to
         </Typography>
         <Typography align="center" color="textPrimary" variant="h3">
-          Blockoni dashboard
+          Blocconi dashboard
         </Typography>
         <Typography
           align="center"

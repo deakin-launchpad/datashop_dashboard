@@ -51,7 +51,7 @@ const useStyles = makeStyles(() =>
 export const Register = () => {
   const classes = useStyles();
   const { deviceData } = useContext(DeviceInfoContext);
-  const [pageHeading] = useState("Sign up to Blockoni");
+  const [pageHeading] = useState("Sign up to Blocconi");
   const [emailId, setEmailId] = useState("");
   const [countryCode, setCountryCode] = useState("+61");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -212,7 +212,7 @@ export const Register = () => {
         <Grid item xs={4} className={classes.leftSpan}>
           <Box className={classes.leftTextPosition}>
             <Typography variant="h3" component="h3" color="white">
-              Blockoni
+              Blocconi
             </Typography>
             <Typography variant="h5" component="h5" color="white">
               Can fill in the relevant function description
