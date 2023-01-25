@@ -14,7 +14,7 @@ import { API } from "helpers";
 import { EnhancedModal, notify, EnhancedTable } from "components/index";
 import { Formik, Form, Field } from "formik";
 import { format } from "date-fns";
-import MyAlgoConnect from '@randlabs/myalgo-connect';
+import MyAlgoConnect from "@randlabs/myalgo-connect";
 
 const statuses = ["ALL", "INITIATED", "RUNNING", "FAILED", "SUCCESS"];
 
@@ -37,10 +37,10 @@ export const JobManager = () => {
   const myAlgoWallet = new MyAlgoConnect();
   const myAlgoWalletSettings = {
     shouldSelectOneAccount: true,
-    openManager: false
+    openManager: false,
   };
   const isConnectedToMyAlgoWallet = !!accountAddress;
-  // LogicSig in base64 that only approves an asset opt-in 
+  // LogicSig in base64 that only approves an asset opt-in
   const logicSigBase64 = "BTEQgQQSMRQxABIQMRKBABIQRIEBQw==";
 
   useEffect(() => {
@@ -52,13 +52,6 @@ export const JobManager = () => {
     }
     if (selectedImage) {
       post();
-
-      // const file = selectedImage;
-      // const reader = new window.FileReader();
-      // reader.readAsArrayBuffer(file);
-      // reader.onloadend = () => {
-      //   setBuffer({ buffer: Buffer(reader.result) });
-      // };
     }
   }, [selectedImage]);
 
@@ -119,10 +112,6 @@ export const JobManager = () => {
     }
   };
 
-  useEffect(() => {
-    getJob();
-  }, [getJob]);
-
   const getService = useCallback(async () => {
     const response = await API.getService();
     if (response.success) {
@@ -134,7 +123,10 @@ export const JobManager = () => {
   }, []);
 
   const handleServiceChange = (event) => {
-    if (event.target.value.requires_asset_opt_in && signedLogicSig.length === 0) {
+    if (
+      event.target.value.requires_asset_opt_in &&
+      signedLogicSig.length === 0
+    ) {
       setModalIsOpen(false);
       setSignLogicSigModalIsOpen(true);
       notify("Please sign logic sig to opt in to assets");
@@ -159,7 +151,7 @@ export const JobManager = () => {
     myAlgoWallet
       .signLogicSig(logicSigBase64, accountAddress.address)
       .then(async (signedLogicSigFromWallet) => {
-        let data = {signedLogicSig: Array.from(signedLogicSigFromWallet)};
+        let data = { signedLogicSig: Array.from(signedLogicSigFromWallet) };
         const response = await API.setSignedLogicSig(data);
         if (response.success) {
           setSignedLogicSig(response.data.data.signedLogicSig);
@@ -202,6 +194,17 @@ export const JobManager = () => {
     resetTableData(job);
   }, [job]);
 
+  useEffect(() => {
+    getJob();
+  }, [getJob]);
+
+  const close = useCallback(() => {
+    setTimeout(() => {
+      getJob();
+      resetTableData(job);
+    }, 500);
+  }, [getJob, job]);
+
   const getSignedLogicSig = useCallback(async () => {
     const response = await API.getSignedLogicSig();
     if (response.success) {
@@ -218,11 +221,11 @@ export const JobManager = () => {
 
   const initialValues = {
     downloadableURL: "",
-    jsonData: `{"numberToSet":  }`,
+    jsonData: `{"companyName": "Trial Company", "directorsWallets": { "directorA": "Hello", "directorB": "wall", "directorC": "Bye"}}`,
     jobName: "",
     service: "",
     dataType: "",
-    blob: null
+    blob: null,
   };
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -238,7 +241,7 @@ export const JobManager = () => {
         json.signedLogicSig = signedLogicSig;
         values.jsonData = JSON.stringify(json);
       }
-    } 
+    }
 
     const data = {
       jobName: values.jobName,
@@ -249,7 +252,6 @@ export const JobManager = () => {
         json: dataTypeSelected === dataTypes[1] ? values.jsonData : "",
       },
     };
-    console.log(data);
     createJob(data);
     resetForm();
   };
@@ -375,6 +377,10 @@ export const JobManager = () => {
                 size="large"
                 variant="contained"
                 type="submit"
+                onClick={() => {
+                  setModalIsOpen(false);
+                  close();
+                }}
               >
                 Submit
               </Button>
@@ -390,7 +396,8 @@ export const JobManager = () => {
       {!isConnectedToMyAlgoWallet ? (
         <Box>
           <Typography sx={{ mt: 0 }}>
-            Please connect your MyAlgo wallet to continue signing the logic signature
+            Please connect your MyAlgo wallet to continue signing the logic
+            signature
           </Typography>
           <Button
             size="middle"
@@ -405,11 +412,7 @@ export const JobManager = () => {
           <Typography sx={{ mt: 0 }}>
             Please sign the logic signature transaction to opt in to assets
           </Typography>
-          <Button
-            size="middle"
-            variant="contained"
-            onClick={signLogicSig}
-          >
+          <Button size="middle" variant="contained" onClick={signLogicSig}>
             {"Sign LogicSig"}
           </Button>
         </Box>

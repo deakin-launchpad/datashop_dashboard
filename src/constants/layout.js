@@ -30,7 +30,7 @@ class Layout {
           type: "button",
           icon: "ant-design:home-filled",
           helpingAttribute: "/home",
-          customTitle: "Welcome to BaaS",
+          customTitle: false,
           isFavourite: true,
         }),
         new MenuItem({
